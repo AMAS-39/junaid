@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Photo | Nutrition Clinic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../assets/js/config/tailwind-setup.js"></script>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <div id="page-content">
+    <section class="page-header">
+      <h1>Upload Photo</h1>
+      <p>Save a photo record — file upload coming soon</p>
+    </section>
+
+    <form id="photoForm" class="patient-form-card">
+      <h2>New Photo Record</h2>
+      <div class="form-group mb-3">
+        <label for="photoType">Photo type</label>
+        <select id="photoType" required class="form-input">
+          <option value="medicine">Medicine</option>
+          <option value="meal">Meal</option>
+          <option value="progress">Progress</option>
+          <option value="lab-report">Lab Report</option>
+        </select>
+      </div>
+      <div class="form-group mb-4">
+        <label for="note">Note (optional)</label>
+        <textarea id="note" class="form-textarea" rows="3" placeholder="Describe the photo..."></textarea>
+      </div>
+      <button id="saveBtn" type="submit" class="view-btn">Save Photo Record</button>
+    </form>
+
+    <h2 class="text-lg font-bold text-slate-800 mb-3">Your Records</h2>
+    <div id="photoList"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <h3>No photo records</h3>
+      <p>Create a record above. Image upload will be added later.</p>
+    </div>
+  </div>
+  <script type="module" src="../../assets/js/pages/patient/photos-upload.js"></script>
+</body>
+</html>

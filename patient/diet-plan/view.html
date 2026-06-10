@@ -11,12 +11,16 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <div class="ncms-card ncms-placeholder">
-      <div class="h-16 w-16 rounded-2xl bg-medical-50 flex items-center justify-center text-2xl mb-4">🥗</div>
-      <h2 id="pageTitle" class="text-lg font-semibold text-slate-800">My Diet Plan</h2>
-      <p id="pageDescription" class="text-sm text-slate-500 mt-2 max-w-sm">This module will be implemented in a future phase.</p>
+    <section class="page-header">
+      <h1>My Diet Plan</h1>
+      <p>Your active nutrition plan</p>
+    </section>
+    <div id="dietPlanContent"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <h3>No active diet plan</h3>
+      <p>Your doctor has not assigned a diet plan yet.</p>
     </div>
   </div>
-  <script type="module" src="../../assets/js/pages/shared/placeholder-page.js"></script>
+  <script type="module" src="../../assets/js/pages/patient/diet-plan-view.js"></script>
 </body>
 </html>

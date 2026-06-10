@@ -166,6 +166,13 @@ export const routeRegistry = Object.freeze([
     title: "Messages",
   },
   {
+    path: "/patient/photos/upload.html",
+    name: "patient-photos-upload",
+    public: false,
+    roles: [ROLES.PATIENT],
+    title: "Upload Photo",
+  },
+  {
     path: ROUTES.UNAUTHORIZED,
     name: "unauthorized",
     public: true,

@@ -11,12 +11,35 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <div class="ncms-card ncms-placeholder">
-      <div class="h-16 w-16 rounded-2xl bg-medical-50 flex items-center justify-center text-2xl mb-4">📅</div>
-      <h2 id="pageTitle" class="text-lg font-semibold text-slate-800">Appointments</h2>
-      <p id="pageDescription" class="text-sm text-slate-500 mt-2 max-w-sm">This module will be implemented in a future phase.</p>
+    <section class="page-header">
+      <h1>Appointments</h1>
+      <p>Book and view your visits</p>
+    </section>
+
+    <form id="appointmentForm" class="patient-form-card">
+      <h2>Request Appointment</h2>
+      <div class="form-group mb-3">
+        <label for="preferredDateTime">Preferred date & time</label>
+        <input id="preferredDateTime" type="datetime-local" required class="form-input" />
+      </div>
+      <div class="form-group mb-3">
+        <label for="reason">Reason</label>
+        <input id="reason" type="text" required class="form-input" placeholder="e.g. Follow-up visit" />
+      </div>
+      <div class="form-group mb-4">
+        <label for="note">Note (optional)</label>
+        <textarea id="note" class="form-textarea" rows="2" placeholder="Additional details..."></textarea>
+      </div>
+      <button id="saveBtn" type="submit" class="view-btn">Request Appointment</button>
+    </form>
+
+    <h2 class="text-lg font-bold text-slate-800 mb-3">My Appointments</h2>
+    <div id="appointmentsList"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <h3>No appointments</h3>
+      <p>Request your first appointment above.</p>
     </div>
   </div>
-  <script type="module" src="../../assets/js/pages/shared/placeholder-page.js"></script>
+  <script type="module" src="../../assets/js/pages/patient/appointments-list.js"></script>
 </body>
 </html>

@@ -749,6 +749,129 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
 }
 
+/* Patient mobile UI */
+.patient-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.patient-stat-box {
+  background: white;
+  border-radius: 18px;
+  padding: 14px 12px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.patient-stat-box span {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.patient-stat-box strong {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 4px;
+}
+
+.patient-summary-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.patient-summary-card h3 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.patient-summary-card.muted {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.patient-big-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  border-radius: 22px;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  min-height: 72px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.patient-big-card:active {
+  transform: scale(0.98);
+}
+
+.patient-big-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.patient-big-title {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.patient-meal-card {
+  background: white;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.patient-meal-card h3 {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #059669;
+  margin-bottom: 8px;
+}
+
+.patient-meal-card p {
+  color: #475569;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.patient-list-card {
+  background: white;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.patient-form-card {
+  background: white;
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.patient-form-card h2 {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
 @media (min-width: 768px) {
   .messages-layout {
     grid-template-columns: 280px 1fr;
