@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Secretary Dashboard | Nutrition Clinic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../assets/js/config/tailwind-setup.js"></script>
@@ -13,12 +12,12 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <div class="mb-6">
+    <div class="mb-4">
       <h2 id="welcomeText" class="text-xl sm:text-2xl font-bold text-slate-800">Welcome</h2>
-      <span id="roleBadge" class="inline-block mt-1 text-xs font-medium text-medical-700 bg-medical-50 px-2.5 py-1 rounded-full"></span>
     </div>
-    <div id="dashboardGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    <div id="statsCards"></div>
+    <div id="dashboardGrid" class="grid grid-cols-1 gap-3 mt-4"></div>
   </div>
-  <script type="module" src="../assets/js/pages/shared/dashboard-page.js"></script>
+  <script type="module" src="../assets/js/pages/secretary/secretary-dashboard.js"></script>
 </body>
 </html>

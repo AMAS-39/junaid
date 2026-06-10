@@ -18,7 +18,7 @@ export function getNavItems(role) {
     ],
     [ROLES.SECRETARY]: [
       { id: "dashboard", label: t("dashboard"), href: "/secretary/dashboard.html", icon: "grid" },
-      { id: "add-patient", label: t("patients"), href: "/secretary/add-patient.html", icon: "user-plus" },
+      { id: "add-patient", label: "Add Patient", href: "/secretary/add-patient.html", icon: "user-plus" },
       { id: "patients", label: t("patients"), href: "/secretary/patients/list.html", icon: "users" },
       { id: "appointments", label: t("appointments"), href: "/secretary/appointments/list.html", icon: "calendar" },
       { id: "payments", label: t("payments"), href: "/secretary/payments/list.html", icon: "wallet" },
