@@ -13,11 +13,11 @@
   <div id="page-content">
     <section class="page-header">
       <h1>Upload Photo</h1>
-      <p>Save a photo record — file upload coming soon</p>
+      <p>Upload medicine, meal, progress, or lab report images</p>
     </section>
 
     <form id="photoForm" class="patient-form-card">
-      <h2>New Photo Record</h2>
+      <h2>Upload New Photo</h2>
       <div class="form-group mb-3">
         <label for="photoType">Photo type</label>
         <select id="photoType" required class="form-input">
@@ -27,18 +27,23 @@
           <option value="lab-report">Lab Report</option>
         </select>
       </div>
+      <div class="form-group mb-3">
+        <label for="photoFile">Image file</label>
+        <input id="photoFile" type="file" required accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" class="form-input" />
+        <p id="fileHint" class="text-xs text-slate-400 mt-1">JPG, PNG, WEBP — max 5MB</p>
+      </div>
       <div class="form-group mb-4">
         <label for="note">Note (optional)</label>
         <textarea id="note" class="form-textarea" rows="3" placeholder="Describe the photo..."></textarea>
       </div>
-      <button id="saveBtn" type="submit" class="view-btn">Save Photo Record</button>
+      <button id="saveBtn" type="submit" class="view-btn">Upload Photo</button>
     </form>
 
-    <h2 class="text-lg font-bold text-slate-800 mb-3">Your Records</h2>
+    <h2 class="text-lg font-bold text-slate-800 mb-3 mt-6">Your Uploads</h2>
     <div id="photoList"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No photo records</h3>
-      <p>Create a record above. Image upload will be added later.</p>
+      <h3>No photos yet</h3>
+      <p>Upload your first photo above.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/photos-upload.js"></script>

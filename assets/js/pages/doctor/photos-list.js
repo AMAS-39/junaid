@@ -1,20 +1,26 @@
 import { bootstrap } from "../../core/bootstrap.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
+import {
+  getPhotoPreviewUrl,
+  getPhotoTypeLabel,
+  getPhotoNote,
+} from "../../services/photo-storage.service.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { openModal } from "../../components/modal.js";
 import { getQueryParam, formatDate, escapeHtml } from "../../utils/format.js";
 
-const CATEGORIES = ["medicine", "meal", "lab", "progress"];
+let allPhotos = [];
+let activeFilter = "all";
+let patientId = null;
 
 bootstrap({
   onReady: async (session) => {
     if (!session) return;
 
-    const patientId = getQueryParam("patientId");
+    patientId = getQueryParam("patientId");
     const backBtn = document.getElementById("backBtn");
-    const addBtn = document.getElementById("addPhotoBtn");
 
     if (!patientId) {
       toast.error("Patient ID is required.");
@@ -25,45 +31,118 @@ bootstrap({
       window.location.href = `../../patients/details.html?id=${patientId}`;
     });
 
-    addBtn?.addEventListener("click", () => openAddPhotoModal(patientId, session.user.uid));
+    document.querySelectorAll("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach((b) => b.classList.remove("filter-active"));
+        btn.classList.add("filter-active");
+        renderPhotos();
+      });
+    });
 
-    await loadPhotos(patientId);
+    await loadPhotos();
   },
 });
 
-async function loadPhotos(patientId) {
+async function loadPhotos() {
   const container = document.getElementById("photosContainer");
   const emptyState = document.getElementById("emptyState");
   const patientBanner = document.getElementById("patientBanner");
 
   const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
   if (patient && patientBanner) {
-    patientBanner.innerHTML = `<h2>${escapeHtml(patient.fullName || "Patient")}</h2><p>Photo records — uploads via Supabase coming soon</p>`;
+    patientBanner.innerHTML = `
+      <h2>${escapeHtml(patient.fullName || "Patient")}</h2>
+      <p>Uploaded photos and reports</p>
+    `;
   }
 
   showLoading("Loading photos...");
 
   try {
-    let photos = await FirestoreService.query(COLLECTIONS.PATIENT_PHOTOS, [
+    allPhotos = await FirestoreService.query(COLLECTIONS.PATIENT_PHOTOS, [
       ["patientId", "==", patientId],
     ]);
-    photos.sort((a, b) => tsMillis(b.createdAt) - tsMillis(a.createdAt));
+    allPhotos.sort((a, b) => tsMillis(b.createdAt) - tsMillis(a.createdAt));
+    renderPhotos();
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to load photos.");
+    container.innerHTML = "";
+    emptyState?.classList.remove("hidden");
+  } finally {
+    hideLoading();
+  }
+}
 
-    if (photos.length === 0) {
-      container.innerHTML = "";
-      emptyState?.classList.remove("hidden");
+function getFilteredPhotos() {
+  if (activeFilter === "all") return allPhotos;
+  return allPhotos.filter((p) => getPhotoTypeLabel(p) === activeFilter);
+}
+
+function renderPhotos() {
+  const container = document.getElementById("photosContainer");
+  const emptyState = document.getElementById("emptyState");
+  const filtered = getFilteredPhotos();
+
+  if (!container) return;
+
+  if (filtered.length === 0) {
+    container.innerHTML = "";
+    emptyState?.classList.remove("hidden");
+    return;
+  }
+
+  emptyState?.classList.add("hidden");
+  container.innerHTML = `
+    <div class="photo-grid">
+      ${filtered.map((photo) => photoCard(photo)).join("")}
+    </div>
+  `;
+
+  container.querySelectorAll("[data-preview]").forEach((btn) => {
+    btn.addEventListener("click", () => previewPhoto(btn.dataset.preview));
+  });
+}
+
+function photoCard(photo) {
+  const type = escapeHtml(getPhotoTypeLabel(photo));
+  const note = escapeHtml(getPhotoNote(photo));
+  const canPreview = photo.bucket && photo.filePath && photo.status === "uploaded";
+
+  return `
+    <div class="photo-card">
+      <div class="photo-placeholder">${canPreview ? "🖼️" : "📷"}</div>
+      <span class="status-badge status-${photo.status === "uploaded" ? "approved" : "pending"}">${type}</span>
+      ${note ? `<p class="text-sm text-slate-600 mt-2">${note}</p>` : ""}
+      <p class="text-xs text-slate-400 mt-1">${escapeHtml(formatDate(photo.createdAt))}</p>
+      ${canPreview ? `
+        <button type="button" class="btn-sm btn-sm-primary mt-3 w-full" data-preview="${escapeHtml(photo.id)}">Preview</button>
+      ` : ""}
+    </div>
+  `;
+}
+
+async function previewPhoto(photoId) {
+  showLoading("Loading preview...");
+  try {
+    const photo = await FirestoreService.getById(COLLECTIONS.PATIENT_PHOTOS, photoId);
+    if (!photo) {
+      toast.error("Photo not found.");
       return;
     }
 
-    emptyState?.classList.add("hidden");
-    container.innerHTML = `
-      <div class="photo-grid">
-        ${photos.map((photo) => photoCard(photo)).join("")}
-      </div>
-    `;
+    const url = await getPhotoPreviewUrl(photo, 3600);
+    openModal({
+      title: getPhotoTypeLabel(photo),
+      body: `<img src="${url}" alt="Photo preview" class="photo-preview-img" />`,
+      showCancel: false,
+      confirmText: "Close",
+      onConfirm: () => {},
+    });
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load photo records.");
+    toast.error(error?.message || "Could not load preview.");
   } finally {
     hideLoading();
   }
@@ -71,58 +150,4 @@ async function loadPhotos(patientId) {
 
 function tsMillis(ts) {
   return ts?.toMillis?.() ?? 0;
-}
-
-function photoCard(photo) {
-  return `
-    <div class="photo-card">
-      <div class="photo-placeholder">📷</div>
-      <span class="status-badge status-pending">${escapeHtml(photo.category || "photo")}</span>
-      <p class="text-sm text-slate-600 mt-2">${escapeHtml(photo.notes || "No notes")}</p>
-      <p class="text-xs text-slate-400 mt-1">${escapeHtml(formatDate(photo.createdAt))}</p>
-      <p class="text-xs text-slate-400">${escapeHtml(photo.status || "pending_upload")}</p>
-    </div>
-  `;
-}
-
-function openAddPhotoModal(patientId, doctorId) {
-  openModal({
-    title: "Add Photo Record",
-    body: `
-      <p class="text-sm text-slate-500 mb-3">File upload will be enabled with Supabase Storage. This creates a placeholder record.</p>
-      <div class="form-group">
-        <label for="photoCategory">Category</label>
-        <select id="photoCategory" class="form-input">
-          ${CATEGORIES.map((c) => `<option value="${c}">${c}</option>`).join("")}
-        </select>
-      </div>
-      <div class="form-group mt-3">
-        <label for="photoNotes">Notes</label>
-        <textarea id="photoNotes" class="form-textarea" rows="3" placeholder="Describe the photo..."></textarea>
-      </div>
-    `,
-    confirmText: "Save Record",
-    onConfirm: async () => {
-      const category = document.getElementById("photoCategory").value;
-      const notes = document.getElementById("photoNotes").value.trim();
-      showLoading("Saving...");
-      try {
-        await FirestoreService.create(COLLECTIONS.PATIENT_PHOTOS, {
-          patientId,
-          doctorId,
-          category,
-          notes,
-          photoUrl: "",
-          status: "pending_upload",
-        });
-        toast.success("Photo record created.");
-        await loadPhotos(patientId);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to save photo record.");
-      } finally {
-        hideLoading();
-      }
-    },
-  });
 }

@@ -13,14 +13,22 @@
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
     <button id="backBtn" type="button" class="back-btn">← Back to Patient</button>
-    <section class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-      <div id="patientBanner" class="page-header mb-0"></div>
-      <button id="addPhotoBtn" type="button" class="ncms-btn-primary px-5 py-3">+ Add Photo Record</button>
+    <section class="page-header">
+      <div id="patientBanner"></div>
     </section>
+
+    <div class="filter-row">
+      <button type="button" class="filter-btn filter-active" data-filter="all">All</button>
+      <button type="button" class="filter-btn" data-filter="medicine">Medicine</button>
+      <button type="button" class="filter-btn" data-filter="meal">Meal</button>
+      <button type="button" class="filter-btn" data-filter="progress">Progress</button>
+      <button type="button" class="filter-btn" data-filter="lab-report">Lab Report</button>
+    </div>
+
     <div id="photosContainer"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No photo records</h3>
-      <p>Add a photo record placeholder until Supabase upload is enabled.</p>
+      <h3>No photos</h3>
+      <p>This patient has not uploaded any photos yet.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/doctor/photos-list.js"></script>

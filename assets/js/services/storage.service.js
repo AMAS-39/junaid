@@ -85,8 +85,13 @@ export const StorageService = {
       return { valid: false, error: `File exceeds ${constraints.maxSizeBytes / 1024 / 1024}MB limit` };
     }
 
-    if (!constraints.allowedMimeTypes.includes(file.type)) {
-      return { valid: false, error: "File type not allowed" };
+    const mime = file.type?.toLowerCase() || "";
+    const allowed = constraints.allowedMimeTypes.some((t) => t === mime);
+    const ext = file.name?.split(".").pop()?.toLowerCase();
+    const allowedExt = ["jpg", "jpeg", "png", "webp"].includes(ext);
+
+    if (!allowed && !allowedExt) {
+      return { valid: false, error: "Only JPG, PNG, and WEBP images are allowed." };
     }
 
     return { valid: true };
