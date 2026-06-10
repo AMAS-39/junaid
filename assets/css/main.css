@@ -1,0 +1,215 @@
+/* Nutrition Clinic Management System — Global Styles */
+
+/* Spinner */
+.ncms-spinner {
+  animation: ncms-spin 0.7s linear infinite;
+}
+
+@keyframes ncms-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Animations */
+@keyframes ncms-slide-in {
+  from { opacity: 0; transform: translateX(1rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes ncms-slide-up {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ncms-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ncms-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-in { animation: ncms-slide-in 0.2s ease-out; }
+.animate-slide-up { animation: ncms-slide-up 0.25s ease-out; }
+.animate-scale-in { animation: ncms-scale-in 0.2s ease-out; }
+.animate-fade-in { animation: ncms-fade-in 0.15s ease-out; }
+
+/* Navigation */
+.ncms-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.ncms-nav-link:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.ncms-nav-link-active {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.ncms-nav-link-active:hover {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+/* Bottom navigation */
+.ncms-bottom-nav-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0.5rem 0.25rem;
+  border-radius: 0.75rem;
+  color: #94a3b8;
+  transition: color 0.15s, background-color 0.15s;
+  min-width: 0;
+}
+
+.ncms-bottom-nav-item:hover {
+  color: #64748b;
+}
+
+.ncms-bottom-nav-item-active {
+  color: #059669;
+}
+
+.ncms-bottom-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ncms-bottom-nav-label {
+  font-size: 0.625rem;
+  font-weight: 500;
+  truncate: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Buttons */
+.ncms-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #34d399, #38bdf8);
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.ncms-btn-primary:hover {
+  opacity: 0.92;
+}
+
+.ncms-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ncms-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  background-color: #f1f5f9;
+  transition: background-color 0.15s;
+}
+
+.ncms-btn-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+/* Form inputs */
+.ncms-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  font-size: 0.9375rem;
+  color: #1e293b;
+  background-color: white;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ncms-input:focus {
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.15);
+}
+
+.ncms-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Cards */
+.ncms-card {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.ncms-card-hover {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.ncms-card-hover:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Page placeholder */
+.ncms-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Safe area for mobile bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* RTL drawer slide direction */
+[dir="rtl"] #ncms-sidebar-drawer {
+  transform: translateX(100%);
+}
+
+[dir="rtl"] #ncms-sidebar-drawer:not(.-translate-x-full) {
+  transform: translateX(0);
+}
+
+[dir="rtl"] .animate-slide-in {
+  animation-name: ncms-slide-in-rtl;
+}
+
+@keyframes ncms-slide-in-rtl {
+  from { opacity: 0; transform: translateX(-1rem); }
+  to { opacity: 1; transform: translateX(0); }
+}
