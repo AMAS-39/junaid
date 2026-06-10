@@ -14,6 +14,7 @@ export const COLLECTIONS = Object.freeze({
   PAYMENTS: "payments",
   REPORTS: "reports",
   NOTIFICATIONS: "notifications",
+  PATIENT_PHOTOS: "patientPhotos",
 });
 
 /**
@@ -134,4 +135,5 @@ export const FIRESTORE_ACCESS = Object.freeze({
   [COLLECTIONS.PAYMENTS]: "Secretary write; doctor read",
   [COLLECTIONS.REPORTS]: "Doctor write; patient read own",
   [COLLECTIONS.NOTIFICATIONS]: "User read own",
+  [COLLECTIONS.PATIENT_PHOTOS]: "Patient upload own; doctor read assigned",
 });

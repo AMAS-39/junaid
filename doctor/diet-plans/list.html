@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Diet Plans | Nutrition Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../../assets/js/config/tailwind-setup.js"></script>
@@ -11,12 +12,22 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <div class="ncms-card ncms-placeholder">
-      <div class="h-16 w-16 rounded-2xl bg-medical-50 flex items-center justify-center text-2xl mb-4">🥗</div>
-      <h2 id="pageTitle" class="text-lg font-semibold text-slate-800">Diet Plans</h2>
-      <p id="pageDescription" class="text-sm text-slate-500 mt-2 max-w-sm">This module will be implemented in a future phase.</p>
+    <section class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div>
+        <h1>Diet Plans</h1>
+        <p>Manage patient nutrition plans</p>
+      </div>
+      <button id="createBtn" type="button" class="ncms-btn-primary px-5 py-3">+ Create Plan</button>
+    </section>
+    <div class="card">
+      <input id="searchInput" type="text" placeholder="Search by patient or plan title..." class="form-input" />
+    </div>
+    <div id="plansContainer"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <h3>No diet plans</h3>
+      <p>Create a diet plan for a patient to get started.</p>
     </div>
   </div>
-  <script type="module" src="../../assets/js/pages/shared/placeholder-page.js"></script>
+  <script type="module" src="../../assets/js/pages/doctor/diet-plans-list.js"></script>
 </body>
 </html>

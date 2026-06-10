@@ -12,6 +12,13 @@ export const routeRegistry = Object.freeze([
     roles: [],
   },
   {
+    path: ROUTES.SETUP,
+    name: "setup",
+    public: true,
+    roles: [],
+    title: "Staff Setup",
+  },
+  {
     path: ROUTES.DOCTOR_DASHBOARD,
     name: "doctor-dashboard",
     public: false,
@@ -26,6 +33,13 @@ export const routeRegistry = Object.freeze([
     title: "Patients",
   },
   {
+    path: "/doctor/patients/details.html",
+    name: "doctor-patient-details",
+    public: false,
+    roles: [ROLES.DOCTOR],
+    title: "Patient Details",
+  },
+  {
     path: "/doctor/diet-plans/list.html",
     name: "doctor-diet-plans",
     public: false,
@@ -33,11 +47,39 @@ export const routeRegistry = Object.freeze([
     title: "Diet Plans",
   },
   {
+    path: "/doctor/diet-plans/create.html",
+    name: "doctor-diet-plan-create",
+    public: false,
+    roles: [ROLES.DOCTOR],
+    title: "Create Diet Plan",
+  },
+  {
+    path: "/doctor/diet-plans/edit.html",
+    name: "doctor-diet-plan-edit",
+    public: false,
+    roles: [ROLES.DOCTOR],
+    title: "Edit Diet Plan",
+  },
+  {
     path: "/doctor/appointments/list.html",
     name: "doctor-appointments",
     public: false,
     roles: [ROLES.DOCTOR],
     title: "Appointments",
+  },
+  {
+    path: "/doctor/progress/list.html",
+    name: "doctor-progress",
+    public: false,
+    roles: [ROLES.DOCTOR],
+    title: "Patient Progress",
+  },
+  {
+    path: "/doctor/photos/list.html",
+    name: "doctor-photos",
+    public: false,
+    roles: [ROLES.DOCTOR],
+    title: "Patient Photos",
   },
   {
     path: "/doctor/messages/list.html",

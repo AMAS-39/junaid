@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Patients | Nutrition Clinic</title>
+  <title>Patient Progress | Nutrition Clinic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,21 +12,14 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <section class="page-header">
-      <div>
-        <h1>Patients</h1>
-        <p>View and search patient records</p>
-      </div>
-    </section>
-    <div class="card">
-      <input id="searchInput" type="text" placeholder="Search by patient name or phone..." class="form-input" />
-    </div>
-    <div id="patientsContainer" class="patients-grid"></div>
+    <button id="backBtn" type="button" class="back-btn">← Back to Patient</button>
+    <div id="patientBanner" class="page-header"></div>
+    <div id="progressContainer"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No patients found</h3>
-      <p>No patient records match your search.</p>
+      <h3>No progress entries</h3>
+      <p>Weight records will appear here when the patient logs progress.</p>
     </div>
   </div>
-  <script type="module" src="../../assets/js/pages/doctor/patients-list.js"></script>
+  <script type="module" src="../../assets/js/pages/doctor/progress-list.js"></script>
 </body>
 </html>

@@ -28,6 +28,7 @@ export const STORAGE_KEYS = Object.freeze({
 
 export const ROUTES = Object.freeze({
   LOGIN: "/auth/login.html",
+  SETUP: "/auth/setup.html",
   DOCTOR_DASHBOARD: "/doctor/dashboard.html",
   SECRETARY_DASHBOARD: "/secretary/dashboard.html",
   PATIENT_DASHBOARD: "/patient/dashboard.html",

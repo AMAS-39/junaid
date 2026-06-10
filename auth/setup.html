@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Setup | Nutrition Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../assets/js/config/tailwind-setup.js"></script>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body class="min-h-screen bg-gradient-to-br from-medical-50 via-white to-clinic-50 flex items-center justify-center p-4" data-layout="none">
+
+  <div class="w-full max-w-md">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-slate-800">Staff Account Setup</h1>
+      <p class="text-slate-500 mt-2 text-sm">Create a doctor or secretary account</p>
+    </div>
+
+    <div class="ncms-card p-6 sm:p-8 shadow-lg shadow-slate-200/50">
+      <form id="setupForm" class="space-y-4">
+        <input id="name" type="text" required placeholder="Full Name" class="ncms-input" />
+        <input id="email" type="email" required placeholder="Email" autocomplete="email" class="ncms-input" />
+        <input id="phone" type="tel" placeholder="Phone (optional)" class="ncms-input" />
+        <select id="role" required class="ncms-input">
+          <option value="secretary">Secretary</option>
+          <option value="doctor">Doctor</option>
+        </select>
+        <input id="password" type="password" required minlength="6" placeholder="Password (min. 6 characters)" autocomplete="new-password" class="ncms-input" />
+        <button id="setupBtn" type="submit" class="ncms-btn-primary w-full py-3.5">Create Staff Account</button>
+      </form>
+      <p id="errorMsg" class="text-red-500 text-center mt-4 text-sm"></p>
+      <p class="text-center mt-4 text-sm">
+        <a href="login.html" class="text-medical-600 hover:text-medical-700 font-medium">Back to login</a>
+      </p>
+    </div>
+  </div>
+
+  <script type="module" src="../assets/js/pages/auth/setup.js"></script>
+</body>
+</html>

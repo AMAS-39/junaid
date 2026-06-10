@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Diet Plan | Nutrition Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../assets/js/config/tailwind-setup.js"></script>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <div id="page-content">
+    <button id="backBtn" type="button" class="back-btn">← Back to Diet Plans</button>
+    <section class="page-header">
+      <h1>Edit Diet Plan</h1>
+      <p>Update meal plan details</p>
+    </section>
+    <div id="planBanner" class="card hidden flex items-center gap-3 mb-4"></div>
+    <form id="dietPlanForm" class="card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="title">Plan Title</label>
+          <input id="title" type="text" required class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="waterGoal">Water Goal (liters/day)</label>
+          <input id="waterGoal" type="number" min="0" step="0.1" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="breakfast">Breakfast</label>
+          <textarea id="breakfast" class="form-textarea"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="lunch">Lunch</label>
+          <textarea id="lunch" class="form-textarea"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="dinner">Dinner</label>
+          <textarea id="dinner" class="form-textarea"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="snacks">Snacks</label>
+          <textarea id="snacks" class="form-textarea"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes</label>
+          <textarea id="notes" class="form-textarea"></textarea>
+        </div>
+      </div>
+      <div class="btn-row mt-4">
+        <button id="saveBtn" type="submit" class="view-btn flex-1">Update Plan</button>
+        <button id="archiveBtn" type="button" class="btn-sm btn-sm-danger px-6 py-3">Archive</button>
+      </div>
+    </form>
+  </div>
+  <script type="module" src="../../assets/js/pages/doctor/diet-plan-edit.js"></script>
+</body>
+</html>

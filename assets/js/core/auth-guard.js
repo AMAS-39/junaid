@@ -32,9 +32,10 @@ export async function guardPage() {
     }
 
     const { user, profile } = session;
-    const role = profile.role;
+    const role = String(profile.role || "").trim().toLowerCase();
+    const allowedRoles = route.roles.map((r) => String(r).trim().toLowerCase());
 
-    if (!route.roles.includes(role)) {
+    if (!allowedRoles.includes(role)) {
       navigateTo(ROUTES.UNAUTHORIZED, { replace: true });
       return null;
     }
