@@ -1,4 +1,5 @@
 import { StorageService } from "./storage.service.js";
+import { t } from "../core/i18n.js";
 import { FirestoreService } from "./firestore.service.js";
 import { COLLECTIONS } from "../architecture/firestore-collections.js";
 import {
@@ -119,8 +120,18 @@ export async function getPhotoPreviewUrl(photo, expiresIn = 3600) {
 /**
  * @param {object} photo
  */
+const PHOTO_TYPE_LABEL_KEYS = Object.freeze({
+  medicine: "filters.medicine",
+  meal: "filters.meal",
+  progress: "filters.progress",
+  "lab-report": "filters.labReport",
+});
+
 export function getPhotoTypeLabel(photo) {
-  return photo.photoType || photo.category || "photo";
+  const type = photo.photoType || photo.category;
+  if (!type) return t("labels.photo");
+  const key = PHOTO_TYPE_LABEL_KEYS[type];
+  return key ? t(key) : type;
 }
 
 export function getPhotoNote(photo) {

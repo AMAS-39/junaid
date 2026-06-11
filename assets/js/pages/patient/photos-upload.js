@@ -121,7 +121,7 @@ function photoRow(photo) {
       </div>
       ${note ? `<p class="text-sm text-slate-600 mt-2">${note}</p>` : ""}
       ${canPreview ? `
-        <button type="button" class="btn-sm btn-sm-primary mt-3" data-preview="${escapeHtml(photo.id)}">Preview</button>
+        <button type="button" class="btn-sm btn-sm-primary mt-3" data-preview="${escapeHtml(photo.id)}">${escapeHtml(t("pages.photos.preview"))}</button>
       ` : `<p class="text-xs text-slate-400 mt-2">${escapeHtml(tStatus(photo.status || "pending"))}</p>`}
     </div>
   `;
@@ -139,7 +139,7 @@ async function previewPhoto(photoId) {
     const url = await getPhotoPreviewUrl(photo);
     openModal({
       title: getPhotoTypeLabel(photo),
-      body: `<img src="${url}" alt="Photo preview" class="photo-preview-img" />`,
+      body: `<img src="${url}" alt="${escapeHtml(t("pages.photos.previewAlt"))}" class="photo-preview-img" />`,
       showCancel: false,
       confirmText: t("common.close"),
       onConfirm: () => {},

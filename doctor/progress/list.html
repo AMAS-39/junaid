@@ -12,12 +12,12 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <a href="../patients/list.html" class="back-btn" data-back-param="patientId" data-back-template="../patients/details.html?id={patientId}">← Back to Patient</a>
+    <a href="../patients/list.html" class="back-btn" data-back-param="patientId" data-back-template="../patients/details.html?id={patientId}" data-i18n="doctor.backToPatient">← Back to Patient</a>
     <div id="patientBanner" class="page-header"></div>
     <div id="progressContainer"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No progress entries</h3>
-      <p>Weight records will appear here when the patient logs progress.</p>
+      <h3 data-i18n="pages.progress.emptyTitle">No progress entries</h3>
+      <p data-i18n="pages.progress.emptyHint">Weight records will appear here when the patient logs progress.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/doctor/progress-list.js"></script>

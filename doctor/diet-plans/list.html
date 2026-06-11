@@ -14,18 +14,18 @@
   <div id="page-content">
     <section class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       <div>
-        <h1>Diet Plans</h1>
-        <p>Manage patient nutrition plans</p>
+        <h1 data-i18n="pages.dietPlans.title">Diet Plans</h1>
+        <p data-i18n="pages.dietPlans.subtitle">Manage patient nutrition plans</p>
       </div>
-      <button id="createBtn" type="button" class="ncms-btn-primary px-5 py-3">+ Create Plan</button>
+      <button id="createBtn" type="button" class="ncms-btn-primary px-5 py-3" data-i18n="buttons.createPlan">+ Create Plan</button>
     </section>
     <div class="card">
-      <input id="searchInput" type="text" placeholder="Search by patient or plan title..." class="form-input" />
+      <input id="searchInput" type="text" data-i18n-placeholder="pages.dietPlans.searchPlaceholder" placeholder="Search by patient or plan title..." class="form-input" />
     </div>
     <div id="plansContainer"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No diet plans</h3>
-      <p>Create a diet plan for a patient to get started.</p>
+      <h3 data-i18n="pages.dietPlans.emptyTitle">No diet plans</h3>
+      <p data-i18n="pages.dietPlans.emptyHint">Create a diet plan for a patient to get started.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/doctor/diet-plans-list.js"></script>

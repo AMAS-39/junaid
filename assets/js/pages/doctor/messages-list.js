@@ -90,7 +90,7 @@ function renderConversationList() {
   if (!list) return;
 
   if (conversations.length === 0) {
-    list.innerHTML = `<p class="text-sm text-slate-500 p-3">No conversations yet.</p>`;
+    list.innerHTML = `<p class="text-sm text-slate-500 p-3">${escapeHtml(t("pages.messages.noConversations"))}</p>`;
     return;
   }
 
@@ -103,7 +103,7 @@ function renderConversationList() {
 
       return `
         <div class="conversation-item ${active}" data-conversation="${escapeHtml(c.patientId)}">
-          <strong>${escapeHtml(patient?.fullName || "Patient")}</strong>
+          <strong>${escapeHtml(patient?.fullName || t("labels.patient"))}</strong>
           <p class="text-xs text-slate-500 mt-1">${preview}</p>
           ${unread}
         </div>
@@ -125,7 +125,7 @@ function selectConversation(patientId) {
 function renderThreadEmpty() {
   const panel = document.getElementById("messagesPanel");
   if (panel) {
-    panel.innerHTML = `<p class="text-slate-500 text-center py-12">Select a conversation to view messages.</p>`;
+    panel.innerHTML = `<p class="text-slate-500 text-center py-12">${escapeHtml(t("pages.messages.selectConversationHint"))}</p>`;
   }
 }
 
@@ -148,10 +148,10 @@ function renderThread() {
 
   panel.innerHTML = `
     <div class="mb-3">
-      <strong>${escapeHtml(patient?.fullName || "Patient")}</strong>
+      <strong>${escapeHtml(patient?.fullName || t("labels.patient"))}</strong>
     </div>
     <div class="messages-thread" id="messagesThread">
-      ${thread.length === 0 ? `<p class="text-slate-500 text-sm">No messages yet. Send the first message.</p>` : ""}
+      ${thread.length === 0 ? `<p class="text-slate-500 text-sm">${escapeHtml(t("pages.messages.noMessagesYet"))}</p>` : ""}
       ${thread.map((m) => messageBubble(m)).join("")}
     </div>
     <div class="message-compose">

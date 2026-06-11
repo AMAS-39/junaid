@@ -5,8 +5,7 @@ import { initToast } from "../components/toast.js";
 import { initModal } from "../components/modal.js";
 import { initLoading, forceHideLoading } from "../components/loading.js";
 import { toast } from "../components/toast.js";
-import { findRoute, getCurrentPath } from "./router.js";
-import { APP_NAME } from "../config/constants.js";
+import { findRoute, getCurrentPath, getRouteTitle } from "./router.js";
 import { initBackNavigation, resolveBackHrefs } from "../utils/back-nav.js";
 
 /**
@@ -28,8 +27,8 @@ export async function bootstrap(options = {}) {
 
   const path = getCurrentPath();
   const route = findRoute(path);
-  const pageTitle = route?.title ? `${route.title} | ${APP_NAME}` : APP_NAME;
-  document.title = pageTitle;
+  const routeTitle = getRouteTitle(route);
+  document.title = routeTitle ? `${routeTitle} | ${t("app.name")}` : t("app.name");
 
   let session = null;
 

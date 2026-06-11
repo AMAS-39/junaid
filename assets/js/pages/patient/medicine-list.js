@@ -80,11 +80,11 @@ async function loadSchedule(patientId) {
 function patientReminderCard(reminder) {
   return `
     <article class="medicine-reminder-card patient">
-      <h3 class="medicine-reminder-name">${escapeHtml(reminder.medicineName || "Medicine")}</h3>
-      <p class="medicine-reminder-dosage-large">${escapeHtml(reminder.dosage || "—")}</p>
+      <h3 class="medicine-reminder-name">${escapeHtml(reminder.medicineName || t("medicine.medicineType"))}</h3>
+      <p class="medicine-reminder-dosage-large">${escapeHtml(reminder.dosage || t("labels.emDash"))}</p>
       ${reminder.instructions ? `
         <p class="medicine-reminder-instructions">
-          <span class="medicine-instructions-label">Instructions</span>
+          <span class="medicine-instructions-label">${escapeHtml(t("forms.instructions"))}</span>
           ${escapeHtml(reminder.instructions)}
         </p>
       ` : ""}
@@ -162,14 +162,14 @@ function paperCard(doc) {
   return `
     <article class="medicine-paper-card">
       <div class="medicine-paper-top">
-        <h4 class="medicine-paper-title">${escapeHtml(doc.title || doc.fileName || "Document")}</h4>
+        <h4 class="medicine-paper-title">${escapeHtml(doc.title || doc.fileName || t("pages.medicine.document"))}</h4>
         <span class="medicine-paper-type">${escapeHtml(getCategoryLabel(doc))}</span>
       </div>
       ${doc.note ? `<p class="medicine-paper-note">${escapeHtml(doc.note)}</p>` : ""}
       <p class="medicine-paper-meta">${escapeHtml(formatDate(doc.createdAt))}</p>
       <div class="btn-row mt-3">
-        <button type="button" class="btn-sm btn-sm-primary" data-view-paper="${escapeHtml(doc.id)}">View</button>
-        ${canDelete ? `<button type="button" class="btn-sm btn-sm-danger" data-delete-paper="${escapeHtml(doc.id)}">Delete</button>` : ""}
+        <button type="button" class="btn-sm btn-sm-primary" data-view-paper="${escapeHtml(doc.id)}">${escapeHtml(t("buttons.view"))}</button>
+        ${canDelete ? `<button type="button" class="btn-sm btn-sm-danger" data-delete-paper="${escapeHtml(doc.id)}">${escapeHtml(t("buttons.delete"))}</button>` : ""}
       </div>
     </article>
   `;
@@ -207,7 +207,7 @@ async function handlePaperUpload(e) {
     document.querySelector(".medicine-papers-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     console.error(error);
-    const message = error?.message || "Upload failed.";
+    const message = error?.message || t("toast.uploadFailed");
     toast.error(message);
     showPapersError(message);
   } finally {
@@ -226,10 +226,10 @@ async function previewPaper(docId) {
     const isPdf = String(doc.mimeType || "").includes("pdf") || doc.fileName?.toLowerCase().endsWith(".pdf");
 
     openModal({
-      title: doc.title || "Medicine Paper",
+      title: doc.title || t("pages.medicine.medicinePaper"),
       body: isPdf
-        ? `<p><a href="${url}" target="_blank" rel="noopener" class="ncms-btn-primary inline-block px-4 py-2 rounded-xl no-underline">Open PDF</a></p>`
-        : `<img src="${url}" alt="Document" class="photo-preview-img" />`,
+        ? `<p><a href="${url}" target="_blank" rel="noopener" class="ncms-btn-primary inline-block px-4 py-2 rounded-xl no-underline">${escapeHtml(t("buttons.openPdf"))}</a></p>`
+        : `<img src="${url}" alt="${escapeHtml(t("pages.medicine.document"))}" class="photo-preview-img" />`,
       showCancel: false,
       confirmText: t("common.close"),
       onConfirm: () => {},
@@ -243,7 +243,7 @@ async function previewPaper(docId) {
 }
 
 async function deletePaper(docId) {
-  const confirmed = await confirmModal("Delete Paper", "Remove this file?");
+  const confirmed = await confirmModal(t("modal.deletePaper"), t("modal.removeFileConfirm"));
   if (!confirmed) return;
 
   const doc = papers.find((d) => d.id === docId);

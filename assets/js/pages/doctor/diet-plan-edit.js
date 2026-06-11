@@ -63,7 +63,7 @@ async function loadPlan(planId) {
     if (banner) {
       const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, plan.patientId);
       banner.innerHTML = `
-        <strong>${escapeHtml(patient?.fullName || "Patient")}</strong>
+        <strong>${escapeHtml(patient?.fullName || t("labels.patient"))}</strong>
         <span class="status-badge status-${plan.status === "active" ? "active" : "archived"}">${escapeHtml(tStatus(plan.status || "active"))}</span>
       `;
       banner.classList.remove("hidden");

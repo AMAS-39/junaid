@@ -21,8 +21,8 @@ bootstrap({
     const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
     if (patient && patientBanner) {
       patientBanner.innerHTML = `
-        <h2>${escapeHtml(patient.fullName || "Patient")}</h2>
-        <p>Weight progress history — chart view coming soon</p>
+        <h2>${escapeHtml(patient.fullName || t("labels.patient"))}</h2>
+        <p>${escapeHtml(t("pages.progress.subtitle"))}</p>
       `;
     }
 
@@ -47,10 +47,10 @@ bootstrap({
 
       container.innerHTML = `
         <div class="stats-grid mb-4">
-          <div class="stat-card"><span>Starting weight</span><strong>${startWeight ?? "—"} kg</strong></div>
-          <div class="stat-card"><span>Latest weight</span><strong>${latestWeight ?? "—"} kg</strong></div>
-          <div class="stat-card"><span>Entries</span><strong>${entries.length}</strong></div>
-          <div class="stat-card"><span>Goal</span><strong>${patient?.targetWeight ?? "—"} kg</strong></div>
+          <div class="stat-card"><span>${escapeHtml(t("reportStats.startingWeight"))}</span><strong>${startWeight ?? t("labels.emDash")} kg</strong></div>
+          <div class="stat-card"><span>${escapeHtml(t("reportStats.latestWeight"))}</span><strong>${latestWeight ?? t("labels.emDash")} kg</strong></div>
+          <div class="stat-card"><span>${escapeHtml(t("lists.entries"))}</span><strong>${entries.length}</strong></div>
+          <div class="stat-card"><span>${escapeHtml(t("reportStats.goal"))}</span><strong>${patient?.targetWeight ?? t("labels.emDash")} kg</strong></div>
         </div>
         <div class="progress-list">
           ${entries.map((entry) => progressCard(entry)).join("")}

@@ -6,6 +6,10 @@ import {
   getEntryDetails,
 } from "../../services/daily-checklist.service.js";
 
+function checklistItemLabel(item) {
+  return item.shortLabelKey ? t(item.shortLabelKey) : item.shortLabel;
+}
+
 /**
  * @param {object} details
  * @param {boolean} done
@@ -42,6 +46,7 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
       item.type === "water" ? t("checklist.drinkAmountPh") : t("checklist.eatAmountPh");
     const whatLabel =
       item.type === "water" ? t("checklist.whatDrink") : t("checklist.whatEat");
+    const itemLabel = checklistItemLabel(item);
 
     return `
       <article
@@ -58,7 +63,7 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
           >
             <span class="checklist-meal-icon" aria-hidden="true">${item.icon}</span>
             <span class="checklist-header-text">
-              <strong class="checklist-meal-title">${escapeHtml(item.shortLabel)}</strong>
+              <strong class="checklist-meal-title">${escapeHtml(itemLabel)}</strong>
               <span class="checklist-preview ${details.what || details.amount ? "has-log" : ""}">${escapeHtml(preview)}</span>
             </span>
             <span class="checklist-chevron" aria-hidden="true"></span>
@@ -69,7 +74,7 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
             data-checklist-key="${escapeHtml(item.key)}"
             data-checklist-done="${done ? "1" : "0"}"
             aria-pressed="${done}"
-            aria-label="${done ? "Mark ${escapeHtml(item.shortLabel)} as not done" : "Mark ${escapeHtml(item.shortLabel)} as done"}"
+            aria-label="${escapeHtml(done ? t("checklist.markNotDone", { label: itemLabel }) : t("checklist.markDone", { label: itemLabel }))}"
           >
             <span class="checklist-check">${done ? "✓" : ""}</span>
           </button>
@@ -128,7 +133,7 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
             class="ncms-btn-primary checklist-save-details"
             data-save-prefix="${escapeHtml(item.prefix)}"
           >
-            ${t("checklist.saveMeal")} ${escapeHtml(item.shortLabel)}
+            ${t("checklist.saveMeal")} ${escapeHtml(itemLabel)}
           </button>
         </div>
       </article>
@@ -250,6 +255,7 @@ export function renderDoctorCompliance(container, checklist, dateLabel) {
         const details = getEntryDetails(checklist, item.prefix);
         const hasDetails = details.what || details.how || details.amount;
         const amountLabel = item.type === "water" ? t("checklist.amountDrunk") : t("checklist.amountEaten");
+        const itemLabel = checklistItemLabel(item);
 
         return `
           <div class="checklist-entry readonly ${done ? "is-done" : ""}">
@@ -257,7 +263,7 @@ export function renderDoctorCompliance(container, checklist, dateLabel) {
               <div class="checklist-expand-btn readonly">
                 <span class="checklist-meal-icon" aria-hidden="true">${item.icon}</span>
                 <span class="checklist-header-text">
-                  <strong class="checklist-meal-title">${escapeHtml(item.shortLabel)}</strong>
+                  <strong class="checklist-meal-title">${escapeHtml(itemLabel)}</strong>
                   <span class="checklist-status-pill ${done ? "done" : "pending"}">${done ? t("checklist.done") : t("checklist.notYet")}</span>
                 </span>
               </div>

@@ -14,25 +14,25 @@
 
   <div class="w-full max-w-md">
     <div class="text-center mb-6">
-      <h1 class="text-2xl font-bold text-slate-800">Staff Account Setup</h1>
-      <p class="text-slate-500 mt-2 text-sm">Create a doctor or secretary account</p>
+      <h1 class="text-2xl font-bold text-slate-800" data-i18n="setup.title">Staff Account Setup</h1>
+      <p class="text-slate-500 mt-2 text-sm" data-i18n="setup.subtitle">Create a doctor or secretary account</p>
     </div>
 
     <div class="ncms-card p-6 sm:p-8 shadow-lg shadow-slate-200/50">
       <form id="setupForm" class="space-y-4">
-        <input id="name" type="text" required placeholder="Full Name" class="ncms-input" />
-        <input id="email" type="email" required placeholder="Email" autocomplete="email" class="ncms-input" />
-        <input id="phone" type="tel" placeholder="Phone (optional)" class="ncms-input" />
+        <input id="name" type="text" required data-i18n-placeholder="forms.fullName" placeholder="Full Name" class="ncms-input" />
+        <input id="email" type="email" required data-i18n-placeholder="login.email" placeholder="Email" autocomplete="email" class="ncms-input" />
+        <input id="phone" type="tel" data-i18n-placeholder="setup.phoneOptional" placeholder="Phone (optional)" class="ncms-input" />
         <select id="role" required class="ncms-input">
-          <option value="secretary">Secretary</option>
-          <option value="doctor">Doctor</option>
+          <option value="secretary" data-i18n="roles.secretary">Secretary</option>
+          <option value="doctor" data-i18n="roles.doctor">Doctor</option>
         </select>
-        <input id="password" type="password" required minlength="6" placeholder="Password (min. 6 characters)" autocomplete="new-password" class="ncms-input" />
-        <button id="setupBtn" type="submit" class="ncms-btn-primary w-full py-3.5">Create Staff Account</button>
+        <input id="password" type="password" required minlength="6" data-i18n-placeholder="pages.addPatient.password" placeholder="Password (min. 6 characters)" autocomplete="new-password" class="ncms-input" />
+        <button id="setupBtn" type="submit" class="ncms-btn-primary w-full py-3.5" data-i18n="setup.createButton">Create Staff Account</button>
       </form>
       <p id="errorMsg" class="text-red-500 text-center mt-4 text-sm"></p>
       <p class="text-center mt-4 text-sm">
-        <a href="login.html" class="text-medical-600 hover:text-medical-700 font-medium">Back to login</a>
+        <a href="login.html" class="text-medical-600 hover:text-medical-700 font-medium" data-i18n="setup.backToLogin">Back to login</a>
       </p>
     </div>
   </div>

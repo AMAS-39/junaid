@@ -5,7 +5,11 @@ import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { openModal } from "../../components/modal.js";
-import { getQueryParam, formatDateTime, escapeHtml } from "../../utils/format.js";
+import {
+  renderAppointmentCard,
+  renderAppointmentEmptyState,
+} from "../../components/appointment-card.js";
+import { getQueryParam, escapeHtml } from "../../utils/format.js";
 
 let appointments = [];
 let patientsMap = {};
@@ -20,8 +24,8 @@ bootstrap({
 
     if (filterPatientId && filterBanner) {
       const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, filterPatientId);
-      filterBanner.innerHTML = `Showing appointments for <strong>${escapeHtml(patient?.fullName || "patient")}</strong>
-        <a href="list.html" class="text-medical-600 font-medium ms-2">Show all</a>`;
+      filterBanner.innerHTML = `${escapeHtml(t("lists.showingAppointmentsFor"))} <strong>${escapeHtml(patient?.fullName || t("labels.patientLower"))}</strong>
+        <a href="list.html">${escapeHtml(t("lists.showAll"))}</a>`;
       filterBanner.classList.remove("hidden");
     }
 
@@ -62,54 +66,44 @@ function renderAppointments() {
 
   if (appointments.length === 0) {
     container.innerHTML = "";
-    emptyState?.classList.remove("hidden");
+    if (emptyState) {
+      emptyState.innerHTML = renderAppointmentEmptyState({
+        title: t("pages.appointments.emptyTitle"),
+        subtitle: t("pages.appointments.emptyHintDoctor"),
+      });
+      emptyState.classList.remove("hidden");
+    }
     return;
   }
 
   emptyState?.classList.add("hidden");
 
-  container.innerHTML = `
-    <div class="card data-table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Patient</th>
-            <th>Scheduled</th>
-            <th>Status</th>
-            <th>Notes</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${appointments.map((a) => appointmentRow(a)).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
+  container.innerHTML = appointments.map((a) => appointmentCard(a)).join("");
 }
 
-function appointmentRow(appointment) {
+function appointmentCard(appointment) {
   const patient = patientsMap[appointment.patientId];
   const status = appointment.status || "pending";
-  const statusClass = status === "archived" ? "old" : status;
 
-  return `
-    <tr>
-      <td>${escapeHtml(patient?.fullName || "Unknown")}</td>
-      <td>${escapeHtml(formatDateTime(appointment.scheduledAt))}</td>
-      <td><span class="status-badge status-${statusClass}">${escapeHtml(tStatus(status))}</span></td>
-      <td>${escapeHtml(appointment.notes || "—")}</td>
-      <td>
-        <div class="btn-row">
-          ${status === "pending" ? `
-            <button type="button" class="btn-sm btn-sm-primary" data-approve="${escapeHtml(appointment.id)}">Approve</button>
-            <button type="button" class="btn-sm btn-sm-danger" data-reject="${escapeHtml(appointment.id)}">Reject</button>
-          ` : ""}
-          <button type="button" class="btn-sm btn-sm-secondary" data-reschedule="${escapeHtml(appointment.id)}">Reschedule</button>
-        </div>
-      </td>
-    </tr>
-  `;
+  const actions =
+    status === "pending"
+      ? `
+        <button type="button" class="btn-sm btn-sm-primary" data-approve="${escapeHtml(appointment.id)}">${escapeHtml(t("buttons.approve"))}</button>
+        <button type="button" class="btn-sm btn-sm-danger" data-reject="${escapeHtml(appointment.id)}">${escapeHtml(t("buttons.reject"))}</button>
+        <button type="button" class="btn-sm btn-sm-secondary" data-reschedule="${escapeHtml(appointment.id)}">${escapeHtml(t("buttons.reschedule"))}</button>
+      `
+      : `
+        <button type="button" class="btn-sm btn-sm-secondary" data-reschedule="${escapeHtml(appointment.id)}">${escapeHtml(t("buttons.reschedule"))}</button>
+      `;
+
+  return renderAppointmentCard({
+    status,
+    scheduledAt: appointment.scheduledAt,
+    patientName: patient?.fullName,
+    reason: appointment.reason || "",
+    notes: appointment.notes || appointment.rescheduleNotes || "",
+    actionsHtml: `<div class="btn-row">${actions}</div>`,
+  });
 }
 
 document.addEventListener("click", async (e) => {
@@ -132,7 +126,7 @@ async function updateStatus(appointmentId, status) {
   showLoading(t("loading.updatingAppointment"));
   try {
     await FirestoreService.update(COLLECTIONS.APPOINTMENTS, appointmentId, { status });
-    toast.success(`Appointment ${status}.`);
+    toast.success(t("toast.appointmentStatus", { status: tStatus(status) }));
     const item = appointments.find((a) => a.id === appointmentId);
     if (item) item.status = status;
     renderAppointments();
@@ -150,18 +144,18 @@ function tsMillis(ts) {
 
 function openRescheduleModal(appointmentId) {
   openModal({
-    title: "Reschedule Appointment",
+    title: t("modal.rescheduleAppointment"),
     body: `
       <div class="form-group">
-        <label for="rescheduleDate">New date & time</label>
+        <label for="rescheduleDate">${escapeHtml(t("forms.newDateTime"))}</label>
         <input id="rescheduleDate" type="datetime-local" class="form-input" />
       </div>
       <div class="form-group mt-3">
-        <label for="rescheduleNotes">Notes (optional)</label>
-        <textarea id="rescheduleNotes" class="form-textarea" rows="3" placeholder="Reason for reschedule..."></textarea>
+        <label for="rescheduleNotes">${escapeHtml(t("forms.rescheduleNotes"))}</label>
+        <textarea id="rescheduleNotes" class="form-textarea" rows="3" placeholder="${escapeHtml(t("forms.rescheduleNotesPlaceholder"))}"></textarea>
       </div>
     `,
-    confirmText: "Save",
+    confirmText: t("buttons.save"),
     onConfirm: async () => {
       const dateVal = document.getElementById("rescheduleDate").value;
       if (!dateVal) {
@@ -176,7 +170,7 @@ function openRescheduleModal(appointmentId) {
           status: "approved",
           rescheduleNotes: notes,
         });
-        toast.success("Appointment rescheduled.");
+        toast.success(t("toast.appointmentRescheduled"));
         const item = appointments.find((a) => a.id === appointmentId);
         if (item) {
           item.scheduledAt = new Date(dateVal);
@@ -185,7 +179,7 @@ function openRescheduleModal(appointmentId) {
         renderAppointments();
       } catch (error) {
         console.error(error);
-        toast.error("Failed to reschedule.");
+        toast.error(t("toast.failedReschedule"));
       } finally {
         hideLoading();
       }

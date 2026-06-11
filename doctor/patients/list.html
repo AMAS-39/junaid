@@ -14,17 +14,17 @@
   <div id="page-content">
     <section class="page-header">
       <div>
-        <h1>Patients</h1>
-        <p>View and search patient records</p>
+        <h1 data-i18n="pages.patients.title">Patients</h1>
+        <p data-i18n="pages.patients.subtitle">View and search patient records</p>
       </div>
     </section>
     <div class="card">
-      <input id="searchInput" type="text" placeholder="Search by patient name or phone..." class="form-input" />
+      <input id="searchInput" type="text" data-i18n-placeholder="pages.patients.searchPlaceholder" placeholder="Search by patient name or phone..." class="form-input" />
     </div>
     <div id="patientsContainer" class="patients-grid"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No patients found</h3>
-      <p>No patient records match your search.</p>
+      <h3 data-i18n="pages.patients.emptyTitle">No patients found</h3>
+      <p data-i18n="pages.patients.emptyHint">No patient records match your search.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/doctor/patients-list.js"></script>

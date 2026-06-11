@@ -17,31 +17,34 @@
       <p class="patient-page-sub" data-i18n="patient.appointmentsSub">Book a visit with your doctor</p>
     </header>
 
-    <form id="appointmentForm" class="patient-form-card">
-      <h2 class="patient-form-title" data-i18n="forms.requestVisit">Request a visit</h2>
-      <div class="form-group mb-3">
-        <label for="preferredDateTime" data-i18n="forms.preferredDateTime">When do you want to come?</label>
-        <input id="preferredDateTime" type="datetime-local" required class="form-input patient-input" />
+    <form id="appointmentForm" class="appointment-form-card">
+      <div class="appointment-form-header">
+        <span class="appointment-form-icon" aria-hidden="true">📅</span>
+        <div>
+          <h2 class="appointment-form-title" data-i18n="forms.requestVisit">Request a visit</h2>
+          <p class="appointment-form-sub" data-i18n="patient.bookWithClinic">Book with your clinic</p>
+        </div>
       </div>
-      <div class="form-group mb-3">
-        <label for="reason" data-i18n="forms.reason">Reason for visit</label>
-        <input id="reason" type="text" required class="form-input patient-input" data-i18n-placeholder="forms.reasonPlaceholder" placeholder="e.g. Follow-up check" />
+      <div class="appointment-form-body">
+        <div class="form-group mb-3">
+          <label for="preferredDateTime" data-i18n="forms.preferredDateTime">When do you want to come?</label>
+          <input id="preferredDateTime" type="datetime-local" required class="form-input patient-input" />
+        </div>
+        <div class="form-group mb-3">
+          <label for="reason" data-i18n="forms.reason">Reason for visit</label>
+          <input id="reason" type="text" required class="form-input patient-input" data-i18n-placeholder="forms.reasonPlaceholder" placeholder="e.g. Follow-up check" />
+        </div>
+        <div class="form-group mb-4">
+          <label for="note" data-i18n="forms.extraNote">Extra note (optional)</label>
+          <textarea id="note" class="form-textarea patient-input" rows="2" data-i18n-placeholder="forms.extraNotePlaceholder" placeholder="Anything else we should know?"></textarea>
+        </div>
+        <button id="saveBtn" type="submit" class="patient-btn-primary" data-i18n="buttons.request">Send request</button>
       </div>
-      <div class="form-group mb-4">
-        <label for="note" data-i18n="forms.extraNote">Extra note (optional)</label>
-        <textarea id="note" class="form-textarea patient-input" rows="2" data-i18n-placeholder="forms.extraNotePlaceholder" placeholder="Anything else we should know?"></textarea>
-      </div>
-      <button id="saveBtn" type="submit" class="patient-btn-primary" data-i18n="buttons.request">Send request</button>
     </form>
 
-    <h2 class="patient-section-title" data-i18n="common.yourVisits">Your visits</h2>
-    <div id="appointmentsList" class="patient-card-stack"></div>
-    <div id="emptyState" class="patient-empty-state hidden">
-      <span class="patient-empty-icon" aria-hidden="true">📅</span>
-      <h3 data-i18n="empty.noAppointments">No visits yet</h3>
-      <p data-i18n="empty.noAppointmentsHint">Use the form above to request your first appointment.</p>
-      <p class="patient-empty-hint" data-i18n="empty.noAppointmentsConfirm">We will confirm your visit soon.</p>
-    </div>
+    <h2 class="appointments-section-title patient-section-title" data-i18n="common.yourVisits">Your visits</h2>
+    <div id="appointmentsList" class="appointment-list patient-card-stack"></div>
+    <div id="emptyState" class="hidden"></div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/appointments-list.js"></script>
 </body>

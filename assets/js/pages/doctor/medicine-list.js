@@ -39,7 +39,9 @@ bootstrap({
     const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
     const subtitle = document.getElementById("patientSubtitle");
     if (subtitle && patient) {
-      subtitle.textContent = `${patient.fullName || "Patient"} — reminders and papers`;
+      subtitle.textContent = t("pages.medicine.patientSubtitle", {
+        name: patient.fullName || t("labels.patient"),
+      });
     }
 
     await loadReminders();
@@ -107,17 +109,17 @@ function reminderCard(reminder) {
   return `
     <article class="medicine-reminder-card">
       <div class="medicine-reminder-top">
-        <h4 class="medicine-reminder-name">${escapeHtml(reminder.medicineName || "Medicine")}</h4>
+        <h4 class="medicine-reminder-name">${escapeHtml(reminder.medicineName || t("medicine.medicineType"))}</h4>
         <span class="status-badge status-${statusClass}">${escapeHtml(tStatus(status))}</span>
       </div>
-      <p class="medicine-reminder-dosage"><strong>Dosage:</strong> ${escapeHtml(reminder.dosage || "—")}</p>
+      <p class="medicine-reminder-dosage"><strong>${escapeHtml(t("labels.dosage"))}</strong> ${escapeHtml(reminder.dosage || t("labels.emDash"))}</p>
       <p class="medicine-reminder-time-inline">
-        <span class="medicine-time-badge small">${escapeHtml(reminder.time || "—")}</span>
+        <span class="medicine-time-badge small">${escapeHtml(reminder.time || t("labels.emDash"))}</span>
       </p>
       ${reminder.instructions ? `<p class="medicine-reminder-instructions">${escapeHtml(reminder.instructions)}</p>` : ""}
       <div class="btn-row mt-3">
-        <button type="button" class="btn-sm btn-sm-secondary" data-edit="${escapeHtml(reminder.id)}">Edit</button>
-        <button type="button" class="btn-sm btn-sm-danger" data-delete="${escapeHtml(reminder.id)}">Delete</button>
+        <button type="button" class="btn-sm btn-sm-secondary" data-edit="${escapeHtml(reminder.id)}">${escapeHtml(t("buttons.edit"))}</button>
+        <button type="button" class="btn-sm btn-sm-danger" data-delete="${escapeHtml(reminder.id)}">${escapeHtml(t("buttons.delete"))}</button>
       </div>
     </article>
   `;
@@ -172,33 +174,33 @@ function openEditModal(reminderId) {
   }
 
   openModal({
-    title: "Edit Reminder",
+    title: t("modal.editReminder"),
     body: `
       <div class="form-group mb-3">
-        <label for="editMedicineName">Medicine / supplement</label>
+        <label for="editMedicineName">${escapeHtml(t("forms.medicineName"))}</label>
         <input id="editMedicineName" type="text" class="form-input" value="${escapeHtml(reminder.medicineName || "")}" />
       </div>
       <div class="form-group mb-3">
-        <label for="editDosage">Dosage</label>
+        <label for="editDosage">${escapeHtml(t("forms.dosage"))}</label>
         <input id="editDosage" type="text" class="form-input" value="${escapeHtml(reminder.dosage || "")}" />
       </div>
       <div class="form-group mb-3">
-        <label for="editTime">Time</label>
+        <label for="editTime">${escapeHtml(t("forms.time"))}</label>
         <input id="editTime" type="text" class="form-input" value="${escapeHtml(reminder.time || "")}" />
       </div>
       <div class="form-group mb-3">
-        <label for="editStatus">Status</label>
+        <label for="editStatus">${escapeHtml(t("forms.status"))}</label>
         <select id="editStatus" class="form-input">
           <option value="active" ${reminder.status === "active" ? "selected" : ""}>${t("status.active")}</option>
           <option value="inactive" ${reminder.status === "inactive" ? "selected" : ""}>${t("status.inactive")}</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="editInstructions">Instructions</label>
+        <label for="editInstructions">${escapeHtml(t("forms.instructions"))}</label>
         <textarea id="editInstructions" class="form-textarea" rows="3"></textarea>
       </div>
     `,
-    confirmText: "Save Changes",
+    confirmText: t("buttons.saveChanges"),
     onConfirm: async () => {
       const medicineName = document.getElementById("editMedicineName").value.trim();
       const dosage = document.getElementById("editDosage").value.trim();
@@ -238,8 +240,10 @@ function openEditModal(reminderId) {
 async function deleteReminder(reminderId) {
   const reminder = reminders.find((r) => r.id === reminderId);
   const confirmed = await confirmModal(
-    "Delete Reminder",
-    `Delete "${reminder?.medicineName || "this reminder"}"? This cannot be undone.`
+    t("modal.deleteReminder"),
+    t("modal.deleteReminderConfirm", {
+      name: reminder?.medicineName || t("modal.deleteReminderFallback"),
+    })
   );
   if (!confirmed) return;
 
@@ -325,14 +329,14 @@ function paperCard(doc) {
   return `
     <article class="medicine-paper-card">
       <div class="medicine-paper-top">
-        <h4 class="medicine-paper-title">${escapeHtml(doc.title || doc.fileName || "Document")}</h4>
+        <h4 class="medicine-paper-title">${escapeHtml(doc.title || doc.fileName || t("pages.medicine.document"))}</h4>
         <span class="medicine-paper-type">${escapeHtml(getCategoryLabel(doc))}</span>
       </div>
       ${doc.note ? `<p class="medicine-paper-note">${escapeHtml(doc.note)}</p>` : ""}
       <p class="medicine-paper-meta">${escapeHtml(formatDate(doc.createdAt))} · ${escapeHtml(doc.fileName || "")}</p>
       <div class="btn-row mt-3">
-        <button type="button" class="btn-sm btn-sm-primary" data-view-paper="${escapeHtml(doc.id)}">View</button>
-        <button type="button" class="btn-sm btn-sm-danger" data-delete-paper="${escapeHtml(doc.id)}">Delete</button>
+        <button type="button" class="btn-sm btn-sm-primary" data-view-paper="${escapeHtml(doc.id)}">${escapeHtml(t("buttons.view"))}</button>
+        <button type="button" class="btn-sm btn-sm-danger" data-delete-paper="${escapeHtml(doc.id)}">${escapeHtml(t("buttons.delete"))}</button>
       </div>
     </article>
   `;
@@ -370,7 +374,7 @@ async function handlePaperUpload(e) {
     document.querySelector(".medicine-papers-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     console.error(error);
-    const message = error?.message || "Upload failed.";
+    const message = error?.message || t("toast.uploadFailed");
     toast.error(message);
     showPapersError(message);
   } finally {
@@ -389,10 +393,10 @@ async function previewPaper(docId) {
     const isPdf = String(doc.mimeType || "").includes("pdf") || doc.fileName?.toLowerCase().endsWith(".pdf");
 
     openModal({
-      title: doc.title || "Medicine Paper",
+      title: doc.title || t("pages.medicine.medicinePaper"),
       body: isPdf
-        ? `<p class="mb-3"><a href="${url}" target="_blank" rel="noopener" class="text-medical-600 font-semibold">Open PDF in new tab</a></p>`
-        : `<img src="${url}" alt="Document" class="photo-preview-img" />`,
+        ? `<p class="mb-3"><a href="${url}" target="_blank" rel="noopener" class="text-medical-600 font-semibold">${escapeHtml(t("pages.medicine.openPdfNewTab"))}</a></p>`
+        : `<img src="${url}" alt="${escapeHtml(t("pages.medicine.document"))}" class="photo-preview-img" />`,
       showCancel: false,
       confirmText: t("common.close"),
       onConfirm: () => {},
@@ -407,7 +411,10 @@ async function previewPaper(docId) {
 
 async function deletePaper(docId) {
   const doc = papers.find((d) => d.id === docId);
-  const confirmed = await confirmModal("Delete Paper", `Delete "${doc?.title || "this file"}"?`);
+  const confirmed = await confirmModal(
+    t("modal.deletePaper"),
+    t("modal.deletePaperConfirm", { name: doc?.title || t("modal.deletePaperFallback") })
+  );
   if (!confirmed) return;
 
   showLoading(t("loading.deleting"));

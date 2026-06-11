@@ -66,12 +66,12 @@ function renderPatients(searchValue, container, emptyState) {
 }
 
 function patientCard(patient) {
-  const fullName = escapeHtml(patient.fullName || "Unnamed Patient");
-  const phone = escapeHtml(patient.phone || "No phone");
-  const gender = escapeHtml(patient.gender || "N/A");
-  const age = patient.age ?? "N/A";
-  const currentWeight = patient.currentWeight ?? "N/A";
-  const targetWeight = patient.targetWeight ?? "N/A";
+  const fullName = escapeHtml(patient.fullName || t("doctor.unnamedPatient"));
+  const phone = escapeHtml(patient.phone || t("doctor.noPhone"));
+  const gender = escapeHtml(patient.gender || t("common.notFound"));
+  const age = patient.age ?? t("common.notFound");
+  const currentWeight = patient.currentWeight ?? t("common.notFound");
+  const targetWeight = patient.targetWeight ?? t("common.notFound");
   const initial = fullName.charAt(0).toUpperCase();
 
   return `
@@ -82,13 +82,13 @@ function patientCard(patient) {
         <p>${phone}</p>
       </div>
       <div class="patient-stats">
-        <div><span>Age</span><strong>${age}</strong></div>
-        <div><span>Gender</span><strong>${gender}</strong></div>
-        <div><span>Weight</span><strong>${currentWeight} kg</strong></div>
-        <div><span>Goal</span><strong>${targetWeight} kg</strong></div>
+        <div><span>${escapeHtml(t("lists.age"))}</span><strong>${age}</strong></div>
+        <div><span>${escapeHtml(t("lists.gender"))}</span><strong>${gender}</strong></div>
+        <div><span>${escapeHtml(t("lists.weight"))}</span><strong>${currentWeight} kg</strong></div>
+        <div><span>${escapeHtml(t("lists.goal"))}</span><strong>${targetWeight} kg</strong></div>
       </div>
       <button class="view-btn" type="button" data-patient-id="${escapeHtml(patient.id)}">
-        View Details
+        ${escapeHtml(t("buttons.viewDetails"))}
       </button>
     </div>
   `;

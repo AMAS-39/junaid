@@ -2,19 +2,20 @@ import { StorageService } from "./storage.service.js";
 import { FirestoreService } from "./firestore.service.js";
 import { COLLECTIONS } from "../architecture/firestore-collections.js";
 import { BUCKETS, buildMedicineDocumentPath } from "../architecture/storage-buckets.js";
+import { t } from "../core/i18n.js";
 
 export const MEDICINE_DOC_CATEGORIES = Object.freeze([
-  { value: "prescription", label: "Prescription" },
-  { value: "test", label: "Lab / test result" },
-  { value: "report", label: "Medical report" },
-  { value: "other", label: "Other" },
+  { value: "prescription", labelKey: "forms.prescription" },
+  { value: "test", labelKey: "forms.labTest" },
+  { value: "report", labelKey: "forms.medicalReport" },
+  { value: "other", labelKey: "forms.other" },
 ]);
 
 /**
  * @param {File} file
  */
 export function validateMedicineDocument(file) {
-  if (!file) return { valid: false, error: "Please select a file." };
+  if (!file) return { valid: false, error: t("toast.selectFile") };
   return StorageService.validateFile(file, "DOCUMENT");
 }
 
@@ -96,7 +97,8 @@ export async function listMedicineDocuments(patientId) {
  */
 export function getCategoryLabel(doc) {
   const cat = MEDICINE_DOC_CATEGORIES.find((c) => c.value === doc?.category);
-  return cat?.label || doc?.category || "Document";
+  if (cat?.labelKey) return t(cat.labelKey);
+  return doc?.category || t("pages.medicine.document");
 }
 
 function tsMillis(value) {

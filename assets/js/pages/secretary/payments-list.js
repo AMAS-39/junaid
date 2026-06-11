@@ -101,14 +101,14 @@ function renderPayments(searchValue) {
       return `
         <div class="patient-list-card">
           <div class="flex justify-between items-start gap-2">
-            <strong>${escapeHtml(patient?.fullName || "Unknown")}</strong>
+            <strong>${escapeHtml(patient?.fullName || t("labels.unknown"))}</strong>
             <span class="status-badge status-${statusClass}">${escapeHtml(tStatus(p.status || "unpaid"))}</span>
           </div>
-          <p class="text-sm text-slate-600 mt-2"><strong>${escapeHtml(String(p.amount))}</strong> — ${escapeHtml(p.serviceType || "Service")}</p>
+          <p class="text-sm text-slate-600 mt-2"><strong>${escapeHtml(String(p.amount))}</strong> — ${escapeHtml(p.serviceType || t("pages.payments.defaultService"))}</p>
           ${p.note || p.description ? `<p class="text-sm text-slate-500">${escapeHtml(p.note || p.description)}</p>` : ""}
           <p class="text-xs text-slate-400 mt-1">${escapeHtml(formatDate(p.createdAt))}</p>
           ${p.status === "unpaid" ? `
-            <button type="button" class="btn-sm btn-sm-primary mt-3" data-mark-paid="${escapeHtml(p.id)}">Mark as Paid</button>
+            <button type="button" class="btn-sm btn-sm-primary mt-3" data-mark-paid="${escapeHtml(p.id)}">${escapeHtml(t("buttons.markAsPaid"))}</button>
           ` : ""}
         </div>
       `;
@@ -129,7 +129,7 @@ async function createPayment() {
   const note = document.getElementById("note").value.trim();
 
   if (!patientId || !amount || amount <= 0) {
-    toast.error("Patient and valid amount are required.");
+    toast.error(t("toast.patientAmountRequired"));
     return;
   }
 
@@ -163,7 +163,7 @@ async function markAsPaid(paymentId) {
   showLoading(t("loading.updating"));
   try {
     await FirestoreService.update(COLLECTIONS.PAYMENTS, paymentId, { status: "paid" });
-    toast.success("Marked as paid.");
+    toast.success(t("toast.markedAsPaid"));
     await loadPayments();
   } catch (error) {
     console.error(error);

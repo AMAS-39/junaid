@@ -5,7 +5,11 @@ import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { openModal, confirmModal } from "../../components/modal.js";
-import { escapeHtml, formatDateTime } from "../../utils/format.js";
+import { escapeHtml } from "../../utils/format.js";
+import {
+  renderAppointmentCard,
+  renderAppointmentEmptyState,
+} from "../../components/appointment-card.js";
 import { loadPatientsMap, getDefaultDoctorId, tsMillis, isToday } from "./secretary-helpers.js";
 
 let appointments = [];
@@ -81,7 +85,13 @@ function renderAppointments() {
 
   if (filtered.length === 0) {
     listEl.innerHTML = "";
-    emptyState?.classList.remove("hidden");
+    if (emptyState) {
+      emptyState.innerHTML = renderAppointmentEmptyState({
+        title: t("pages.appointments.emptyTitle"),
+        subtitle: t("pages.appointments.emptyHintSecretary"),
+      });
+      emptyState.classList.remove("hidden");
+    }
     return;
   }
 
@@ -90,20 +100,19 @@ function renderAppointments() {
   listEl.innerHTML = filtered
     .map((a) => {
       const patient = patientsMap[a.patientId];
-      return `
-        <div class="patient-list-card">
-          <div class="flex justify-between items-start gap-2">
-            <strong>${escapeHtml(patient?.fullName || "Unknown")}</strong>
-            <span class="status-badge status-${escapeHtml(a.status || "pending")}">${escapeHtml(tStatus(a.status || "pending"))}</span>
-          </div>
-          <p class="text-sm text-slate-600 mt-2">${escapeHtml(formatDateTime(a.scheduledAt))}</p>
-          ${a.reason ? `<p class="text-sm text-slate-500">${escapeHtml(a.reason)}</p>` : ""}
-          <div class="btn-row mt-3">
-            <button type="button" class="btn-sm btn-sm-secondary" data-edit-appt="${escapeHtml(a.id)}">Edit</button>
-            <button type="button" class="btn-sm btn-sm-danger" data-cancel-appt="${escapeHtml(a.id)}">Cancel</button>
-          </div>
+      const actions = `
+        <div class="btn-row">
+          <button type="button" class="btn-sm btn-sm-secondary" data-edit-appt="${escapeHtml(a.id)}">${escapeHtml(t("buttons.edit"))}</button>
+          <button type="button" class="btn-sm btn-sm-danger" data-cancel-appt="${escapeHtml(a.id)}">${escapeHtml(t("buttons.cancel"))}</button>
         </div>
       `;
+      return renderAppointmentCard({
+        status: a.status || "pending",
+        scheduledAt: a.scheduledAt,
+        patientName: patient?.fullName,
+        reason: a.reason || "",
+        actionsHtml: actions,
+      });
     })
     .join("");
 
@@ -123,7 +132,7 @@ async function createAppointment() {
   const status = document.getElementById("appointmentStatus").value;
 
   if (!patientId || !dateTime) {
-    toast.error("Patient and date/time are required.");
+    toast.error(t("toast.patientDateTimeRequired"));
     return;
   }
 
@@ -140,7 +149,7 @@ async function createAppointment() {
       status,
     });
 
-    toast.success("Appointment created.");
+    toast.success(t("toast.appointmentCreated"));
     document.getElementById("appointmentForm").reset();
     await loadAppointments();
   } catch (error) {
@@ -164,25 +173,25 @@ function openEditAppointment(appointmentId) {
     .slice(0, 16);
 
   openModal({
-    title: "Edit Appointment",
+    title: t("modal.editAppointment"),
     body: `
       <div class="form-group mb-3">
-        <label>Date & time</label>
+        <label>${escapeHtml(t("forms.dateTime"))}</label>
         <input id="editApptDateTime" type="datetime-local" class="form-input" value="${local}" />
       </div>
       <div class="form-group mb-3">
-        <label>Reason</label>
+        <label>${escapeHtml(t("pages.appointments.reasonLabel"))}</label>
         <input id="editApptReason" class="form-input" value="${escapeHtml(appt.reason || "")}" />
       </div>
       <div class="form-group">
-        <label>Status</label>
+        <label>${escapeHtml(t("forms.status"))}</label>
         <select id="editApptStatus" class="form-input">
           <option value="pending" ${appt.status === "pending" ? "selected" : ""}>${t("status.pending")}</option>
           <option value="approved" ${appt.status === "approved" ? "selected" : ""}>${t("status.approved")}</option>
         </select>
       </div>
     `,
-    confirmText: "Save",
+    confirmText: t("buttons.save"),
     onConfirm: async () => {
       showLoading(t("loading.updatingAppointment"));
       try {
@@ -191,7 +200,7 @@ function openEditAppointment(appointmentId) {
           reason: document.getElementById("editApptReason").value.trim(),
           status: document.getElementById("editApptStatus").value,
         });
-        toast.success("Appointment updated.");
+        toast.success(t("toast.appointmentUpdated"));
         await loadAppointments();
       } catch (error) {
         console.error(error);
@@ -204,13 +213,13 @@ function openEditAppointment(appointmentId) {
 }
 
 async function cancelAppointment(appointmentId) {
-  const confirmed = await confirmModal("Cancel appointment", "Mark this appointment as cancelled?");
+  const confirmed = await confirmModal(t("modal.cancelAppointment"), t("modal.cancelAppointmentConfirm"));
   if (!confirmed) return;
 
   showLoading(t("loading.cancelling"));
   try {
     await FirestoreService.update(COLLECTIONS.APPOINTMENTS, appointmentId, { status: "cancelled" });
-    toast.success("Appointment cancelled.");
+    toast.success(t("toast.appointmentCancelled"));
     await loadAppointments();
   } catch (error) {
     console.error(error);

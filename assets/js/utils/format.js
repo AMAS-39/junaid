@@ -45,6 +45,51 @@ export function formatDateTime(value) {
   }
 }
 
+/**
+ * @param {Date | string | { toDate?: () => Date }} value
+ */
+export function toJsDate(value) {
+  if (!value) return null;
+  try {
+    return value?.toDate ? value.toDate() : new Date(value);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * @param {Date | string | { toDate?: () => Date }} value
+ */
+export function isDateToday(value) {
+  const date = toJsDate(value);
+  if (!date) return false;
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+}
+
+/**
+ * Visual date parts for appointment cards.
+ * @param {Date | string | { toDate?: () => Date }} value
+ */
+export function formatAppointmentParts(value) {
+  const date = toJsDate(value);
+  if (!date) {
+    return { day: "—", month: "", weekday: "", time: "", full: t("common.notFound"), isToday: false };
+  }
+  return {
+    day: date.toLocaleDateString(getIntlLocale(), { day: "numeric" }),
+    month: date.toLocaleDateString(getIntlLocale(), { month: "short" }),
+    weekday: date.toLocaleDateString(getIntlLocale(), { weekday: "short" }),
+    time: date.toLocaleTimeString(getIntlLocale(), { hour: "2-digit", minute: "2-digit" }),
+    full: formatDateTime(value),
+    isToday: isDateToday(date),
+  };
+}
+
 export function formatNumber(value, options = {}) {
   const num = Number(value);
   if (Number.isNaN(num)) return String(value ?? "");

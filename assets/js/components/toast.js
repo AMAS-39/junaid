@@ -1,3 +1,5 @@
+import { t } from "../core/i18n.js";
+
 let containerEl = null;
 
 const TOAST_TYPES = {
@@ -48,7 +50,7 @@ export function showToast(message, type = "info", duration = 4000) {
   toast.innerHTML = `
     <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/80 text-xs font-bold">${config.icon}</span>
     <p class="flex-1 text-sm font-medium leading-snug">${message}</p>
-    <button type="button" class="shrink-0 text-current opacity-60 hover:opacity-100" aria-label="Dismiss">&times;</button>
+    <button type="button" class="shrink-0 text-current opacity-60 hover:opacity-100" aria-label="${t("common.dismiss")}">&times;</button>
   `;
 
   const dismiss = () => {

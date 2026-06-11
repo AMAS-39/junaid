@@ -72,8 +72,8 @@ function renderPatients(searchValue, container, emptyState) {
 }
 
 function patientCard(patient) {
-  const name = escapeHtml(patient.fullName || "Unnamed");
-  const phone = escapeHtml(patient.phone || "—");
+  const name = escapeHtml(patient.fullName || t("labels.unnamed"));
+  const phone = escapeHtml(patient.phone || t("labels.emDash"));
   const initial = name.charAt(0).toUpperCase();
 
   return `
@@ -84,12 +84,12 @@ function patientCard(patient) {
         <p>${phone}</p>
       </div>
       <div class="patient-stats">
-        <div><span>Age</span><strong>${patient.age ?? "—"}</strong></div>
-        <div><span>Weight</span><strong>${patient.currentWeight ?? "—"} kg</strong></div>
+        <div><span>${escapeHtml(t("lists.age"))}</span><strong>${patient.age ?? t("labels.emDash")}</strong></div>
+        <div><span>${escapeHtml(t("lists.weight"))}</span><strong>${patient.currentWeight ?? t("labels.emDash")} kg</strong></div>
       </div>
       <div class="btn-row mt-3">
-        <button type="button" class="btn-sm btn-sm-secondary flex-1" data-view="${escapeHtml(patient.id)}">View</button>
-        <button type="button" class="btn-sm btn-sm-primary flex-1" data-edit="${escapeHtml(patient.id)}">Edit</button>
+        <button type="button" class="btn-sm btn-sm-secondary flex-1" data-view="${escapeHtml(patient.id)}">${escapeHtml(t("buttons.view"))}</button>
+        <button type="button" class="btn-sm btn-sm-primary flex-1" data-edit="${escapeHtml(patient.id)}">${escapeHtml(t("buttons.edit"))}</button>
       </div>
     </div>
   `;
@@ -102,19 +102,19 @@ function openViewModal(patientId) {
   const bmi = calculateBMI(patient.height, patient.currentWeight);
 
   openModal({
-    title: patient.fullName || "Patient",
+    title: patient.fullName || t("labels.patient"),
     body: `
-      <p><strong>Email:</strong> ${escapeHtml(patient.email || "—")}</p>
-      <p class="mt-2"><strong>Phone:</strong> ${escapeHtml(patient.phone || "—")}</p>
-      <p class="mt-2"><strong>Gender:</strong> ${escapeHtml(patient.gender || "—")}</p>
-      <p class="mt-2"><strong>Age:</strong> ${escapeHtml(String(patient.age ?? "—"))}</p>
-      <p class="mt-2"><strong>Height:</strong> ${escapeHtml(String(patient.height ?? "—"))} cm</p>
-      <p class="mt-2"><strong>Current weight:</strong> ${escapeHtml(String(patient.currentWeight ?? "—"))} kg</p>
-      <p class="mt-2"><strong>Target weight:</strong> ${escapeHtml(String(patient.targetWeight ?? "—"))} kg</p>
-      <p class="mt-2"><strong>BMI:</strong> ${bmi ?? "—"}</p>
+      <p><strong>${escapeHtml(t("labels.email"))}</strong> ${escapeHtml(patient.email || t("labels.emDash"))}</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.phone"))}</strong> ${escapeHtml(patient.phone || t("labels.emDash"))}</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.genderLabel"))}</strong> ${escapeHtml(patient.gender || t("labels.emDash"))}</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.ageLabel"))}</strong> ${escapeHtml(String(patient.age ?? t("labels.emDash")))}</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.heightLabel"))}</strong> ${escapeHtml(String(patient.height ?? t("labels.emDash")))} cm</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.currentWeight"))}</strong> ${escapeHtml(String(patient.currentWeight ?? t("labels.emDash")))} kg</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.targetWeight"))}</strong> ${escapeHtml(String(patient.targetWeight ?? t("labels.emDash")))} kg</p>
+      <p class="mt-2"><strong>${escapeHtml(t("labels.bmi"))}</strong> ${bmi ?? t("labels.emDash")}</p>
     `,
     showCancel: false,
-    confirmText: "Close",
+    confirmText: t("buttons.close"),
     onConfirm: () => {},
   });
 }
@@ -124,45 +124,45 @@ function openEditModal(patientId) {
   if (!patient) return;
 
   openModal({
-    title: "Edit Patient",
+    title: t("modal.editPatient"),
     body: `
       <div class="form-group mb-3">
-        <label>Full Name</label>
+        <label>${escapeHtml(t("forms.fullName"))}</label>
         <input id="editFullName" class="form-input" value="${escapeHtml(patient.fullName || "")}" />
       </div>
       <div class="form-group mb-3">
-        <label>Phone</label>
+        <label>${escapeHtml(t("pages.addPatient.phone"))}</label>
         <input id="editPhone" class="form-input" value="${escapeHtml(patient.phone || "")}" />
       </div>
       <div class="form-group mb-3">
-        <label>Email</label>
+        <label>${escapeHtml(t("pages.addPatient.email"))}</label>
         <input id="editEmail" type="email" class="form-input" value="${escapeHtml(patient.email || "")}" />
       </div>
       <div class="form-group mb-3">
-        <label>Gender</label>
+        <label>${escapeHtml(t("doctor.gender"))}</label>
         <select id="editGender" class="form-input">
-          <option value="Male" ${patient.gender === "Male" ? "selected" : ""}>Male</option>
-          <option value="Female" ${patient.gender === "Female" ? "selected" : ""}>Female</option>
+          <option value="Male" ${patient.gender === "Male" ? "selected" : ""}>${escapeHtml(t("pages.addPatient.male"))}</option>
+          <option value="Female" ${patient.gender === "Female" ? "selected" : ""}>${escapeHtml(t("pages.addPatient.female"))}</option>
         </select>
       </div>
       <div class="form-group mb-3">
-        <label>Age</label>
+        <label>${escapeHtml(t("pages.addPatient.age"))}</label>
         <input id="editAge" type="number" min="1" class="form-input" value="${patient.age ?? ""}" />
       </div>
       <div class="form-group mb-3">
-        <label>Height (cm)</label>
+        <label>${escapeHtml(t("forms.heightCm"))}</label>
         <input id="editHeight" type="number" min="1" class="form-input" value="${patient.height ?? ""}" />
       </div>
       <div class="form-group mb-3">
-        <label>Current Weight (kg)</label>
+        <label>${escapeHtml(t("forms.currentWeightKg"))}</label>
         <input id="editCurrentWeight" type="number" min="1" class="form-input" value="${patient.currentWeight ?? ""}" />
       </div>
       <div class="form-group">
-        <label>Target Weight (kg)</label>
+        <label>${escapeHtml(t("forms.targetWeightKg"))}</label>
         <input id="editTargetWeight" type="number" min="1" class="form-input" value="${patient.targetWeight ?? ""}" />
       </div>
     `,
-    confirmText: "Save Changes",
+    confirmText: t("buttons.saveChanges"),
     onConfirm: async () => {
       const data = {
         fullName: document.getElementById("editFullName").value.trim(),
@@ -176,7 +176,7 @@ function openEditModal(patientId) {
       };
 
       if (!data.fullName || !data.phone || !data.email) {
-        toast.error("Name, phone, and email are required.");
+        toast.error(t("toast.namePhoneEmailRequired"));
         return;
       }
 
@@ -199,7 +199,7 @@ function openEditModal(patientId) {
         toast.success(t("toast.saved"));
       } catch (error) {
         console.error(error);
-        toast.error("Failed to update patient.");
+        toast.error(t("toast.failedUpdatePatient"));
       } finally {
         hideLoading();
       }

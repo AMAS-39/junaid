@@ -1,5 +1,7 @@
 import { getNavItems, NAV_ICONS } from "../core/navigation-config.js";
 import { getCurrentPath, buildUrl } from "../core/router.js";
+import { t } from "../core/i18n.js";
+import { escapeHtml } from "../utils/format.js";
 
 /**
  * Render mobile bottom navigation (max 5 items).
@@ -29,8 +31,8 @@ export function renderBottomNav(profile) {
 
   return `
     <nav id="ncms-bottom-nav"
-         class="ncms-bottom-nav-shell lg:hidden fixed bottom-0 inset-x-0 z-40 safe-area-bottom"
-         aria-label="Mobile navigation">
+         class="ncms-bottom-nav-shell md:hidden fixed bottom-0 inset-x-0 z-40 safe-area-bottom"
+         aria-label="${escapeHtml(t("nav.mobileNavigation"))}">
       <div class="ncms-bottom-nav-inner">
         ${items}
       </div>

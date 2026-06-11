@@ -12,45 +12,54 @@
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
     <section class="page-header">
-      <h1>Appointments</h1>
-      <p>Create and manage patient visits</p>
+      <h1 data-i18n="pages.appointments.title">Appointments</h1>
+      <p data-i18n="pages.appointments.subtitleSecretary">Create and manage patient visits</p>
     </section>
 
-    <form id="appointmentForm" class="patient-form-card">
-      <h2>Create Appointment</h2>
-      <div class="form-group mb-3">
-        <label for="patientSelect">Patient</label>
-        <select id="patientSelect" required class="form-input"></select>
-      </div>
-      <div class="form-group mb-3">
-        <label for="appointmentDateTime">Date & time</label>
-        <input id="appointmentDateTime" type="datetime-local" required class="form-input" />
-      </div>
-      <div class="form-group mb-3">
-        <label for="reason">Reason</label>
-        <input id="reason" type="text" required class="form-input" placeholder="Visit reason" />
-      </div>
-      <div class="form-group mb-4">
-        <label for="appointmentStatus">Status</label>
-        <select id="appointmentStatus" class="form-input">
-          <option value="approved">Approved</option>
-          <option value="pending">Pending</option>
-        </select>
-      </div>
-      <button id="saveBtn" type="submit" class="view-btn">Create Appointment</button>
-    </form>
+    <div class="appointments-layout">
+      <form id="appointmentForm" class="appointment-form-card">
+        <div class="appointment-form-header">
+          <span class="appointment-form-icon" aria-hidden="true">📅</span>
+          <div>
+            <h2 class="appointment-form-title" data-i18n="pages.appointments.createFormTitle">Create Appointment</h2>
+            <p class="appointment-form-sub" data-i18n="pages.appointments.subtitleSecretary">Create and manage patient visits</p>
+          </div>
+        </div>
+        <div class="appointment-form-body">
+          <div class="form-group mb-3">
+            <label for="patientSelect" data-i18n="pages.appointments.patientLabel">Patient</label>
+            <select id="patientSelect" required class="form-input"></select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="appointmentDateTime" data-i18n="pages.appointments.dateTimeLabel">Date & time</label>
+            <input id="appointmentDateTime" type="datetime-local" required class="form-input" />
+          </div>
+          <div class="form-group mb-3">
+            <label for="reason" data-i18n="pages.appointments.reasonLabel">Reason</label>
+            <input id="reason" type="text" required class="form-input" data-i18n-placeholder="pages.appointments.reasonPlaceholder" placeholder="Visit reason" />
+          </div>
+          <div class="form-group mb-4">
+            <label for="appointmentStatus" data-i18n="pages.appointments.statusLabel">Status</label>
+            <select id="appointmentStatus" class="form-input">
+              <option value="approved" data-i18n="status.approved">Approved</option>
+              <option value="pending" data-i18n="status.pending">Pending</option>
+            </select>
+          </div>
+          <button id="saveBtn" type="submit" class="view-btn" data-i18n="buttons.createAppointment">Create Appointment</button>
+        </div>
+      </form>
 
-    <div class="filter-row">
-      <button type="button" class="filter-btn filter-active" data-filter="all">All</button>
-      <button type="button" class="filter-btn" data-filter="today">Today</button>
-      <button type="button" class="filter-btn" data-filter="pending">Pending</button>
-      <button type="button" class="filter-btn" data-filter="approved">Approved</button>
-    </div>
+      <div class="appointments-main">
+        <div class="appointment-filters filter-row">
+          <button type="button" class="filter-btn filter-active" data-filter="all" data-i18n="filters.all">All</button>
+          <button type="button" class="filter-btn" data-filter="today" data-i18n="filters.today">Today</button>
+          <button type="button" class="filter-btn" data-filter="pending" data-i18n="filters.pending">Pending</button>
+          <button type="button" class="filter-btn" data-filter="approved" data-i18n="filters.approved">Approved</button>
+        </div>
 
-    <div id="appointmentsList"></div>
-    <div id="emptyState" class="empty-state hidden">
-      <h3>No appointments</h3>
-      <p>Create an appointment above.</p>
+        <div id="appointmentsList" class="appointment-list"></div>
+        <div id="emptyState" class="hidden"></div>
+      </div>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/secretary/appointments-list.js"></script>

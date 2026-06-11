@@ -183,8 +183,8 @@ function noteCard(note) {
       <div class="doctor-note-meta">
         <time class="doctor-note-date">${escapeHtml(dateLabel)}</time>
         <div class="doctor-note-actions">
-          <button type="button" class="btn-sm btn-sm-secondary" data-edit-note="${escapeHtml(note.id)}">Edit</button>
-          <button type="button" class="btn-sm btn-sm-danger" data-delete-note="${escapeHtml(note.id)}">Delete</button>
+          <button type="button" class="btn-sm btn-sm-secondary" data-edit-note="${escapeHtml(note.id)}">${escapeHtml(t("buttons.edit"))}</button>
+          <button type="button" class="btn-sm btn-sm-danger" data-delete-note="${escapeHtml(note.id)}">${escapeHtml(t("buttons.delete"))}</button>
         </div>
       </div>
       <p class="doctor-note-text">${text}</p>

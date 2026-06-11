@@ -47,15 +47,32 @@ export function getIntlLocale(locale = currentLocale) {
 
 /**
  * @param {string} key - Dot path e.g. "buttons.save"
- * @param {string} [locale]
+ * @param {Record<string, string|number>|string} [varsOrLocale] - interpolation vars or explicit locale
  * @returns {string}
  */
-export function t(key, locale = currentLocale) {
-  const value = resolveKey(translations[normalizeLocale(locale)], key);
-  if (value !== undefined) return String(value);
+export function t(key, varsOrLocale) {
+  let locale = currentLocale;
+  let vars = {};
 
-  const fallback = resolveKey(translations.en, key);
-  return fallback !== undefined ? String(fallback) : key;
+  if (typeof varsOrLocale === "string" && SUPPORTED_LOCALES.includes(varsOrLocale)) {
+    locale = varsOrLocale;
+  } else if (varsOrLocale && typeof varsOrLocale === "object") {
+    vars = varsOrLocale;
+  }
+
+  const value = resolveKey(translations[normalizeLocale(locale)], key);
+  let result =
+    value !== undefined
+      ? String(value)
+      : resolveKey(translations.en, key) !== undefined
+        ? String(resolveKey(translations.en, key))
+        : key;
+
+  for (const [name, val] of Object.entries(vars)) {
+    result = result.replace(new RegExp(`\\{${name}\\}`, "g"), String(val));
+  }
+
+  return result;
 }
 
 /**
@@ -155,6 +172,11 @@ export function applyPageTranslations(root = document) {
   root.querySelectorAll("[data-i18n-title]").forEach((el) => {
     const key = el.getAttribute("data-i18n-title");
     if (key) el.title = t(key);
+  });
+
+  root.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    if (key) el.setAttribute("aria-label", t(key));
   });
 }
 

@@ -25,7 +25,7 @@ bootstrap({
       const role = document.getElementById("role").value;
 
       if (!name || !email || !password || password.length < 6) {
-        const msg = "Name, email, and password (min. 6 characters) are required.";
+        const msg = t("validation.staffFieldsRequired");
         errorMsg.textContent = msg;
         toast.error(msg);
         return;

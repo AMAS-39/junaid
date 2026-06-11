@@ -49,8 +49,8 @@ async function loadPhotos() {
   const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
   if (patient && patientBanner) {
     patientBanner.innerHTML = `
-      <h2>${escapeHtml(patient.fullName || "Patient")}</h2>
-      <p>Uploaded photos and reports</p>
+      <h2>${escapeHtml(patient.fullName || t("labels.patient"))}</h2>
+      <p>${escapeHtml(t("pages.photos.subtitle"))}</p>
     `;
   }
 
@@ -114,7 +114,7 @@ function photoCard(photo) {
       ${note ? `<p class="text-sm text-slate-600 mt-2">${note}</p>` : ""}
       <p class="text-xs text-slate-400 mt-1">${escapeHtml(formatDate(photo.createdAt))}</p>
       ${canPreview ? `
-        <button type="button" class="btn-sm btn-sm-primary mt-3 w-full" data-preview="${escapeHtml(photo.id)}">Preview</button>
+        <button type="button" class="btn-sm btn-sm-primary mt-3 w-full" data-preview="${escapeHtml(photo.id)}">${escapeHtml(t("pages.photos.preview"))}</button>
       ` : ""}
     </div>
   `;
@@ -132,7 +132,7 @@ async function previewPhoto(photoId) {
     const url = await getPhotoPreviewUrl(photo, 3600);
     openModal({
       title: getPhotoTypeLabel(photo),
-      body: `<img src="${url}" alt="Photo preview" class="photo-preview-img" />`,
+      body: `<img src="${url}" alt="${escapeHtml(t("pages.photos.previewAlt"))}" class="photo-preview-img" />`,
       showCancel: false,
       confirmText: t("common.close"),
       onConfirm: () => {},

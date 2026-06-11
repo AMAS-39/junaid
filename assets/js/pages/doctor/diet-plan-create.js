@@ -29,7 +29,7 @@ bootstrap({
           updateBanner(patientId, patientBanner);
         });
       } else {
-        toast.warning("No patients found. Add a patient first.");
+        toast.warning(t("toast.noPatientsAddFirst"));
       }
     }
 
@@ -53,8 +53,8 @@ async function updateBanner(patientId, banner) {
   const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
   if (patient && banner) {
     banner.innerHTML = `
-      <strong>${escapeHtml(patient.fullName || "Patient")}</strong>
-      <span>Creating diet plan for this patient</span>
+      <strong>${escapeHtml(patient.fullName || t("labels.patient"))}</strong>
+      <span>${escapeHtml(t("pages.dietPlanCreate.creatingForPatient"))}</span>
     `;
     banner.classList.remove("hidden");
   }

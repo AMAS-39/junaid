@@ -1,5 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
-import { findRoute, getCurrentPath } from "../../core/router.js";
+import { findRoute, getCurrentPath, getRouteTitle } from "../../core/router.js";
 import { t } from "../../core/i18n.js";
 
 /**
@@ -11,8 +11,9 @@ bootstrap({
     const titleEl = document.getElementById("pageTitle");
     const descEl = document.getElementById("pageDescription");
 
-    if (titleEl && route?.title) {
-      titleEl.textContent = route.title;
+    const routeTitle = getRouteTitle(route);
+    if (titleEl && routeTitle) {
+      titleEl.textContent = routeTitle;
     }
 
     if (descEl) {

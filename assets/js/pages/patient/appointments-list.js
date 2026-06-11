@@ -1,10 +1,13 @@
 import { bootstrap } from "../../core/bootstrap.js";
-import { t, tStatus } from "../../core/i18n.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
-import { escapeHtml, formatDateTime } from "../../utils/format.js";
+import {
+  renderAppointmentCard,
+  renderAppointmentEmptyState,
+} from "../../components/appointment-card.js";
 import { getAssignedDoctorId, tsMillis } from "./patient-helpers.js";
 
 bootstrap({
@@ -71,23 +74,27 @@ async function loadAppointments(patientId, listEl, emptyState) {
 
     if (appointments.length === 0) {
       listEl.innerHTML = "";
-      emptyState?.classList.remove("hidden");
+      if (emptyState) {
+        emptyState.innerHTML = renderAppointmentEmptyState({
+          title: t("empty.noAppointments"),
+          subtitle: t("empty.noAppointmentsHint"),
+          footer: t("empty.noAppointmentsConfirm"),
+        });
+        emptyState.classList.remove("hidden");
+      }
       return;
     }
 
     emptyState?.classList.add("hidden");
     listEl.innerHTML = appointments
-      .map(
-        (a) => `
-        <div class="patient-list-card">
-          <div class="flex justify-between items-start gap-2">
-            <strong>${escapeHtml(formatDateTime(a.scheduledAt))}</strong>
-            <span class="status-badge status-${escapeHtml(a.status || "pending")}">${escapeHtml(tStatus(a.status || "pending"))}</span>
-          </div>
-          ${a.reason ? `<p class="text-sm text-slate-600 mt-2">${escapeHtml(a.reason)}</p>` : ""}
-          ${a.notes ? `<p class="text-sm text-slate-500 mt-1">${escapeHtml(a.notes)}</p>` : ""}
-        </div>
-      `
+      .map((a) =>
+        renderAppointmentCard({
+          status: a.status || "pending",
+          scheduledAt: a.scheduledAt,
+          reason: a.reason || "",
+          notes: a.notes || "",
+          patientView: true,
+        })
       )
       .join("");
   } catch (error) {

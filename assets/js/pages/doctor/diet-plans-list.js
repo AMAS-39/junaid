@@ -76,11 +76,11 @@ function renderPlans(searchValue) {
       <table class="data-table">
         <thead>
           <tr>
-            <th>Patient</th>
-            <th>Plan</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Actions</th>
+            <th>${escapeHtml(t("lists.patient"))}</th>
+            <th>${escapeHtml(t("lists.plan"))}</th>
+            <th>${escapeHtml(t("lists.status"))}</th>
+            <th>${escapeHtml(t("lists.created"))}</th>
+            <th>${escapeHtml(t("lists.actions"))}</th>
           </tr>
         </thead>
         <tbody>
@@ -93,20 +93,20 @@ function renderPlans(searchValue) {
 
 function planRow(plan) {
   const patient = patientsMap[plan.patientId];
-  const patientName = escapeHtml(patient?.fullName || "Unknown");
+  const patientName = escapeHtml(patient?.fullName || t("labels.unknown"));
   const status = plan.status === "active" ? "active" : "old";
   const statusLabel = tStatus(plan.status === "active" ? "active" : plan.status || "inactive");
 
   return `
     <tr>
       <td>${patientName}</td>
-      <td>${escapeHtml(plan.title || "Untitled")}</td>
+      <td>${escapeHtml(plan.title || t("pages.dietPlans.untitled"))}</td>
       <td><span class="status-badge status-${status}">${statusLabel}</span></td>
       <td>${escapeHtml(formatDate(plan.createdAt))}</td>
       <td>
         <div class="btn-row">
-          <button type="button" class="btn-sm btn-sm-secondary" data-view-plan="${escapeHtml(plan.id)}">View</button>
-          <button type="button" class="btn-sm btn-sm-primary" data-edit-plan="${escapeHtml(plan.id)}">Edit</button>
+          <button type="button" class="btn-sm btn-sm-secondary" data-view-plan="${escapeHtml(plan.id)}">${escapeHtml(t("buttons.view"))}</button>
+          <button type="button" class="btn-sm btn-sm-primary" data-edit-plan="${escapeHtml(plan.id)}">${escapeHtml(t("buttons.edit"))}</button>
         </div>
       </td>
     </tr>

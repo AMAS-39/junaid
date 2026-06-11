@@ -37,31 +37,31 @@ async function loadReports(doctorId) {
 
     container.innerHTML = `
       <div class="stats-grid mb-6">
-        <div class="stat-card"><span>Total Patients</span><strong>${patients.length}</strong></div>
-        <div class="stat-card"><span>Active Diet Plans</span><strong>${activePlans}</strong></div>
-        <div class="stat-card"><span>Pending Appointments</span><strong>${pendingAppointments}</strong></div>
-        <div class="stat-card"><span>Approved Appointments</span><strong>${approvedAppointments}</strong></div>
+        <div class="stat-card"><span>${escapeHtml(t("doctor.totalPatients"))}</span><strong>${patients.length}</strong></div>
+        <div class="stat-card"><span>${escapeHtml(t("doctor.activeDietPlans"))}</span><strong>${activePlans}</strong></div>
+        <div class="stat-card"><span>${escapeHtml(t("doctor.pendingAppointments"))}</span><strong>${pendingAppointments}</strong></div>
+        <div class="stat-card"><span>${escapeHtml(t("reportStats.approvedAppointments"))}</span><strong>${approvedAppointments}</strong></div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="card">
-          <h3 class="font-bold text-slate-800 mb-2">Progress Summary</h3>
-          <p class="text-slate-600 text-sm">${progressThisMonth} weight entries recorded this month across all patients.</p>
-          <p class="text-slate-600 text-sm mt-2">Total progress entries: <strong>${progressEntries.length}</strong></p>
+          <h3 class="font-bold text-slate-800 mb-2">${escapeHtml(t("reportStats.progressSummary"))}</h3>
+          <p class="text-slate-600 text-sm">${escapeHtml(t("reportStats.progressThisMonth", { count: progressThisMonth }))}</p>
+          <p class="text-slate-600 text-sm mt-2">${escapeHtml(t("reportStats.totalProgressEntries"))} <strong>${progressEntries.length}</strong></p>
         </div>
         <div class="card">
-          <h3 class="font-bold text-slate-800 mb-2">Communication</h3>
-          <p class="text-slate-600 text-sm">Messages sent by you: <strong>${messages.length}</strong></p>
-          <p class="text-slate-600 text-sm mt-2">Diet plans created: <strong>${dietPlans.length}</strong></p>
+          <h3 class="font-bold text-slate-800 mb-2">${escapeHtml(t("reportStats.communication"))}</h3>
+          <p class="text-slate-600 text-sm">${escapeHtml(t("reportStats.messagesSent"))} <strong>${messages.length}</strong></p>
+          <p class="text-slate-600 text-sm mt-2">${escapeHtml(t("reportStats.dietPlansCreated"))} <strong>${dietPlans.length}</strong></p>
         </div>
       </div>
 
       <div class="card mt-4">
-        <h3 class="font-bold text-slate-800 mb-4">Recent Appointments</h3>
-        ${appointments.length === 0 ? `<p class="text-slate-500 text-sm">No appointments yet.</p>` : `
+        <h3 class="font-bold text-slate-800 mb-4">${escapeHtml(t("reportStats.recentAppointments"))}</h3>
+        ${appointments.length === 0 ? `<p class="text-slate-500 text-sm">${escapeHtml(t("reportStats.noAppointmentsYet"))}</p>` : `
           <div class="data-table-wrap">
             <table class="data-table">
-              <thead><tr><th>Status</th><th>Patient ID</th></tr></thead>
+              <thead><tr><th>${escapeHtml(t("lists.status"))}</th><th>${escapeHtml(t("lists.patientId"))}</th></tr></thead>
               <tbody>
                 ${appointments.slice(0, 5).map((a) => `
                   <tr>
@@ -78,7 +78,7 @@ async function loadReports(doctorId) {
   } catch (error) {
     console.error(error);
     toast.error(t("toast.failedLoadReports"));
-    container.innerHTML = `<div class="empty-state"><h3>Error</h3><p>Could not load report data.</p></div>`;
+    container.innerHTML = `<div class="empty-state"><h3>${escapeHtml(t("reportStats.loadErrorTitle"))}</h3><p>${escapeHtml(t("reportStats.loadErrorHint"))}</p></div>`;
   } finally {
     hideLoading();
   }

@@ -12,23 +12,23 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <a href="../patients/list.html" class="back-btn" data-back-param="patientId" data-back-template="../patients/details.html?id={patientId}">← Back to Patient</a>
+    <a href="../patients/list.html" class="back-btn" data-back-param="patientId" data-back-template="../patients/details.html?id={patientId}" data-i18n="doctor.backToPatient">← Back to Patient</a>
     <section class="page-header">
       <div id="patientBanner"></div>
     </section>
 
     <div class="filter-row">
-      <button type="button" class="filter-btn filter-active" data-filter="all">All</button>
-      <button type="button" class="filter-btn" data-filter="medicine">Medicine</button>
-      <button type="button" class="filter-btn" data-filter="meal">Meal</button>
-      <button type="button" class="filter-btn" data-filter="progress">Progress</button>
-      <button type="button" class="filter-btn" data-filter="lab-report">Lab Report</button>
+      <button type="button" class="filter-btn filter-active" data-filter="all" data-i18n="filters.all">All</button>
+      <button type="button" class="filter-btn" data-filter="medicine" data-i18n="filters.medicine">Medicine</button>
+      <button type="button" class="filter-btn" data-filter="meal" data-i18n="filters.meal">Meal</button>
+      <button type="button" class="filter-btn" data-filter="progress" data-i18n="filters.progress">Progress</button>
+      <button type="button" class="filter-btn" data-filter="lab-report" data-i18n="filters.labReport">Lab Report</button>
     </div>
 
     <div id="photosContainer"></div>
     <div id="emptyState" class="empty-state hidden">
-      <h3>No photos</h3>
-      <p>This patient has not uploaded any photos yet.</p>
+      <h3 data-i18n="pages.photos.emptyTitle">No photos</h3>
+      <p data-i18n="pages.photos.emptyHint">This patient has not uploaded any photos yet.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/doctor/photos-list.js"></script>

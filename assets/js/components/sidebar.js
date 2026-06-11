@@ -1,6 +1,7 @@
 import { getNavItems, NAV_ICONS } from "../core/navigation-config.js";
 import { getCurrentPath, buildUrl } from "../core/router.js";
 import { t } from "../core/i18n.js";
+import { escapeHtml } from "../utils/format.js";
 
 /**
  * Render the desktop sidebar.
@@ -31,7 +32,7 @@ export function renderSidebar(profile) {
 
   return `
     <aside id="ncms-sidebar"
-           class="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 bg-white border-e border-slate-200 h-screen sticky top-0">
+           class="hidden md:flex md:flex-col md:w-64 md:shrink-0 bg-white border-e border-slate-200 h-screen sticky top-0">
       <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-100">
         <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-medical-400 to-sky-500 text-white font-bold text-sm">
           NC
@@ -42,7 +43,7 @@ export function renderSidebar(profile) {
         </div>
       </div>
 
-      <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1" aria-label="Main navigation">
+      <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1" aria-label="${escapeHtml(t("nav.mainNavigation"))}">
         ${links}
       </nav>
 
@@ -125,19 +126,27 @@ export function renderSidebarDrawer(profile) {
 
   return `
     <div id="ncms-sidebar-overlay"
-         class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm hidden lg:hidden"
+         class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm hidden md:hidden"
          aria-hidden="true"></div>
     <aside id="ncms-sidebar-drawer"
-           class="fixed inset-y-0 start-0 z-50 w-72 bg-white shadow-xl transform -translate-x-full transition-transform duration-200 lg:hidden flex flex-col">
+           class="fixed inset-y-0 start-0 z-50 w-72 bg-white shadow-xl transform -translate-x-full transition-transform duration-200 md:hidden flex flex-col">
       <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
         <p class="font-bold text-slate-800">${t("app.name")}</p>
-        <button type="button" data-close-sidebar class="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close menu">
+        <button type="button" data-close-sidebar class="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="${escapeHtml(t("common.closeMenu"))}">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
       <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         ${links}
       </nav>
+      <div class="border-t border-slate-100 p-4">
+        <button type="button" data-ncms-logout class="ncms-sidebar-logout-btn">
+          <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>${t("buttons.logout")}</span>
+        </button>
+      </div>
     </aside>
   `;
 }

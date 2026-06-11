@@ -1,4 +1,5 @@
 import { ROUTES, ROLE_HOME, ROLES } from "../config/constants.js";
+import { t } from "./i18n.js";
 
 /**
  * Route registry — maps paths to metadata for guards and navigation.
@@ -16,175 +17,175 @@ export const routeRegistry = Object.freeze([
     name: "setup",
     public: true,
     roles: [],
-    title: "Staff Setup",
+    titleKey: "routes.staffSetup",
   },
   {
     path: ROUTES.DOCTOR_DASHBOARD,
     name: "doctor-dashboard",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Doctor Dashboard",
+    titleKey: "routes.doctorDashboard",
   },
   {
     path: "/doctor/patients/list.html",
     name: "doctor-patients",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Patients",
+    titleKey: "pages.patients.title",
   },
   {
     path: "/doctor/patients/details.html",
     name: "doctor-patient-details",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Patient Details",
+    titleKey: "doctor.patientDetails",
   },
   {
     path: "/doctor/diet-plans/list.html",
     name: "doctor-diet-plans",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Diet Plans",
+    titleKey: "pages.dietPlans.title",
   },
   {
     path: "/doctor/diet-plans/create.html",
     name: "doctor-diet-plan-create",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Create Diet Plan",
+    titleKey: "pages.dietPlanCreate.title",
   },
   {
     path: "/doctor/diet-plans/edit.html",
     name: "doctor-diet-plan-edit",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Edit Diet Plan",
+    titleKey: "pages.dietPlanEdit.title",
   },
   {
     path: "/doctor/appointments/list.html",
     name: "doctor-appointments",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Appointments",
+    titleKey: "pages.appointments.title",
   },
   {
     path: "/doctor/progress/list.html",
     name: "doctor-progress",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Patient Progress",
+    titleKey: "routes.patientProgress",
   },
   {
     path: "/doctor/photos/list.html",
     name: "doctor-photos",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Patient Photos",
+    titleKey: "routes.patientPhotos",
   },
   {
     path: "/doctor/medicine/list.html",
     name: "doctor-medicine",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Medicine Reminders",
+    titleKey: "routes.medicineReminders",
   },
   {
     path: "/doctor/messages/list.html",
     name: "doctor-messages",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Messages",
+    titleKey: "pages.messages.title",
   },
   {
     path: "/doctor/reports/list.html",
     name: "doctor-reports",
     public: false,
     roles: [ROLES.DOCTOR],
-    title: "Reports",
+    titleKey: "pages.reports.title",
   },
   {
     path: ROUTES.SECRETARY_DASHBOARD,
     name: "secretary-dashboard",
     public: false,
     roles: [ROLES.SECRETARY],
-    title: "Secretary Dashboard",
+    titleKey: "routes.secretaryDashboard",
   },
   {
     path: "/secretary/add-patient.html",
     name: "secretary-add-patient",
     public: false,
     roles: [ROLES.SECRETARY],
-    title: "Add Patient",
+    titleKey: "routes.addPatient",
   },
   {
     path: "/secretary/patients/list.html",
     name: "secretary-patients",
     public: false,
     roles: [ROLES.SECRETARY],
-    title: "Patients",
+    titleKey: "pages.patients.title",
   },
   {
     path: "/secretary/appointments/list.html",
     name: "secretary-appointments",
     public: false,
     roles: [ROLES.SECRETARY],
-    title: "Appointments",
+    titleKey: "pages.appointments.title",
   },
   {
     path: "/secretary/payments/list.html",
     name: "secretary-payments",
     public: false,
     roles: [ROLES.SECRETARY],
-    title: "Payments",
+    titleKey: "pages.payments.title",
   },
   {
     path: ROUTES.PATIENT_DASHBOARD,
     name: "patient-dashboard",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "My Dashboard",
+    titleKey: "routes.myDashboard",
   },
   {
     path: "/patient/diet-plan/view.html",
     name: "patient-diet-plan",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "My Diet Plan",
+    titleKey: "patient.dietPlanPage",
   },
   {
     path: "/patient/progress/list.html",
     name: "patient-progress",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "My Progress",
+    titleKey: "patient.progressPage",
   },
   {
     path: "/patient/appointments/list.html",
     name: "patient-appointments",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "Appointments",
+    titleKey: "patient.appointmentsPage",
   },
   {
     path: "/patient/messages/list.html",
     name: "patient-messages",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "Messages",
+    titleKey: "patient.messagesPage",
   },
   {
     path: "/patient/photos/upload.html",
     name: "patient-photos-upload",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "Upload Photo",
+    titleKey: "patient.photosPage",
   },
   {
     path: "/patient/medicine/list.html",
     name: "patient-medicine",
     public: false,
     roles: [ROLES.PATIENT],
-    title: "Medicine Schedule",
+    titleKey: "routes.medicineSchedule",
   },
   {
     path: ROUTES.UNAUTHORIZED,
@@ -225,6 +226,16 @@ export function getCurrentPath() {
 export function findRoute(path) {
   const normalized = path.split("?")[0];
   return routeRegistry.find((r) => r.path === normalized) ?? null;
+}
+
+/**
+ * Localized page title for a route entry.
+ * @param {{ titleKey?: string } | null} route
+ * @returns {string}
+ */
+export function getRouteTitle(route) {
+  if (!route?.titleKey) return "";
+  return t(route.titleKey);
 }
 
 /**

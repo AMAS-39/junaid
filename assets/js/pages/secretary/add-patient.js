@@ -29,20 +29,20 @@ function getFormValues() {
  * @returns {string | null}
  */
 function validateForm(values) {
-  if (!values.fullName) return "Full name is required.";
-  if (!values.phone) return "Phone number is required.";
-  if (!values.email) return "Email is required.";
+  if (!values.fullName) return t("validation.fullNameRequired");
+  if (!values.phone) return t("validation.phoneRequired");
+  if (!values.email) return t("validation.emailRequired");
   if (!values.password || values.password.length < 6) {
-    return "Password must be at least 6 characters.";
+    return t("validation.passwordMinLength");
   }
-  if (!values.gender) return "Please select a gender.";
-  if (!values.age || values.age <= 0) return "Age must be greater than 0.";
-  if (!values.height || values.height <= 0) return "Height must be greater than 0.";
+  if (!values.gender) return t("validation.genderRequired");
+  if (!values.age || values.age <= 0) return t("validation.agePositive");
+  if (!values.height || values.height <= 0) return t("validation.heightPositive");
   if (!values.currentWeight || values.currentWeight <= 0) {
-    return "Current weight must be greater than 0.";
+    return t("validation.currentWeightPositive");
   }
   if (!values.targetWeight || values.targetWeight <= 0) {
-    return "Target weight must be greater than 0.";
+    return t("validation.targetWeightPositive");
   }
   return null;
 }
@@ -55,11 +55,11 @@ function formatError(error) {
   const code = error && typeof error === "object" && "code" in error ? error.code : "";
 
   const messages = {
-    "auth/email-already-in-use": "This email is already registered.",
-    "auth/invalid-email": "Please enter a valid email address.",
-    "auth/weak-password": "Password must be at least 6 characters.",
-    "auth/operation-not-allowed": "Email sign-up is not enabled. Contact support.",
-    "permission-denied": "You do not have permission to create patient records.",
+    "auth/email-already-in-use": t("authErrors.emailAlreadyInUse"),
+    "auth/invalid-email": t("authErrors.invalidEmail"),
+    "auth/weak-password": t("authErrors.weakPassword"),
+    "auth/operation-not-allowed": t("authErrors.operationNotAllowed"),
+    "permission-denied": t("authErrors.permissionDenied"),
   };
 
   if (code && messages[code]) return messages[code];
@@ -68,7 +68,7 @@ function formatError(error) {
     return String(error.message);
   }
 
-  return "Failed to create patient account. Please try again.";
+  return t("authErrors.failedCreatePatient");
 }
 
 bootstrap({
