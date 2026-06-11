@@ -3,10 +3,15 @@ import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
-import { getQueryParam, calculateBMI, escapeHtml } from "../../utils/format.js";
+import { openModal, confirmModal } from "../../components/modal.js";
+import { getQueryParam, calculateBMI, escapeHtml, formatDateTime } from "../../utils/format.js";
+
+let currentPatientId = null;
+let currentDoctorId = null;
+let doctorNotes = [];
 
 bootstrap({
-  onReady: async () => {
+  onReady: async (session) => {
     const patientDetails = document.getElementById("patientDetails");
     const backBtn = document.getElementById("backBtn");
     const patientId = getQueryParam("id");
@@ -23,7 +28,14 @@ bootstrap({
       return;
     }
 
+    if (!session?.user?.uid) return;
+
+    currentPatientId = patientId;
+    currentDoctorId = session.user.uid;
+
     await loadPatient(patientId, patientDetails);
+    bindDoctorNotes();
+    await loadDoctorNotes();
   },
 });
 
@@ -39,6 +51,7 @@ async function loadPatient(patientId, container) {
     }
 
     renderPatient(patient, container);
+    document.getElementById("doctorNotesSection")?.classList.remove("hidden");
   } catch (error) {
     console.error(error);
     toast.error("Failed to load patient details.");
@@ -88,6 +101,191 @@ function renderPatient(patient, container) {
       ${actionCard("Messages", "Open patient conversation", "💬", `../messages/list.html?patientId=${pid}`)}
     </section>
   `;
+}
+
+function bindDoctorNotes() {
+  const saveBtn = document.getElementById("saveNoteBtn");
+  saveBtn?.addEventListener("click", saveNewNote);
+}
+
+async function loadDoctorNotes() {
+  if (!currentPatientId || !currentDoctorId) return;
+
+  showLoading("Loading notes...");
+
+  try {
+    doctorNotes = await FirestoreService.query(COLLECTIONS.DOCTOR_NOTES, [
+      ["patientId", "==", currentPatientId],
+      ["doctorId", "==", currentDoctorId],
+    ]);
+
+    doctorNotes.sort(
+      (a, b) => tsMillis(b.updatedAt || b.createdAt) - tsMillis(a.updatedAt || a.createdAt)
+    );
+
+    renderDoctorNotes();
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to load private notes.");
+  } finally {
+    hideLoading();
+  }
+}
+
+function renderDoctorNotes() {
+  const listEl = document.getElementById("notesList");
+  const emptyEl = document.getElementById("notesEmpty");
+
+  if (!listEl || !emptyEl) return;
+
+  if (doctorNotes.length === 0) {
+    listEl.innerHTML = "";
+    emptyEl.classList.remove("hidden");
+    return;
+  }
+
+  emptyEl.classList.add("hidden");
+  listEl.innerHTML = doctorNotes.map((note) => noteCard(note)).join("");
+
+  listEl.querySelectorAll("[data-edit-note]").forEach((btn) => {
+    btn.addEventListener("click", () => editNote(btn.dataset.editNote));
+  });
+
+  listEl.querySelectorAll("[data-delete-note]").forEach((btn) => {
+    btn.addEventListener("click", () => deleteNote(btn.dataset.deleteNote));
+  });
+}
+
+function noteCard(note) {
+  const dateLabel = formatDateTime(note.updatedAt || note.createdAt);
+  const text = escapeHtml(note.note || "");
+
+  return `
+    <article class="doctor-note-item">
+      <div class="doctor-note-meta">
+        <time class="doctor-note-date">${escapeHtml(dateLabel)}</time>
+        <div class="doctor-note-actions">
+          <button type="button" class="btn-sm btn-sm-secondary" data-edit-note="${escapeHtml(note.id)}">Edit</button>
+          <button type="button" class="btn-sm btn-sm-danger" data-delete-note="${escapeHtml(note.id)}">Delete</button>
+        </div>
+      </div>
+      <p class="doctor-note-text">${text}</p>
+    </article>
+  `;
+}
+
+async function saveNewNote() {
+  const input = document.getElementById("newNoteInput");
+  const saveBtn = document.getElementById("saveNoteBtn");
+  const text = input?.value?.trim() || "";
+
+  if (!text) {
+    toast.error("Please enter a note before saving.");
+    return;
+  }
+
+  if (!currentPatientId || !currentDoctorId) return;
+
+  saveBtn.disabled = true;
+  const originalLabel = saveBtn.textContent;
+  saveBtn.textContent = "Saving...";
+  showLoading("Saving note...");
+
+  try {
+    await FirestoreService.create(COLLECTIONS.DOCTOR_NOTES, {
+      patientId: currentPatientId,
+      doctorId: currentDoctorId,
+      note: text,
+      updatedAt: FirestoreService.serverTimestamp(),
+    });
+
+    toast.success("Private note saved.");
+    if (input) input.value = "";
+    await loadDoctorNotes();
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to save note.");
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = originalLabel;
+    hideLoading();
+  }
+}
+
+function editNote(noteId) {
+  const note = doctorNotes.find((n) => n.id === noteId);
+  if (!note) {
+    toast.error("Note not found.");
+    return;
+  }
+
+  openModal({
+    title: "Edit Private Note",
+    body: `
+      <label for="editNoteInput" class="form-label">Note</label>
+      <textarea id="editNoteInput" class="form-textarea" rows="5"></textarea>
+    `,
+    confirmText: "Update Note",
+    onConfirm: async () => {
+      const input = document.getElementById("editNoteInput");
+      const text = input?.value?.trim() || "";
+
+      if (!text) {
+        toast.error("Note cannot be empty.");
+        return;
+      }
+
+      showLoading("Updating note...");
+
+      try {
+        await FirestoreService.update(COLLECTIONS.DOCTOR_NOTES, noteId, { note: text });
+        toast.success("Note updated.");
+        await loadDoctorNotes();
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to update note.");
+      } finally {
+        hideLoading();
+      }
+    },
+  });
+
+  const editInput = document.getElementById("editNoteInput");
+  if (editInput) editInput.value = note.note || "";
+}
+
+async function deleteNote(noteId) {
+  const note = doctorNotes.find((n) => n.id === noteId);
+  if (!note) {
+    toast.error("Note not found.");
+    return;
+  }
+
+  const confirmed = await confirmModal(
+    "Delete Private Note",
+    "Are you sure you want to delete this note? This cannot be undone."
+  );
+
+  if (!confirmed) return;
+
+  showLoading("Deleting note...");
+
+  try {
+    await FirestoreService.remove(COLLECTIONS.DOCTOR_NOTES, noteId);
+    toast.success("Note deleted.");
+    await loadDoctorNotes();
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to delete note.");
+  } finally {
+    hideLoading();
+  }
+}
+
+function tsMillis(value) {
+  if (!value) return 0;
+  if (typeof value.toMillis === "function") return value.toMillis();
+  return new Date(value).getTime() || 0;
 }
 
 function infoCard(label, value) {

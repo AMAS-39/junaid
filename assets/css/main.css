@@ -923,3 +923,91 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Doctor private notes (patient details) */
+.doctor-notes-card {
+  margin-top: 8px;
+}
+
+.doctor-notes-title {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.doctor-notes-subtitle {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.doctor-notes-card .form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.doctor-notes-save-btn {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.doctor-notes-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doctor-note-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.doctor-note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.doctor-note-date {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.doctor-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.doctor-note-text {
+  font-size: 0.9375rem;
+  color: #334155;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.doctor-notes-empty {
+  margin-top: 16px;
+  text-align: center;
+  padding: 20px 12px;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .doctor-notes-save-btn {
+    width: auto;
+  }
+}

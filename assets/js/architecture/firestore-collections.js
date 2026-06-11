@@ -15,6 +15,7 @@ export const COLLECTIONS = Object.freeze({
   REPORTS: "reports",
   NOTIFICATIONS: "notifications",
   PATIENT_PHOTOS: "patientPhotos",
+  DOCTOR_NOTES: "doctorNotes",
 });
 
 /**
@@ -109,6 +110,15 @@ export const COLLECTIONS = Object.freeze({
  */
 
 /**
+ * @typedef {Object} DoctorNoteDocument
+ * @property {string} patientId
+ * @property {string} doctorId
+ * @property {string} note
+ * @property {import("firebase/firestore").Timestamp} createdAt
+ * @property {import("firebase/firestore").Timestamp} updatedAt
+ */
+
+/**
  * @typedef {Object} NotificationDocument
  * @property {string} userId
  * @property {string} title
@@ -136,4 +146,5 @@ export const FIRESTORE_ACCESS = Object.freeze({
   [COLLECTIONS.REPORTS]: "Doctor write; patient read own",
   [COLLECTIONS.NOTIFICATIONS]: "User read own",
   [COLLECTIONS.PATIENT_PHOTOS]: "Patient upload own; doctor read assigned",
+  [COLLECTIONS.DOCTOR_NOTES]: "Doctor read/write own notes only",
 });

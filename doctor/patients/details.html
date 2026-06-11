@@ -14,6 +14,25 @@
   <div id="page-content">
     <button id="backBtn" type="button" class="back-btn">← Back to Patients</button>
     <div id="patientDetails"></div>
+
+    <section id="doctorNotesSection" class="card doctor-notes-card hidden">
+      <h2 class="doctor-notes-title">Private Doctor Notes</h2>
+      <p class="doctor-notes-subtitle">Only you can see these notes. Patients and secretaries cannot access them.</p>
+
+      <label for="newNoteInput" class="form-label">New note</label>
+      <textarea
+        id="newNoteInput"
+        class="form-textarea"
+        rows="4"
+        placeholder="Write a private note about this patient..."
+      ></textarea>
+      <button type="button" id="saveNoteBtn" class="ncms-btn-primary doctor-notes-save-btn">Save Note</button>
+
+      <div id="notesList" class="doctor-notes-list"></div>
+      <div id="notesEmpty" class="doctor-notes-empty hidden">
+        <p>No private notes yet. Add one above.</p>
+      </div>
+    </section>
   </div>
   <script type="module" src="../../assets/js/pages/doctor/patient-details.js"></script>
 </body>
