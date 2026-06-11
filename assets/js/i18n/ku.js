@@ -589,6 +589,11 @@ export default {
     dosage: "دۆز:",
     photo: "وێنە",
   },
+  chat: {
+    conversations: "گفتوگۆکان",
+    unreadCount: "{count} نەخوێندراوە",
+    emptyHint: "نامەکان لێرە دەردەکەون کاتێک گفتوگۆ دەست پێ بکەیت.",
+  },
   routes: {
     staffSetup: "ڕێکخستنی کارمەند",
     doctorDashboard: "داشبۆردی دکتۆر",

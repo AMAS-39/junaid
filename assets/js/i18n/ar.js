@@ -589,6 +589,11 @@ export default {
     dosage: "الجرعة:",
     photo: "صورة",
   },
+  chat: {
+    conversations: "المحادثات",
+    unreadCount: "{count} غير مقروء",
+    emptyHint: "ستظهر الرسائل هنا عند بدء المحادثة.",
+  },
   routes: {
     staffSetup: "إعداد الموظفين",
     doctorDashboard: "لوحة الطبيب",

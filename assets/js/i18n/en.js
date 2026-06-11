@@ -589,6 +589,11 @@ export default {
     dosage: "Dosage:",
     photo: "Photo",
   },
+  chat: {
+    conversations: "Conversations",
+    unreadCount: "{count} unread",
+    emptyHint: "Messages will appear here once you start chatting.",
+  },
   routes: {
     staffSetup: "Staff Setup",
     doctorDashboard: "Doctor Dashboard",

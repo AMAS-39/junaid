@@ -16,10 +16,14 @@
       <h1 data-i18n="pages.messages.title">Messages</h1>
       <p data-i18n="pages.messages.subtitle">Patient conversations</p>
     </section>
-    <div class="messages-layout">
-      <div class="messages-sidebar" id="conversationList"></div>
-      <div class="messages-panel" id="messagesPanel">
-        <p class="text-slate-500 text-center py-12" data-i18n="pages.messages.selectConversation">Select a conversation</p>
+    <div class="chat-shell messages-layout">
+      <aside class="messages-sidebar chat-sidebar" id="conversationList" aria-label="Conversations"></aside>
+      <div class="messages-panel chat-panel" id="messagesPanel">
+        <div class="chat-empty">
+          <span class="chat-empty-icon" aria-hidden="true">💬</span>
+          <h3 data-i18n="pages.messages.selectConversation">Select a conversation</h3>
+          <p data-i18n="pages.messages.selectConversationHint">Select a conversation to view messages.</p>
+        </div>
       </div>
     </div>
   </div>

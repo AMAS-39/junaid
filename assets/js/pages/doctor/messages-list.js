@@ -4,7 +4,15 @@ import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
-import { getQueryParam, formatDateTime, escapeHtml } from "../../utils/format.js";
+import {
+  renderConversationItem,
+  renderChatHeader,
+  renderChatBubble,
+  renderChatCompose,
+  renderChatEmpty,
+  renderConversationsEmpty,
+} from "../../components/chat-ui.js";
+import { getQueryParam, escapeHtml, formatShortTime } from "../../utils/format.js";
 
 let doctorId = null;
 let patientsMap = {};
@@ -20,7 +28,6 @@ bootstrap({
     activePatientId = getQueryParam("patientId");
 
     await loadData();
-    bindCompose();
   },
 });
 
@@ -90,26 +97,34 @@ function renderConversationList() {
   if (!list) return;
 
   if (conversations.length === 0) {
-    list.innerHTML = `<p class="text-sm text-slate-500 p-3">${escapeHtml(t("pages.messages.noConversations"))}</p>`;
+    list.innerHTML = `<div class="chat-sidebar-list">${renderConversationsEmpty()}</div>`;
     return;
   }
 
-  list.innerHTML = conversations
-    .map((c) => {
-      const patient = patientsMap[c.patientId];
-      const active = c.patientId === activePatientId ? "active" : "";
-      const preview = escapeHtml(String(c.lastMessage.body || "").slice(0, 40));
-      const unread = c.unread > 0 ? `<span class="status-badge status-pending">${c.unread}</span>` : "";
+  list.innerHTML = `
+    <div class="chat-sidebar-head">
+      <p class="chat-sidebar-title">${escapeHtml(t("chat.conversations"))}</p>
+    </div>
+    <div class="chat-sidebar-list">
+      ${conversations
+        .map((c) => {
+          const patient = patientsMap[c.patientId];
+          const name = patient?.fullName || t("labels.patient");
+          const preview = String(c.lastMessage.body || "").slice(0, 48);
+          const time = formatShortTime(c.lastMessage.createdAt);
 
-      return `
-        <div class="conversation-item ${active}" data-conversation="${escapeHtml(c.patientId)}">
-          <strong>${escapeHtml(patient?.fullName || t("labels.patient"))}</strong>
-          <p class="text-xs text-slate-500 mt-1">${preview}</p>
-          ${unread}
-        </div>
-      `;
-    })
-    .join("");
+          return renderConversationItem({
+            id: c.patientId,
+            name,
+            preview: preview || t("chat.emptyHint"),
+            time,
+            unread: c.unread,
+            active: c.patientId === activePatientId,
+          });
+        })
+        .join("")}
+    </div>
+  `;
 
   list.querySelectorAll("[data-conversation]").forEach((el) => {
     el.addEventListener("click", () => selectConversation(el.dataset.conversation));
@@ -125,7 +140,11 @@ function selectConversation(patientId) {
 function renderThreadEmpty() {
   const panel = document.getElementById("messagesPanel");
   if (panel) {
-    panel.innerHTML = `<p class="text-slate-500 text-center py-12">${escapeHtml(t("pages.messages.selectConversationHint"))}</p>`;
+    panel.innerHTML = renderChatEmpty({
+      title: t("pages.messages.selectConversation"),
+      subtitle: t("pages.messages.selectConversationHint"),
+      icon: "💬",
+    });
   }
 }
 
@@ -134,6 +153,8 @@ function renderThread() {
   if (!panel || !activePatientId) return;
 
   const patient = patientsMap[activePatientId];
+  const patientName = patient?.fullName || t("labels.patient");
+
   const thread = allMessages
     .filter(
       (m) =>
@@ -146,18 +167,19 @@ function renderThread() {
       return ta - tb;
     });
 
+  const threadHtml =
+    thread.length === 0
+      ? renderChatEmpty({
+          title: t("pages.messages.noMessagesYet"),
+          subtitle: t("chat.emptyHint"),
+          icon: "✉️",
+        })
+      : thread.map((m) => renderChatBubble(m, m.senderId === doctorId)).join("");
+
   panel.innerHTML = `
-    <div class="mb-3">
-      <strong>${escapeHtml(patient?.fullName || t("labels.patient"))}</strong>
-    </div>
-    <div class="messages-thread" id="messagesThread">
-      ${thread.length === 0 ? `<p class="text-slate-500 text-sm">${escapeHtml(t("pages.messages.noMessagesYet"))}</p>` : ""}
-      ${thread.map((m) => messageBubble(m)).join("")}
-    </div>
-    <div class="message-compose">
-      <input id="messageInput" type="text" class="form-input" placeholder="${t("forms.messagePlaceholder")}" />
-      <button type="button" id="sendBtn" class="ncms-btn-primary px-4">${t("buttons.send")}</button>
-    </div>
+    ${renderChatHeader({ name: patientName, subtitle: t("patient.messagesSub") })}
+    <div class="messages-thread chat-thread" id="messagesThread">${threadHtml}</div>
+    ${renderChatCompose()}
   `;
 
   document.getElementById("sendBtn")?.addEventListener("click", sendMessage);
@@ -165,17 +187,10 @@ function renderThread() {
     if (e.key === "Enter") sendMessage();
   });
 
-  markMessagesRead(activePatientId);
-}
+  const threadEl = document.getElementById("messagesThread");
+  if (threadEl && thread.length > 0) threadEl.scrollTop = threadEl.scrollHeight;
 
-function messageBubble(msg) {
-  const isSent = msg.senderId === doctorId;
-  return `
-    <div class="message-bubble ${isSent ? "sent" : "received"}">
-      ${escapeHtml(msg.body)}
-      <div class="text-xs opacity-70 mt-1">${escapeHtml(formatDateTime(msg.createdAt))}</div>
-    </div>
-  `;
+  markMessagesRead(activePatientId);
 }
 
 async function markMessagesRead(patientId) {
@@ -192,10 +207,6 @@ async function markMessagesRead(patientId) {
     }
   }
   buildConversations();
-}
-
-function bindCompose() {
-  /* handled per thread render */
 }
 
 async function sendMessage() {

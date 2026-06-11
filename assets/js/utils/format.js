@@ -75,6 +75,15 @@ export function isDateToday(value) {
  * Visual date parts for appointment cards.
  * @param {Date | string | { toDate?: () => Date }} value
  */
+export function formatShortTime(value) {
+  const date = toJsDate(value);
+  if (!date) return "";
+  return date.toLocaleTimeString(getIntlLocale(), {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function formatAppointmentParts(value) {
   const date = toJsDate(value);
   if (!date) {

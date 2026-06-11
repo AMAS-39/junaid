@@ -4,12 +4,17 @@ import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
-import { escapeHtml, formatDateTime } from "../../utils/format.js";
+import {
+  renderChatHeader,
+  renderChatBubble,
+  renderChatCompose,
+} from "../../components/chat-ui.js";
 import { getAssignedDoctorId, tsMillis } from "./patient-helpers.js";
 import { patientEmptyStateHtml } from "../../components/patient-ui.js";
 
 let patientId = null;
 let doctorId = null;
+let doctorName = "";
 let allMessages = [];
 
 bootstrap({
@@ -29,8 +34,10 @@ bootstrap({
       return;
     }
 
+    const doctor = await FirestoreService.getById(COLLECTIONS.USERS, doctorId);
+    doctorName = doctor?.fullName || t("roles.doctor");
+
     await loadMessages();
-    bindSend();
   },
 });
 
@@ -65,19 +72,24 @@ async function loadMessages() {
 }
 
 function renderThread(panel) {
+  const threadHtml =
+    allMessages.length === 0
+      ? patientEmptyStateHtml({
+          icon: "💬",
+          title: t("empty.noMessages"),
+          message: t("empty.noMessagesHint"),
+          hint: t("patient.clinicHours"),
+        })
+      : allMessages.map((m) => renderChatBubble(m, m.senderId === patientId)).join("");
+
   panel.innerHTML = `
-    <div class="messages-thread" id="messagesThread">
-      ${allMessages.length === 0 ? patientEmptyStateHtml({
-        icon: "💬",
-        title: t("empty.noMessages"),
-        message: t("empty.noMessagesHint"),
-        hint: t("patient.clinicHours"),
-      }) : ""}
-      ${allMessages.map((m) => messageBubble(m)).join("")}
-    </div>
-    <div class="message-compose">
-      <input id="messageInput" type="text" class="form-input" placeholder="${t("forms.messagePlaceholder")}" />
-      <button type="button" id="sendBtn" class="patient-btn-primary patient-btn-compact">${t("buttons.send")}</button>
+    <div class="chat-shell chat-panel-shell">
+      ${renderChatHeader({
+        name: doctorName,
+        subtitle: t("patient.clinicHours"),
+      })}
+      <div class="messages-thread chat-thread" id="messagesThread">${threadHtml}</div>
+      ${renderChatCompose({ compact: true })}
     </div>
   `;
 
@@ -87,17 +99,7 @@ function renderThread(panel) {
   });
 
   const thread = document.getElementById("messagesThread");
-  if (thread) thread.scrollTop = thread.scrollHeight;
-}
-
-function messageBubble(msg) {
-  const isSent = msg.senderId === patientId;
-  return `
-    <div class="message-bubble ${isSent ? "sent" : "received"}">
-      ${escapeHtml(msg.body)}
-      <div class="text-xs opacity-70 mt-1">${escapeHtml(formatDateTime(msg.createdAt))}</div>
-    </div>
-  `;
+  if (thread && allMessages.length > 0) thread.scrollTop = thread.scrollHeight;
 }
 
 async function markRead() {
@@ -110,10 +112,6 @@ async function markRead() {
       /* ignore */
     }
   }
-}
-
-function bindSend() {
-  /* bound in renderThread */
 }
 
 async function sendMessage() {
