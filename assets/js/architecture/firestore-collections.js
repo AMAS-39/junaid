@@ -16,6 +16,7 @@ export const COLLECTIONS = Object.freeze({
   NOTIFICATIONS: "notifications",
   PATIENT_PHOTOS: "patientPhotos",
   DOCTOR_NOTES: "doctorNotes",
+  DAILY_CHECKLISTS: "dailyChecklists",
 });
 
 /**
@@ -110,6 +111,33 @@ export const COLLECTIONS = Object.freeze({
  */
 
 /**
+ * @typedef {Object} DailyChecklistDocument
+ * @property {string} patientId
+ * @property {string} date - YYYY-MM-DD
+ * @property {boolean} breakfastDone
+ * @property {string} [breakfastWhat]
+ * @property {string} [breakfastHow]
+ * @property {string} [breakfastAmount]
+ * @property {boolean} lunchDone
+ * @property {string} [lunchWhat]
+ * @property {string} [lunchHow]
+ * @property {string} [lunchAmount]
+ * @property {boolean} dinnerDone
+ * @property {string} [dinnerWhat]
+ * @property {string} [dinnerHow]
+ * @property {string} [dinnerAmount]
+ * @property {boolean} snacksDone
+ * @property {string} [snacksWhat]
+ * @property {string} [snacksHow]
+ * @property {string} [snacksAmount]
+ * @property {boolean} waterDone
+ * @property {string} [waterWhat]
+ * @property {string} [waterHow]
+ * @property {string} [waterAmount]
+ * @property {import("firebase/firestore").Timestamp} updatedAt
+ */
+
+/**
  * @typedef {Object} DoctorNoteDocument
  * @property {string} patientId
  * @property {string} doctorId
@@ -147,4 +175,5 @@ export const FIRESTORE_ACCESS = Object.freeze({
   [COLLECTIONS.NOTIFICATIONS]: "User read own",
   [COLLECTIONS.PATIENT_PHOTOS]: "Patient upload own; doctor read assigned",
   [COLLECTIONS.DOCTOR_NOTES]: "Doctor read/write own notes only",
+  [COLLECTIONS.DAILY_CHECKLISTS]: "Patient write own; doctor read assigned patients",
 });

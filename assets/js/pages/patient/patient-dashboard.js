@@ -6,12 +6,31 @@ import { showLoading, hideLoading } from "../../components/loading.js";
 import { toast } from "../../components/toast.js";
 import { calculateBMI, escapeHtml, formatDateTime } from "../../utils/format.js";
 import { getPatientRecord, getActiveDietPlan, tsMillis } from "./patient-helpers.js";
+import {
+  getTodayChecklist,
+  setChecklistItem,
+  saveChecklistEntryDetails,
+  getComplianceStats,
+  getTodayDateString,
+  CHECKLIST_ITEMS,
+} from "../../services/daily-checklist.service.js";
+import {
+  renderPatientChecklist,
+  updateChecklistToggleButton,
+  updateChecklistProgress,
+  updateEntryPreview,
+} from "./checklist-ui.js";
+
+let currentPatientId = null;
+let todayChecklist = null;
+let checklistSaving = false;
 
 bootstrap({
   onReady: async (session) => {
     if (!session) return;
 
-    const patientId = session.user.uid;
+    currentPatientId = session.user.uid;
+    const patientId = currentPatientId;
     const welcomeEl = document.getElementById("welcomeText");
     const summaryEl = document.getElementById("summaryCards");
     const gridEl = document.getElementById("dashboardGrid");
@@ -20,9 +39,20 @@ bootstrap({
       welcomeEl.textContent = `Welcome, ${session.profile.name || "Patient"}`;
     }
 
+    const dateEl = document.getElementById("checklistDate");
+    if (dateEl) dateEl.textContent = getTodayDateString();
+
     showLoading("Loading your dashboard...");
 
     try {
+      todayChecklist = await getTodayChecklist(patientId);
+      renderPatientChecklist(
+        document.getElementById("checklistItems"),
+        todayChecklist,
+        handleChecklistToggle,
+        handleSaveChecklistDetails
+      );
+
       const patient = await getPatientRecord(patientId);
       const dietPlan = await getActiveDietPlan(patientId);
 
@@ -75,6 +105,7 @@ bootstrap({
 
       if (gridEl) {
         const cards = [
+          { title: "Today's Checklist", icon: "✅", href: "#todayChecklist" },
           { title: "My Diet Plan", icon: "🥗", href: "/patient/diet-plan/view.html" },
           { title: "Upload Photo", icon: "📷", href: "/patient/photos/upload.html" },
           { title: "My Progress", icon: "📈", href: "/patient/progress/list.html" },
@@ -85,7 +116,7 @@ bootstrap({
         gridEl.innerHTML = cards
           .map(
             (c) => `
-            <a href="${buildUrl(c.href)}" class="patient-big-card">
+            <a href="${c.href.startsWith("#") ? c.href : buildUrl(c.href)}" class="patient-big-card">
               <span class="patient-big-icon">${c.icon}</span>
               <span class="patient-big-title">${escapeHtml(c.title)}</span>
             </a>
@@ -101,3 +132,82 @@ bootstrap({
     }
   },
 });
+
+async function handleChecklistToggle(field, done, toggleBtn) {
+  if (checklistSaving || !todayChecklist) return;
+
+  const previousDone = Boolean(todayChecklist[field]);
+  todayChecklist = { ...todayChecklist, [field]: done };
+
+  if (toggleBtn) {
+    updateChecklistToggleButton(toggleBtn, done);
+  }
+  updateChecklistProgress(getComplianceStats(todayChecklist));
+
+  checklistSaving = true;
+
+  try {
+    await setChecklistItem(currentPatientId, field, done);
+  } catch (error) {
+    console.error(error);
+    todayChecklist = { ...todayChecklist, [field]: previousDone };
+    if (toggleBtn) {
+      updateChecklistToggleButton(toggleBtn, previousDone);
+    }
+    updateChecklistProgress(getComplianceStats(todayChecklist));
+    toast.error("Could not update checklist. Try again.");
+  } finally {
+    checklistSaving = false;
+  }
+}
+
+async function handleSaveChecklistDetails(prefix, details) {
+  if (checklistSaving || !todayChecklist) return;
+
+  const item = CHECKLIST_ITEMS.find((i) => i.prefix === prefix);
+  const hasContent = details.what || details.how || details.amount;
+  const markDone = hasContent ? true : undefined;
+
+  checklistSaving = true;
+  showLoading("Saving log...");
+
+  try {
+    await saveChecklistEntryDetails(currentPatientId, prefix, {
+      ...details,
+      done: markDone,
+    });
+
+    if (item && markDone) {
+      todayChecklist = {
+        ...todayChecklist,
+        [item.key]: true,
+        [`${prefix}What`]: details.what,
+        [`${prefix}How`]: details.how,
+        [`${prefix}Amount`]: details.amount,
+      };
+
+      const entry = document.querySelector(`[data-checklist-prefix="${prefix}"]`);
+      const toggleBtn = entry?.querySelector("[data-checklist-key]");
+      if (toggleBtn) updateChecklistToggleButton(toggleBtn, true);
+      if (entry) updateEntryPreview(entry, details, true);
+      updateChecklistProgress(getComplianceStats(todayChecklist));
+    } else {
+      todayChecklist = {
+        ...todayChecklist,
+        [`${prefix}What`]: details.what,
+        [`${prefix}How`]: details.how,
+        [`${prefix}Amount`]: details.amount,
+      };
+      const entry = document.querySelector(`[data-checklist-prefix="${prefix}"]`);
+      if (entry) updateEntryPreview(entry, details, Boolean(item?.key && todayChecklist[item.key]));
+    }
+
+    toast.success("Daily log saved.");
+  } catch (error) {
+    console.error(error);
+    toast.error("Could not save log. Try again.");
+  } finally {
+    checklistSaving = false;
+    hideLoading();
+  }
+}

@@ -5,6 +5,8 @@ import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { openModal, confirmModal } from "../../components/modal.js";
 import { getQueryParam, calculateBMI, escapeHtml, formatDateTime } from "../../utils/format.js";
+import { getTodayChecklist, getTodayDateString } from "../../services/daily-checklist.service.js";
+import { renderDoctorCompliance } from "../patient/checklist-ui.js";
 
 let currentPatientId = null;
 let currentDoctorId = null;
@@ -34,6 +36,7 @@ bootstrap({
     currentDoctorId = session.user.uid;
 
     await loadPatient(patientId, patientDetails);
+    await loadDailyCompliance(patientId);
     bindDoctorNotes();
     await loadDoctorNotes();
   },
@@ -101,6 +104,23 @@ function renderPatient(patient, container) {
       ${actionCard("Messages", "Open patient conversation", "💬", `../messages/list.html?patientId=${pid}`)}
     </section>
   `;
+}
+
+async function loadDailyCompliance(patientId) {
+  const section = document.getElementById("dailyComplianceSection");
+  const container = document.getElementById("dailyComplianceContent");
+
+  if (!section || !container) return;
+
+  try {
+    const checklist = await getTodayChecklist(patientId);
+    renderDoctorCompliance(container, checklist, getTodayDateString());
+    section.classList.remove("hidden");
+  } catch (error) {
+    console.error(error);
+    container.innerHTML = `<p class="daily-compliance-error">Could not load today's compliance.</p>`;
+    section.classList.remove("hidden");
+  }
 }
 
 function bindDoctorNotes() {

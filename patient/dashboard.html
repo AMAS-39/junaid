@@ -16,6 +16,29 @@
       <h2 id="welcomeText" class="text-xl sm:text-2xl font-bold text-slate-800">Welcome</h2>
     </div>
     <div id="summaryCards"></div>
+
+    <section id="todayChecklist" class="checklist-section-card">
+      <div class="checklist-section-top">
+        <div>
+          <h2 class="checklist-main-title">Today's Checklist</h2>
+          <p class="checklist-hint">Tap a meal to log details. Use ✓ when done.</p>
+        </div>
+        <span id="checklistDate" class="checklist-date-badge"></span>
+      </div>
+
+      <div id="checklistProgress" class="checklist-progress-card hidden">
+        <div class="checklist-progress-top">
+          <span id="checklistProgressPercent" class="checklist-progress-percent">0%</span>
+          <span id="checklistProgressText" class="checklist-progress-text">0 of 5 completed</span>
+        </div>
+        <div class="checklist-progress-bar-wrap">
+          <div id="checklistProgressBar" class="checklist-progress-bar"></div>
+        </div>
+      </div>
+
+      <div id="checklistItems" class="checklist-items"></div>
+    </section>
+
     <div id="dashboardGrid" class="grid grid-cols-1 gap-3 mt-4"></div>
   </div>
   <script type="module" src="../assets/js/pages/patient/patient-dashboard.js"></script>
