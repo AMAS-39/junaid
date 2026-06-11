@@ -15,15 +15,18 @@ import {
   getCategoryLabel,
 } from "../../services/medicine-document.service.js";
 import { StorageService } from "../../services/storage.service.js";
+import { initPaperDocumentCapture } from "../../components/document-capture.js";
 
 let patientId = null;
 let papers = [];
+let paperCapture = null;
 
 bootstrap({
   onReady: async (session) => {
     if (!session) return;
 
     patientId = session.user.uid;
+    paperCapture = initPaperDocumentCapture();
     document.getElementById("paperUploadForm")?.addEventListener("submit", handlePaperUpload);
     await loadSchedule(patientId);
     await loadPapers();
@@ -177,7 +180,7 @@ function paperCard(doc) {
 
 async function handlePaperUpload(e) {
   e.preventDefault();
-  const file = document.getElementById("paperFile")?.files?.[0];
+  const file = paperCapture?.getFile();
   const title = document.getElementById("paperTitle").value;
   const category = document.getElementById("paperCategory").value;
   const note = document.getElementById("paperNote").value;
@@ -202,6 +205,7 @@ async function handlePaperUpload(e) {
     });
     toast.success(t("toast.paperUploaded"));
     e.target.reset();
+    paperCapture?.reset();
     showPapersTab();
     await loadPapers();
     document.querySelector(".medicine-papers-section")?.scrollIntoView({ behavior: "smooth", block: "start" });

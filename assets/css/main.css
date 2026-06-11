@@ -2475,6 +2475,178 @@ a.back-btn:hover {
   display: block !important;
 }
 
+/* Medicine paper — file or camera capture */
+.document-capture-field {
+  margin-top: 0.25rem;
+}
+
+.document-capture-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.document-capture-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+}
+
+.document-capture-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.625rem 0.875rem;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.document-capture-btn:hover {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.document-capture-btn--camera {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #f0f9ff 0%, #fff 100%);
+}
+
+.document-capture-btn--camera:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.document-capture-btn-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.document-capture-input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.document-capture-preview {
+  margin-top: 0.75rem;
+}
+
+.document-capture-preview.hidden {
+  display: none;
+}
+
+.document-capture-preview-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.document-capture-thumb {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #e2e8f0;
+}
+
+.document-capture-pdf-icon {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #e2e8f0;
+  font-size: 1.5rem;
+}
+
+.document-capture-preview-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.document-capture-preview-name {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.document-capture-preview-size {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.125rem;
+}
+
+.document-capture-remove {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.document-capture-remove:hover {
+  background: #fecaca;
+}
+
+.document-capture-hint {
+  margin-top: 0.5rem;
+}
+
+.document-capture-camera {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.document-capture-video {
+  width: 100%;
+  max-height: 280px;
+  border-radius: 12px;
+  background: #0f172a;
+  object-fit: cover;
+}
+
+.document-capture-camera-hint {
+  font-size: 0.8125rem;
+  color: #64748b;
+  text-align: center;
+}
+
 .medicine-papers-section {
   margin-top: 24px;
 }

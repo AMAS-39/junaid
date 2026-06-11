@@ -87,9 +87,22 @@
             <label for="paperNote" data-i18n="pages.medicine.noteOptional">Note (optional)</label>
             <input id="paperNote" type="text" class="form-input" data-i18n-placeholder="forms.shortDescription" placeholder="Short description" />
           </div>
-          <div class="form-group full-width">
-            <label for="paperFile" data-i18n="forms.file">File</label>
-            <input id="paperFile" type="file" required class="form-input" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+          <div class="form-group full-width document-capture-field">
+            <span class="document-capture-label" data-i18n="forms.file">File</span>
+            <div class="document-capture-actions">
+              <button type="button" id="paperChooseFileBtn" class="document-capture-btn document-capture-btn--file">
+                <span class="document-capture-btn-icon" aria-hidden="true">📁</span>
+                <span data-i18n="forms.chooseFile">Choose file</span>
+              </button>
+              <button type="button" id="paperTakePhotoBtn" class="document-capture-btn document-capture-btn--camera">
+                <span class="document-capture-btn-icon" aria-hidden="true">📷</span>
+                <span data-i18n="forms.takePhoto">Take photo</span>
+              </button>
+            </div>
+            <input id="paperFile" type="file" class="document-capture-input-hidden" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+            <input id="paperCameraInput" type="file" class="document-capture-input-hidden" accept="image/*" capture="environment" />
+            <div id="paperFilePreview" class="document-capture-preview hidden" aria-live="polite"></div>
+            <p class="document-capture-hint checklist-hint" data-i18n="forms.paperCaptureHint">PDF or photo — choose a file or take a picture with your camera.</p>
           </div>
         </div>
         <button type="submit" id="paperUploadBtn" class="ncms-btn-primary mt-3 w-full sm:w-auto" data-i18n="forms.uploadPaperBtn">Upload paper</button>

@@ -15,8 +15,10 @@ import {
   getCategoryLabel,
 } from "../../services/medicine-document.service.js";
 import { StorageService } from "../../services/storage.service.js";
+import { initPaperDocumentCapture } from "../../components/document-capture.js";
 
 let doctorId = null;
+let paperCapture = null;
 let patientId = null;
 let reminders = [];
 let papers = [];
@@ -34,6 +36,7 @@ bootstrap({
     }
 
     document.getElementById("reminderForm")?.addEventListener("submit", handleAddReminder);
+    paperCapture = initPaperDocumentCapture();
     document.getElementById("paperUploadForm")?.addEventListener("submit", handlePaperUpload);
 
     const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
@@ -344,7 +347,7 @@ function paperCard(doc) {
 
 async function handlePaperUpload(e) {
   e.preventDefault();
-  const file = document.getElementById("paperFile")?.files?.[0];
+  const file = paperCapture?.getFile();
   const title = document.getElementById("paperTitle").value;
   const category = document.getElementById("paperCategory").value;
   const note = document.getElementById("paperNote").value;
@@ -369,6 +372,7 @@ async function handlePaperUpload(e) {
     });
     toast.success(t("toast.paperUploaded"));
     e.target.reset();
+    paperCapture?.reset();
     showPapersTab();
     await loadPapers();
     document.querySelector(".medicine-papers-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
