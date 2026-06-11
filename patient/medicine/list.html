@@ -2,21 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>My Medicine | Nutrition Clinic</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../../assets/js/config/tailwind-setup.js"></script>
   <link rel="stylesheet" href="../../assets/css/main.css" />
 </head>
-<body class="bg-slate-50 min-h-screen">
-  <div id="page-content">
-    <section class="page-header">
-      <h1>My Medicine</h1>
-      <p>Schedule, reminders, and your medicine papers</p>
-    </section>
+<body class="bg-slate-50 min-h-screen patient-body">
+  <div id="page-content" class="patient-app-page">
+    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <header class="patient-page-header">
+      <h1 class="patient-page-title">My Medicine</h1>
+      <p class="patient-page-sub">Reminders and your health papers</p>
+    </header>
 
-    <div class="medicine-tab-root">
+    <div class="medicine-tab-root patient-medicine-tabs">
       <input type="radio" name="medicineView" id="medicineViewSchedule" class="medicine-tab-radio" checked />
       <input type="radio" name="medicineView" id="medicineViewPapers" class="medicine-tab-radio" />
 
@@ -26,55 +27,58 @@
       </div>
 
       <div id="tabSchedule" class="medicine-tab-panel">
-      <div id="medicineSchedule"></div>
-      <div id="emptyState" class="empty-state hidden">
-        <h3>No active reminders</h3>
-        <p>Your doctor has not added medicine reminders yet.</p>
+        <div id="medicineSchedule" class="patient-card-stack"></div>
+        <div id="emptyState" class="patient-empty-state hidden">
+          <span class="patient-empty-icon" aria-hidden="true">💊</span>
+          <h3>No medicine reminders</h3>
+          <p>Your doctor has not added reminders yet.</p>
+          <p class="patient-empty-hint">Check back after your next visit.</p>
+        </div>
       </div>
-    </div>
 
       <div id="tabPapers" class="medicine-tab-panel">
-      <form id="paperUploadForm" class="patient-form-card">
-        <h2>Upload Medicine Paper</h2>
-        <p class="checklist-hint mb-3">Upload prescriptions or test results (PDF, JPG, PNG — max 10MB)</p>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="paperTitle">Title</label>
-            <input id="paperTitle" type="text" class="form-input" placeholder="e.g. Thyroid test" />
+        <form id="paperUploadForm" class="patient-form-card">
+          <h2 class="patient-form-title">Upload a health paper</h2>
+          <p class="patient-field-hint mb-3">Prescription or test result (PDF, JPG, PNG — max 10MB)</p>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="paperTitle">Title</label>
+              <input id="paperTitle" type="text" class="form-input patient-input" placeholder="e.g. Thyroid test" />
+            </div>
+            <div class="form-group">
+              <label for="paperCategory">Type</label>
+              <select id="paperCategory" class="form-input patient-input">
+                <option value="prescription">Prescription</option>
+                <option value="test">Lab / test result</option>
+                <option value="report">Medical report</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label for="paperNote">Note (optional)</label>
+              <input id="paperNote" type="text" class="form-input patient-input" placeholder="Short description" />
+            </div>
+            <div class="form-group full-width">
+              <label for="paperFile">Choose file</label>
+              <input id="paperFile" type="file" required class="form-input patient-input" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+            </div>
           </div>
-          <div class="form-group">
-            <label for="paperCategory">Type</label>
-            <select id="paperCategory" class="form-input">
-              <option value="prescription">Prescription</option>
-              <option value="test">Lab / test result</option>
-              <option value="report">Medical report</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group full-width">
-            <label for="paperNote">Note (optional)</label>
-            <input id="paperNote" type="text" class="form-input" placeholder="Short description" />
-          </div>
-          <div class="form-group full-width">
-            <label for="paperFile">File</label>
-            <input id="paperFile" type="file" required class="form-input" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
-          </div>
-        </div>
-        <button type="submit" id="paperUploadBtn" class="ncms-btn-primary mt-3 w-full">Upload Paper</button>
-      </form>
+          <button type="submit" id="paperUploadBtn" class="patient-btn-primary mt-3">Upload paper</button>
+        </form>
 
-      <section class="medicine-papers-section">
-        <div class="medicine-papers-section-head">
-          <h2 id="papersSectionTitle" class="medicine-papers-heading">My uploaded reports</h2>
-          <span id="papersCount" class="medicine-papers-count">0 files</span>
-        </div>
-        <p id="papersLoadError" class="medicine-papers-error hidden" role="alert"></p>
-        <div id="papersList" class="medicine-papers-list"></div>
-        <div id="papersEmpty" class="empty-state">
-          <h3>No papers yet</h3>
-          <p>Upload your prescriptions or test results above. They will appear in this list.</p>
-        </div>
-      </section>
+        <section class="medicine-papers-section">
+          <div class="medicine-papers-section-head">
+            <h2 id="papersSectionTitle" class="patient-section-title">My uploaded reports</h2>
+            <span id="papersCount" class="medicine-papers-count">0 files</span>
+          </div>
+          <p id="papersLoadError" class="medicine-papers-error hidden" role="alert"></p>
+          <div id="papersList" class="medicine-papers-list"></div>
+          <div id="papersEmpty" class="patient-empty-state">
+            <span class="patient-empty-icon" aria-hidden="true">📄</span>
+            <h3>No papers yet</h3>
+            <p>Upload your prescriptions or test results above.</p>
+          </div>
+        </section>
       </div>
     </div>
   </div>

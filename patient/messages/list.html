@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Messages | Nutrition Clinic</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../../assets/js/config/tailwind-setup.js"></script>
   <link rel="stylesheet" href="../../assets/css/main.css" />
 </head>
-<body class="bg-slate-50 min-h-screen">
-  <div id="page-content">
-    <section class="page-header">
-      <h1>Messages</h1>
-      <p>Chat with your doctor</p>
-    </section>
-    <div id="messagesPanel" class="messages-panel"></div>
+<body class="bg-slate-50 min-h-screen patient-body">
+  <div id="page-content" class="patient-app-page patient-messages-page">
+    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <header class="patient-page-header">
+      <h1 class="patient-page-title">Message Doctor</h1>
+      <p class="patient-page-sub">Write a short message — we are here to help</p>
+    </header>
+    <div id="messagesPanel" class="patient-messages-panel"></div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/messages-list.js"></script>
 </body>

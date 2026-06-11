@@ -45,7 +45,7 @@ bootstrap({
           status: "pending",
         });
 
-        toast.success("Appointment request submitted.");
+        toast.success("Request sent! We will confirm soon.");
         form.reset();
         await loadAppointments(patientId, listEl, emptyState);
       } catch (error) {

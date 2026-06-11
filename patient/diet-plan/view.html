@@ -2,23 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>My Diet Plan | Nutrition Clinic</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../../assets/js/config/tailwind-setup.js"></script>
   <link rel="stylesheet" href="../../assets/css/main.css" />
 </head>
-<body class="bg-slate-50 min-h-screen">
-  <div id="page-content">
-    <section class="page-header">
-      <h1>My Diet Plan</h1>
-      <p>Your active nutrition plan</p>
-    </section>
-    <div id="dietPlanContent"></div>
-    <div id="emptyState" class="empty-state hidden">
-      <h3>No active diet plan</h3>
-      <p>Your doctor has not assigned a diet plan yet.</p>
+<body class="bg-slate-50 min-h-screen patient-body">
+  <div id="page-content" class="patient-app-page">
+    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <header class="patient-page-header">
+      <h1 class="patient-page-title">My Diet Plan</h1>
+      <p class="patient-page-sub">What to eat today — simple and clear</p>
+    </header>
+    <div id="dietPlanContent" class="patient-card-stack"></div>
+    <div id="emptyState" class="patient-empty-state hidden">
+      <span class="patient-empty-icon" aria-hidden="true">🥗</span>
+      <h3>No diet plan yet</h3>
+      <p>Your doctor has not shared a plan with you.</p>
+      <p class="patient-empty-hint">Ask your doctor at your next visit.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/diet-plan-view.js"></script>

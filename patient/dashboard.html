@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>My Dashboard | Nutrition Clinic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -10,22 +10,27 @@
   <script src="../assets/js/config/tailwind-setup.js"></script>
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
-<body class="bg-slate-50 min-h-screen">
-  <div id="page-content" class="dash-page patient-dash-page">
-    <header class="dash-page-header patient-dash-header">
-      <div>
-        <h2 id="welcomeText" class="dash-page-title">Welcome</h2>
-        <p id="dashboardSubtitle" class="dash-page-subtitle">Your health snapshot</p>
-      </div>
+<body class="bg-slate-50 min-h-screen patient-body">
+  <div id="page-content" class="patient-app-page">
+    <header class="patient-hero">
+      <p class="patient-hero-greeting">Good day 👋</p>
+      <h1 id="welcomeText" class="patient-hero-title">Hello</h1>
+      <p id="dashboardSubtitle" class="patient-hero-sub">Everything for today is here</p>
     </header>
 
-    <div id="summaryCards" class="dash-section"></div>
+    <section class="patient-today-section">
+      <div class="patient-section-head">
+        <h2 class="patient-section-title">Today</h2>
+        <span id="todayDateBadge" class="patient-date-pill"></span>
+      </div>
+      <div id="todayCards" class="patient-today-cards"></div>
+    </section>
 
-    <section id="todayChecklist" class="checklist-section-card">
+    <section id="todayChecklist" class="checklist-section-card patient-checklist-wrap">
       <div class="checklist-section-top">
         <div>
-          <h2 class="checklist-main-title">Today's Checklist</h2>
-          <p class="checklist-hint">Tap a meal to log details. Use ✓ when done.</p>
+          <h2 class="checklist-main-title">Today's food checklist</h2>
+          <p class="checklist-hint">Tap a meal to add details. Press ✓ when finished.</p>
         </div>
         <span id="checklistDate" class="checklist-date-badge"></span>
       </div>
@@ -43,8 +48,8 @@
       <div id="checklistItems" class="checklist-items"></div>
     </section>
 
-    <section class="dash-section">
-      <h3 class="dash-section-title">Quick actions</h3>
+    <section class="patient-actions-section">
+      <h2 class="patient-section-title">What do you need?</h2>
       <div id="dashboardGrid"></div>
     </section>
   </div>

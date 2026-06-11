@@ -39,7 +39,7 @@ bootstrap({
           recordedAt: FirestoreService.serverTimestamp(),
         });
 
-        toast.success("Progress saved.");
+        toast.success("Weight saved! Great job.");
         form.reset();
         await loadEntries(patientId, listEl, emptyState);
       } catch (error) {

@@ -29,9 +29,9 @@ export function renderBottomNav(profile) {
 
   return `
     <nav id="ncms-bottom-nav"
-         class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200 safe-area-bottom"
+         class="ncms-bottom-nav-shell lg:hidden fixed bottom-0 inset-x-0 z-40 safe-area-bottom"
          aria-label="Mobile navigation">
-      <div class="flex items-stretch justify-around px-1 py-1">
+      <div class="ncms-bottom-nav-inner">
         ${items}
       </div>
     </nav>

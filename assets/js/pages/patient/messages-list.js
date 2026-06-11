@@ -5,6 +5,7 @@ import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { escapeHtml, formatDateTime } from "../../utils/format.js";
 import { getAssignedDoctorId, tsMillis } from "./patient-helpers.js";
+import { patientEmptyStateHtml } from "../../components/patient-ui.js";
 
 let patientId = null;
 let doctorId = null;
@@ -18,9 +19,12 @@ bootstrap({
     doctorId = await getAssignedDoctorId(patientId);
 
     if (!doctorId) {
-      document.getElementById("messagesPanel").innerHTML = `
-        <p class="text-slate-500 text-center py-8">No doctor assigned yet. Contact the clinic.</p>
-      `;
+      document.getElementById("messagesPanel").innerHTML = patientEmptyStateHtml({
+        icon: "💬",
+        title: "No doctor assigned",
+        message: "Please contact the clinic for help.",
+        hint: "They will connect you with your doctor.",
+      });
       return;
     }
 
@@ -62,12 +66,17 @@ async function loadMessages() {
 function renderThread(panel) {
   panel.innerHTML = `
     <div class="messages-thread" id="messagesThread">
-      ${allMessages.length === 0 ? `<p class="text-slate-500 text-sm">No messages yet. Send a message to your doctor.</p>` : ""}
+      ${allMessages.length === 0 ? patientEmptyStateHtml({
+        icon: "💬",
+        title: "No messages yet",
+        message: "Write a message below to talk to your doctor.",
+        hint: "We usually reply during clinic hours.",
+      }) : ""}
       ${allMessages.map((m) => messageBubble(m)).join("")}
     </div>
     <div class="message-compose">
       <input id="messageInput" type="text" class="form-input" placeholder="Type your message..." />
-      <button type="button" id="sendBtn" class="view-btn px-5">Send</button>
+      <button type="button" id="sendBtn" class="patient-btn-primary patient-btn-compact">Send</button>
     </div>
   `;
 

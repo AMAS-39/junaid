@@ -24,13 +24,11 @@ export function getNavItems(role) {
       { id: "payments", label: t("payments"), href: "/secretary/payments/list.html", icon: "wallet" },
     ],
     [ROLES.PATIENT]: [
-      { id: "dashboard", label: t("dashboard"), href: "/patient/dashboard.html", icon: "grid" },
-      { id: "diet-plan", label: t("dietPlans"), href: "/patient/diet-plan/view.html", icon: "leaf" },
-      { id: "progress", label: t("progress"), href: "/patient/progress/list.html", icon: "trending" },
-      { id: "appointments", label: t("appointments"), href: "/patient/appointments/list.html", icon: "calendar" },
-      { id: "messages", label: t("messages"), href: "/patient/messages/list.html", icon: "message" },
+      { id: "dashboard", label: "Home", href: "/patient/dashboard.html", icon: "grid" },
+      { id: "diet-plan", label: "Diet", href: "/patient/diet-plan/view.html", icon: "leaf" },
       { id: "medicine", label: "Medicine", href: "/patient/medicine/list.html", icon: "pill" },
-      { id: "upload-photo", label: "Upload", href: "/patient/photos/upload.html", icon: "camera" },
+      { id: "appointments", label: "Visits", href: "/patient/appointments/list.html", icon: "calendar" },
+      { id: "messages", label: "Chat", href: "/patient/messages/list.html", icon: "message" },
     ],
   };
 
