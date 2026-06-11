@@ -4,7 +4,9 @@ import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { buildUrl } from "../../core/router.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { toast } from "../../components/toast.js";
-import { calculateBMI, escapeHtml, formatDateTime } from "../../utils/format.js";
+import { calculateBMI, formatDate } from "../../utils/format.js";
+import { renderDashStats, renderDashActions } from "../../components/dashboard-stats.js";
+import { formatFirestoreError } from "../../utils/firestore-error.js";
 import { getPatientRecord, getActiveDietPlan, tsMillis } from "./patient-helpers.js";
 import {
   getTodayChecklist,
@@ -32,11 +34,15 @@ bootstrap({
     currentPatientId = session.user.uid;
     const patientId = currentPatientId;
     const welcomeEl = document.getElementById("welcomeText");
+    const subtitleEl = document.getElementById("dashboardSubtitle");
     const summaryEl = document.getElementById("summaryCards");
     const gridEl = document.getElementById("dashboardGrid");
 
     if (welcomeEl) {
-      welcomeEl.textContent = `Welcome, ${session.profile.name || "Patient"}`;
+      welcomeEl.textContent = `Hi, ${session.profile.name || "there"}`;
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = "Your health snapshot for today";
     }
 
     const dateEl = document.getElementById("checklistDate");
@@ -70,64 +76,131 @@ bootstrap({
       const target = patient?.targetWeight ?? "—";
       const bmi = calculateBMI(patient?.height, patient?.currentWeight);
       const bmiDisplay = bmi ?? "—";
+      const checklistStats = getComplianceStats(todayChecklist);
 
-      if (summaryEl) {
-        summaryEl.innerHTML = `
-          <div class="patient-stat-row">
-            <div class="patient-stat-box"><span>Current</span><strong>${escapeHtml(String(weight))} kg</strong></div>
-            <div class="patient-stat-box"><span>Goal</span><strong>${escapeHtml(String(target))} kg</strong></div>
-            <div class="patient-stat-box"><span>BMI</span><strong>${escapeHtml(String(bmiDisplay))}</strong></div>
-          </div>
-          ${dietPlan ? `
-            <div class="patient-summary-card">
-              <h3>Active Diet Plan</h3>
-              <p><strong>${escapeHtml(dietPlan.title || "Your plan")}</strong></p>
-              <p class="text-sm text-slate-500 mt-1">${escapeHtml(String(dietPlan.breakfast || "").slice(0, 80))}${dietPlan.breakfast?.length > 80 ? "…" : ""}</p>
-            </div>
-          ` : `
-            <div class="patient-summary-card muted">
-              <p>No active diet plan yet. Your doctor will assign one.</p>
-            </div>
-          `}
-          ${nextAppointment ? `
-            <div class="patient-summary-card">
-              <h3>Next Appointment</h3>
-              <p><strong>${escapeHtml(formatDateTime(nextAppointment.scheduledAt))}</strong></p>
-              <span class="status-badge status-${escapeHtml(nextAppointment.status || "pending")}">${escapeHtml(nextAppointment.status || "pending")}</span>
-            </div>
-          ` : `
-            <div class="patient-summary-card muted">
-              <p>No upcoming appointments.</p>
-            </div>
-          `}
-        `;
-      }
+      const nextApptMeta = nextAppointment
+        ? `Status: ${nextAppointment.status || "pending"}`
+        : "Book with your clinic";
 
-      if (gridEl) {
-        const cards = [
-          { title: "Today's Checklist", icon: "✅", href: "#todayChecklist" },
-          { title: "Medicine Schedule", icon: "💊", href: "/patient/medicine/list.html" },
-          { title: "My Diet Plan", icon: "🥗", href: "/patient/diet-plan/view.html" },
-          { title: "Upload Photo", icon: "📷", href: "/patient/photos/upload.html" },
-          { title: "My Progress", icon: "📈", href: "/patient/progress/list.html" },
-          { title: "Book Appointment", icon: "📅", href: "/patient/appointments/list.html" },
-          { title: "Messages", icon: "💬", href: "/patient/messages/list.html" },
-        ];
+      const dietTitle = dietPlan?.title || "No active plan";
+      const dietMeta = dietPlan
+        ? String(dietPlan.breakfast || "View meals and goals").slice(0, 48)
+        : "Your doctor will assign one";
 
-        gridEl.innerHTML = cards
-          .map(
-            (c) => `
-            <a href="${c.href.startsWith("#") ? c.href : buildUrl(c.href)}" class="patient-big-card">
-              <span class="patient-big-icon">${c.icon}</span>
-              <span class="patient-big-title">${escapeHtml(c.title)}</span>
-            </a>
-          `
-          )
-          .join("");
-      }
+      renderDashStats(
+        summaryEl,
+        [
+          {
+            label: "Current Weight",
+            value: weight === "—" ? "—" : `${weight} kg`,
+            meta: "Latest recorded",
+            icon: "⚖️",
+            tone: "green",
+            href: buildUrl("/patient/progress/list.html"),
+          },
+          {
+            label: "Target Weight",
+            value: target === "—" ? "—" : `${target} kg`,
+            meta: "Your goal",
+            icon: "🎯",
+            tone: "teal",
+          },
+          {
+            label: "BMI",
+            value: bmiDisplay,
+            meta: patient?.height ? `${patient.height} cm height` : "Body mass index",
+            icon: "📊",
+            tone: "sky",
+          },
+          {
+            label: "Next Appointment",
+            value: nextAppointment ? formatDate(nextAppointment.scheduledAt) : "—",
+            meta: nextApptMeta,
+            icon: "📅",
+            tone: "violet",
+            href: buildUrl("/patient/appointments/list.html"),
+            badge: nextAppointment ? nextAppointment.status || "pending" : undefined,
+            badgeTone: nextAppointment
+              ? nextAppointment.status === "approved"
+                ? "success"
+                : "warning"
+              : undefined,
+          },
+          {
+            label: "Diet Plan",
+            value: dietPlan ? "Active" : "None",
+            meta: dietMeta,
+            icon: "🥗",
+            tone: "amber",
+            href: buildUrl("/patient/diet-plan/view.html"),
+            badge: dietPlan ? "Active" : "Pending",
+            badgeTone: dietPlan ? "success" : "muted",
+          },
+          {
+            label: "Today's Checklist",
+            value: `${checklistStats.percent}%`,
+            meta: `${checklistStats.completed} of ${checklistStats.total} completed`,
+            icon: "✅",
+            tone: "green",
+            href: "#todayChecklist",
+            badge: checklistStats.percent >= 100 ? "Done" : "In progress",
+            badgeTone: checklistStats.percent >= 100 ? "success" : "warning",
+          },
+        ],
+        { gridClass: "dash-stats-grid patient-dash-stats-grid" }
+      );
+
+      renderDashActions(
+        gridEl,
+        [
+          {
+            title: "Today's Checklist",
+            desc: "Log meals and water",
+            icon: "✅",
+            href: "#todayChecklist",
+          },
+          {
+            title: "Medicine Schedule",
+            desc: "Reminders and papers",
+            icon: "💊",
+            href: buildUrl("/patient/medicine/list.html"),
+          },
+          {
+            title: "My Diet Plan",
+            desc: "View nutrition plan",
+            icon: "🥗",
+            href: buildUrl("/patient/diet-plan/view.html"),
+          },
+          {
+            title: "Upload Photo",
+            desc: "Meals, progress, reports",
+            icon: "📷",
+            href: buildUrl("/patient/photos/upload.html"),
+          },
+          {
+            title: "My Progress",
+            desc: "Weight history",
+            icon: "📈",
+            href: buildUrl("/patient/progress/list.html"),
+          },
+          {
+            title: "Book Appointment",
+            desc: "Schedule a visit",
+            icon: "📅",
+            href: buildUrl("/patient/appointments/list.html"),
+          },
+          {
+            title: "Messages",
+            desc: "Chat with your doctor",
+            icon: "💬",
+            href: buildUrl("/patient/messages/list.html"),
+          },
+        ],
+        "dash-actions-grid patient-dash-actions"
+      );
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load dashboard.");
+      toast.error(formatFirestoreError(error));
     } finally {
       hideLoading();
     }

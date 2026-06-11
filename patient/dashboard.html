@@ -11,11 +11,15 @@
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body class="bg-slate-50 min-h-screen">
-  <div id="page-content">
-    <div class="mb-4">
-      <h2 id="welcomeText" class="text-xl sm:text-2xl font-bold text-slate-800">Welcome</h2>
-    </div>
-    <div id="summaryCards"></div>
+  <div id="page-content" class="dash-page patient-dash-page">
+    <header class="dash-page-header patient-dash-header">
+      <div>
+        <h2 id="welcomeText" class="dash-page-title">Welcome</h2>
+        <p id="dashboardSubtitle" class="dash-page-subtitle">Your health snapshot</p>
+      </div>
+    </header>
+
+    <div id="summaryCards" class="dash-section"></div>
 
     <section id="todayChecklist" class="checklist-section-card">
       <div class="checklist-section-top">
@@ -39,7 +43,10 @@
       <div id="checklistItems" class="checklist-items"></div>
     </section>
 
-    <div id="dashboardGrid" class="grid grid-cols-1 gap-3 mt-4"></div>
+    <section class="dash-section">
+      <h3 class="dash-section-title">Quick actions</h3>
+      <div id="dashboardGrid"></div>
+    </section>
   </div>
   <script type="module" src="../assets/js/pages/patient/patient-dashboard.js"></script>
 </body>

@@ -12,14 +12,21 @@
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body class="bg-slate-50 min-h-screen">
-  <div id="page-content">
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  <div id="page-content" class="dash-page">
+    <header class="dash-page-header">
       <div>
-        <h2 id="welcomeText" class="text-xl sm:text-2xl font-bold text-slate-800">Welcome</h2>
-        <span id="roleBadge" class="inline-block mt-1 text-xs font-medium text-medical-700 bg-medical-50 px-2.5 py-1 rounded-full"></span>
+        <h2 id="welcomeText" class="dash-page-title">Welcome</h2>
+        <p id="dashboardSubtitle" class="dash-page-subtitle">Clinic overview</p>
       </div>
-    </div>
-    <div id="dashboardGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+      <span id="roleBadge" class="dash-role-badge"></span>
+    </header>
+
+    <div id="statsCards" class="dash-section"></div>
+
+    <section class="dash-section">
+      <h3 class="dash-section-title">Quick actions</h3>
+      <div id="dashboardGrid"></div>
+    </section>
   </div>
   <script type="module" src="../assets/js/pages/doctor/doctor-dashboard.js"></script>
 </body>

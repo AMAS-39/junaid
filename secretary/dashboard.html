@@ -11,12 +11,20 @@
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body class="bg-slate-50 min-h-screen">
-  <div id="page-content">
-    <div class="mb-4">
-      <h2 id="welcomeText" class="text-xl sm:text-2xl font-bold text-slate-800">Welcome</h2>
-    </div>
-    <div id="statsCards"></div>
-    <div id="dashboardGrid" class="grid grid-cols-1 gap-3 mt-4"></div>
+  <div id="page-content" class="dash-page">
+    <header class="dash-page-header">
+      <div>
+        <h2 id="welcomeText" class="dash-page-title">Welcome</h2>
+        <p id="dashboardSubtitle" class="dash-page-subtitle">Front desk overview</p>
+      </div>
+    </header>
+
+    <div id="statsCards" class="dash-section"></div>
+
+    <section class="dash-section">
+      <h3 class="dash-section-title">Quick actions</h3>
+      <div id="dashboardGrid"></div>
+    </section>
   </div>
   <script type="module" src="../assets/js/pages/secretary/secretary-dashboard.js"></script>
 </body>
