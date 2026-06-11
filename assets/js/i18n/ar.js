@@ -4,6 +4,11 @@ export default {
     name: "عيادة التغذية",
     subtitle: "نظام إدارة عيادة التغذية",
   },
+  company: {
+    poweredBy: "بدعم من {name}",
+    tagline: "حلول برمجية لأعمالك",
+    visitWebsite: "زيارة موقعنا",
+  },
   language: {
     label: "اللغة",
     en: "English",

@@ -4,6 +4,11 @@ export default {
     name: "Nutrition Clinic",
     subtitle: "Nutrition Clinic Management System",
   },
+  company: {
+    poweredBy: "Powered by {name}",
+    tagline: "Software solutions for your business",
+    visitWebsite: "Visit our website",
+  },
   language: {
     label: "Language",
     en: "English",

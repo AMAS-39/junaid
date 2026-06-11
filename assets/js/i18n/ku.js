@@ -4,6 +4,11 @@ export default {
     name: "کلینیکی خۆراک",
     subtitle: "سیستەمی بەڕێوەبردنی کلینیکی خۆراک",
   },
+  company: {
+    poweredBy: "پشتگیری لە {name}",
+    tagline: "چارەسەری نەرمەکاڵا بۆ کارەکەت",
+    visitWebsite: "سەردانی ماڵپەڕەکەمان",
+  },
   language: {
     label: "زمان",
     en: "English",

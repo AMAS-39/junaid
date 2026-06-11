@@ -7,6 +7,10 @@ import { initLoading, forceHideLoading } from "../components/loading.js";
 import { toast } from "../components/toast.js";
 import { findRoute, getCurrentPath, getRouteTitle } from "./router.js";
 import { initBackNavigation, resolveBackHrefs } from "../utils/back-nav.js";
+import {
+  mountAuthZasTechBranding,
+  mountAppZasTechBranding,
+} from "../components/company-branding.js";
 
 /**
  * Application bootstrap — call once per page.
@@ -49,10 +53,13 @@ export async function bootstrap(options = {}) {
     try {
       initLayout(session);
       applyPageTranslations(document.getElementById("ncms-main-content") || document);
+      mountAppZasTechBranding();
     } catch (layoutError) {
       console.error("Layout initialization failed:", layoutError);
       toast.error(t("toast.navShellFailed"));
     }
+  } else {
+    mountAuthZasTechBranding();
   }
 
   forceHideLoading();

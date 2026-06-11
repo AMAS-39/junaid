@@ -4,6 +4,12 @@
 
 export const APP_NAME = "Nutrition Clinic";
 
+/** ZAS Tech company branding — update website if your public URL changes. */
+export const ZAS_TECH = Object.freeze({
+  name: "ZAS Tech",
+  website: "https://zas-tech.krd",
+});
+
 export const ROLES = Object.freeze({
   DOCTOR: "doctor",
   SECRETARY: "secretary",

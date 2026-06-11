@@ -32,6 +32,7 @@ export function initLayout(sessionOrProfile) {
     <div class="flex-1 flex flex-col min-w-0 min-h-screen">
       <div id="ncms-top-nav-slot"></div>
       <main class="flex-1 p-4 pb-24 md:p-6 md:pb-6 w-full min-w-0" id="ncms-main-content"></main>
+      <div id="ncms-zas-tech-slot" class="ncms-zas-tech-slot"></div>
     </div>
     <div id="ncms-bottom-nav-slot"></div>
     ${renderSidebarDrawer(profile)}
