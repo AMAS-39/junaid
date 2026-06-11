@@ -21,16 +21,11 @@ bootstrap({
     if (!session) return;
 
     patientId = getQueryParam("patientId");
-    const backBtn = document.getElementById("backBtn");
 
     if (!patientId) {
       toast.error("Patient ID is required.");
       return;
     }
-
-    backBtn?.addEventListener("click", () => {
-      window.location.href = `../../patients/details.html?id=${patientId}`;
-    });
 
     document.querySelectorAll("[data-filter]").forEach((btn) => {
       btn.addEventListener("click", () => {

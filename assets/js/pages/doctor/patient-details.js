@@ -15,12 +15,7 @@ let doctorNotes = [];
 bootstrap({
   onReady: async (session) => {
     const patientDetails = document.getElementById("patientDetails");
-    const backBtn = document.getElementById("backBtn");
     const patientId = getQueryParam("id");
-
-    backBtn?.addEventListener("click", () => {
-      window.location.href = "list.html";
-    });
 
     if (!patientId) {
       toast.error("Patient ID is missing.");
@@ -102,6 +97,7 @@ function renderPatient(patient, container) {
       ${actionCard("Photos", "Medicine, meal, lab and progress photos", "📷", `../photos/list.html?patientId=${pid}`)}
       ${actionCard("Appointments", "View patient appointments", "📅", `../appointments/list.html?patientId=${pid}`)}
       ${actionCard("Messages", "Open patient conversation", "💬", `../messages/list.html?patientId=${pid}`)}
+      ${actionCard("Medicine", "Reminders, prescriptions and test papers", "💊", `../medicine/list.html?patientId=${pid}`)}
     </section>
   `;
 }

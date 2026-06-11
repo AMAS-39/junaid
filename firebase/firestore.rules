@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userProfile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function hasProfile() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function role() {
+      return hasProfile() ? userProfile().data.role : "";
+    }
+
+    function isDoctor() {
+      return hasProfile() && role() == "doctor";
+    }
+
+    function isPatient() {
+      return hasProfile() && role() == "patient";
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isDoctor());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /patients/{patientId} {
+      allow read: if isSignedIn();
+      allow write: if isDoctor() || (isPatient() && request.auth.uid == patientId);
+    }
+
+    match /medicineReminders/{docId} {
+      allow read: if isSignedIn()
+        && (isDoctor() || resource.data.patientId == request.auth.uid);
+      allow create: if isDoctor()
+        && request.resource.data.patientId is string
+        && request.resource.data.doctorId == request.auth.uid;
+      allow update, delete: if isDoctor();
+    }
+
+    match /medicineDocuments/{docId} {
+      allow read: if isSignedIn()
+        && (isDoctor() || resource.data.patientId == request.auth.uid);
+      allow create: if isSignedIn()
+        && request.resource.data.patientId is string
+        && request.resource.data.uploadedBy == request.auth.uid
+        && (isDoctor() || request.resource.data.patientId == request.auth.uid);
+      allow delete: if isSignedIn()
+        && (isDoctor() || resource.data.uploadedBy == request.auth.uid);
+    }
+
+    match /dailyChecklists/{docId} {
+      allow read: if isSignedIn()
+        && (isDoctor() || resource.data.patientId == request.auth.uid);
+      allow create, update: if isPatient()
+        && request.resource.data.patientId == request.auth.uid;
+    }
+
+    match /doctorNotes/{docId} {
+      allow read, write: if isDoctor()
+        && (resource == null || resource.data.doctorId == request.auth.uid)
+        && request.resource.data.doctorId == request.auth.uid;
+    }
+
+    // Other collections — authenticated access (tighten per collection in production)
+    match /{document=**} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

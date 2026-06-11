@@ -33,6 +33,17 @@ export function buildPatientPhotoPath(patientId, photoType, fileName) {
   return `patients/${patientId}/${photoType}/${Date.now()}-${safeName}`;
 }
 
+/**
+ * Build path for medicine papers / test results in documents bucket.
+ * Format: medicine-papers/{patientId}/{timestamp}-{filename}
+ */
+export function buildMedicineDocumentPath(patientId, fileName) {
+  const safeName = String(fileName || "document")
+    .replace(/[^a-zA-Z0-9._-]/g, "_")
+    .slice(0, 120);
+  return `medicine-papers/${patientId}/${Date.now()}-${safeName}`;
+}
+
 export const StoragePaths = Object.freeze({
   patientPhoto: (patientId, photoType, filename) =>
     buildPatientPhotoPath(patientId, photoType, filename),

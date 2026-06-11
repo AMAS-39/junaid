@@ -1,5 +1,60 @@
 /* Nutrition Clinic Management System — Global Styles */
 
+/* App shell — ensures sidebar/header work even if Tailwind CDN is slow */
+#ncms-app-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #f8fafc;
+}
+
+#ncms-sidebar {
+  display: none;
+  flex-direction: column;
+  width: 16rem;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e2e8f0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+#ncms-top-nav-slot {
+  display: block;
+  flex-shrink: 0;
+}
+
+#ncms-main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 1rem;
+  padding-bottom: 6rem;
+}
+
+#ncms-bottom-nav {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  #ncms-sidebar {
+    display: flex !important;
+  }
+
+  #ncms-bottom-nav {
+    display: none !important;
+  }
+
+  #ncms-main-content {
+    padding: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+#page-content {
+  min-height: 100vh;
+}
+
 /* Spinner */
 .ncms-spinner {
   animation: ncms-spin 0.7s linear infinite;
@@ -372,6 +427,15 @@
   font-weight: 700;
   cursor: pointer;
   margin-bottom: 20px;
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.25;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a.back-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 .details-header-card {
@@ -1499,4 +1563,271 @@
   .checklist-details-grid {
     gap: 16px;
   }
+}
+
+/* Medicine reminders */
+.medicine-reminders-list {
+  margin-top: 8px;
+}
+
+.medicine-time-group {
+  margin-bottom: 20px;
+}
+
+.medicine-time-heading {
+  margin-bottom: 12px;
+}
+
+.medicine-time-badge {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #1e40af;
+  background: #dbeafe;
+  padding: 8px 14px;
+  border-radius: 12px;
+}
+
+.medicine-time-badge.small {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+}
+
+.medicine-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.medicine-reminder-card {
+  background: white;
+  border-radius: 20px;
+  padding: 18px 18px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.medicine-reminder-card.patient {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.medicine-reminder-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.medicine-reminder-name {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.medicine-reminder-dosage {
+  font-size: 0.875rem;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.medicine-reminder-dosage-large {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+.medicine-reminder-time-inline {
+  margin-bottom: 8px;
+}
+
+.medicine-reminder-instructions {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.medicine-instructions-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.form-grid .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Medicine tabs + papers (CSS-only radio tab pattern) */
+.medicine-tab-root {
+  display: block;
+}
+
+.medicine-tab-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.medicine-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  background: #f1f5f9;
+  padding: 6px;
+  border-radius: 16px;
+}
+
+.medicine-tab {
+  flex: 1;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.medicine-tab.active,
+#medicineViewReminders:checked ~ .medicine-tabs label[for="medicineViewReminders"],
+#medicineViewPapers:checked ~ .medicine-tabs label[for="medicineViewPapers"],
+#medicineViewSchedule:checked ~ .medicine-tabs label[for="medicineViewSchedule"] {
+  background: white;
+  color: #047857;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.medicine-tab-panel {
+  display: none !important;
+}
+
+#medicineViewReminders:checked ~ #tabReminders,
+#medicineViewPapers:checked ~ #tabPapers,
+#medicineViewSchedule:checked ~ #tabSchedule {
+  display: block !important;
+}
+
+.medicine-papers-section {
+  margin-top: 24px;
+}
+
+.medicine-papers-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.medicine-papers-heading {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.medicine-papers-count {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.medicine-papers-error {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.medicine-papers-error.hidden {
+  display: none !important;
+}
+
+.medicine-papers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.medicine-papers-list:empty {
+  display: none;
+}
+
+.medicine-paper-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.medicine-paper-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.medicine-paper-title {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.medicine-paper-type {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1e40af;
+  background: #dbeafe;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.medicine-paper-note {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+
+.medicine-paper-meta {
+  font-size: 0.75rem;
+  color: #94a3b8;
 }

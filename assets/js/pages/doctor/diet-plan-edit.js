@@ -11,16 +11,11 @@ bootstrap({
 
     const planId = getQueryParam("id");
     const form = document.getElementById("dietPlanForm");
-    const backBtn = document.getElementById("backBtn");
 
     if (!planId) {
       toast.error("Diet plan ID is required.");
       return;
     }
-
-    backBtn?.addEventListener("click", () => {
-      window.location.href = "list.html";
-    });
 
     await loadPlan(planId);
 

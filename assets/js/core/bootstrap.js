@@ -3,9 +3,11 @@ import { guardPage, redirectIfAuthenticated } from "./auth-guard.js";
 import { initLayout } from "../components/layout.js";
 import { initToast } from "../components/toast.js";
 import { initModal } from "../components/modal.js";
-import { initLoading } from "../components/loading.js";
+import { initLoading, forceHideLoading } from "../components/loading.js";
+import { toast } from "../components/toast.js";
 import { findRoute, getCurrentPath } from "./router.js";
 import { APP_NAME } from "../config/constants.js";
+import { initBackNavigation, resolveBackHrefs } from "../utils/back-nav.js";
 
 /**
  * Application bootstrap — call once per page.
@@ -21,6 +23,7 @@ export async function bootstrap(options = {}) {
   initToast();
   initModal();
   initLoading();
+  initBackNavigation();
 
   const path = getCurrentPath();
   const route = findRoute(path);
@@ -39,14 +42,32 @@ export async function bootstrap(options = {}) {
     if (!session) return;
   }
 
+  forceHideLoading();
+
   const useLayout = document.body.dataset.layout !== "none";
   if (useLayout && session) {
-    initLayout(session.profile);
+    try {
+      initLayout(session);
+    } catch (layoutError) {
+      console.error("Layout initialization failed:", layoutError);
+      toast.error("Navigation shell failed to load. Refresh the page.");
+    }
   }
 
+  forceHideLoading();
+  resolveBackHrefs();
+
   if (onReady) {
-    onReady(session);
+    try {
+      await onReady(session);
+    } catch (pageError) {
+      console.error("Page initialization failed:", pageError);
+      toast.error("Failed to load page content.");
+    }
   }
+
+  forceHideLoading();
+  resolveBackHrefs();
 
   document.dispatchEvent(
     new CustomEvent("ncms:ready", { detail: { session, path, t } })

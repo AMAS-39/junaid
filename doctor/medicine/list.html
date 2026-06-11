@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medicine | Nutrition Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../assets/js/config/tailwind-setup.js"></script>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <div id="page-content">
+    <a href="../patients/list.html" class="back-btn" data-back-param="patientId" data-back-template="../patients/details.html?id={patientId}">← Back to Patient</a>
+    <section class="page-header">
+      <h1>Medicine</h1>
+      <p id="patientSubtitle">Reminders and medicine papers for this patient</p>
+    </section>
+
+    <div class="medicine-tab-root">
+      <input type="radio" name="medicineView" id="medicineViewReminders" class="medicine-tab-radio" checked />
+      <input type="radio" name="medicineView" id="medicineViewPapers" class="medicine-tab-radio" />
+
+      <div class="medicine-tabs" role="tablist">
+        <label for="medicineViewReminders" class="medicine-tab" role="tab">Reminders</label>
+        <label for="medicineViewPapers" class="medicine-tab" role="tab">Medicine Papers</label>
+      </div>
+
+      <div id="tabReminders" class="medicine-tab-panel">
+      <form id="reminderForm" class="patient-form-card">
+        <h2>Add Reminder</h2>
+        <div class="form-grid two-col">
+          <div class="form-group">
+            <label for="medicineName">Medicine / supplement</label>
+            <input id="medicineName" type="text" required class="form-input" placeholder="e.g. Vitamin D" />
+          </div>
+          <div class="form-group">
+            <label for="dosage">Dosage</label>
+            <input id="dosage" type="text" required class="form-input" placeholder="e.g. 1 tablet, 500mg" />
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input id="time" type="text" required class="form-input" placeholder="e.g. 08:00, Morning" />
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" class="form-input">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="instructions">Instructions</label>
+            <textarea id="instructions" class="form-textarea" rows="3" placeholder="Take with food…"></textarea>
+          </div>
+        </div>
+        <button type="submit" id="saveBtn" class="ncms-btn-primary mt-4 w-full sm:w-auto">Add Reminder</button>
+      </form>
+
+      <div id="remindersList" class="medicine-reminders-list"></div>
+      <div id="emptyState" class="empty-state hidden">
+        <h3>No reminders yet</h3>
+        <p>Add medicine or supplement reminders for this patient.</p>
+      </div>
+    </div>
+
+      <div id="tabPapers" class="medicine-tab-panel">
+      <form id="paperUploadForm" class="patient-form-card">
+        <h2>Upload Medicine Paper</h2>
+        <p class="checklist-hint mb-3">Prescriptions, lab tests, or medical reports (PDF, JPG, PNG — max 10MB)</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="paperTitle">Title</label>
+            <input id="paperTitle" type="text" class="form-input" placeholder="e.g. Blood test March 2026" />
+          </div>
+          <div class="form-group">
+            <label for="paperCategory">Type</label>
+            <select id="paperCategory" class="form-input">
+              <option value="prescription">Prescription</option>
+              <option value="test">Lab / test result</option>
+              <option value="report">Medical report</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="paperNote">Note (optional)</label>
+            <input id="paperNote" type="text" class="form-input" placeholder="Short description" />
+          </div>
+          <div class="form-group full-width">
+            <label for="paperFile">File</label>
+            <input id="paperFile" type="file" required class="form-input" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+          </div>
+        </div>
+        <button type="submit" id="paperUploadBtn" class="ncms-btn-primary mt-3 w-full sm:w-auto">Upload Paper</button>
+      </form>
+
+      <section class="medicine-papers-section">
+        <div class="medicine-papers-section-head">
+          <h2 id="papersSectionTitle" class="medicine-papers-heading">Uploaded reports</h2>
+          <span id="papersCount" class="medicine-papers-count">0 files</span>
+        </div>
+        <p id="papersLoadError" class="medicine-papers-error hidden" role="alert"></p>
+        <div id="papersList" class="medicine-papers-list"></div>
+        <div id="papersEmpty" class="empty-state">
+          <h3>No medicine papers yet</h3>
+          <p>Upload prescriptions, lab tests, or medical reports above. They will appear in this list.</p>
+        </div>
+      </section>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="../../assets/js/pages/doctor/medicine-list.js"></script>
+</body>
+</html>

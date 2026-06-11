@@ -11,16 +11,11 @@ bootstrap({
     const container = document.getElementById("progressContainer");
     const emptyState = document.getElementById("emptyState");
     const patientBanner = document.getElementById("patientBanner");
-    const backBtn = document.getElementById("backBtn");
 
     if (!patientId) {
       toast.error("Patient ID is required.");
       return;
     }
-
-    backBtn?.addEventListener("click", () => {
-      window.location.href = `../../patients/details.html?id=${patientId}`;
-    });
 
     const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
     if (patient && patientBanner) {

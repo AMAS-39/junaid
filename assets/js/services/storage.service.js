@@ -95,11 +95,19 @@ export const StorageService = {
 
     const mime = file.type?.toLowerCase() || "";
     const allowed = constraints.allowedMimeTypes.some((t) => t === mime);
-    const ext = file.name?.split(".").pop()?.toLowerCase();
-    const allowedExt = ["jpg", "jpeg", "png", "webp"].includes(ext);
+    const ext = file.name?.split(".").pop()?.toLowerCase() || "";
+    const imageExt = ["jpg", "jpeg", "png", "webp"];
+    const docExt = ["pdf", "jpg", "jpeg", "png"];
+    const allowedExt = type === "DOCUMENT" ? docExt.includes(ext) : imageExt.includes(ext);
 
     if (!allowed && !allowedExt) {
-      return { valid: false, error: "Only JPG, PNG, and WEBP images are allowed." };
+      return {
+        valid: false,
+        error:
+          type === "DOCUMENT"
+            ? "Only PDF, JPG, and PNG files are allowed."
+            : "Only JPG, PNG, and WEBP images are allowed.",
+      };
     }
 
     return { valid: true };

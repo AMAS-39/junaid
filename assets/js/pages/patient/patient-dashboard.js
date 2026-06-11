@@ -106,6 +106,7 @@ bootstrap({
       if (gridEl) {
         const cards = [
           { title: "Today's Checklist", icon: "✅", href: "#todayChecklist" },
+          { title: "Medicine Schedule", icon: "💊", href: "/patient/medicine/list.html" },
           { title: "My Diet Plan", icon: "🥗", href: "/patient/diet-plan/view.html" },
           { title: "Upload Photo", icon: "📷", href: "/patient/photos/upload.html" },
           { title: "My Progress", icon: "📈", href: "/patient/progress/list.html" },

@@ -12,7 +12,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen">
   <div id="page-content">
-    <button id="backBtn" type="button" class="back-btn">← Back to Patient</button>
+    <a href="../patients/list.html" class="back-btn" data-back-param="patientId" data-back-template="../patients/details.html?id={patientId}">← Back to Patient</a>
     <div id="patientBanner" class="page-header"></div>
     <div id="progressContainer"></div>
     <div id="emptyState" class="empty-state hidden">

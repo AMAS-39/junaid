@@ -17,6 +17,8 @@ export const COLLECTIONS = Object.freeze({
   PATIENT_PHOTOS: "patientPhotos",
   DOCTOR_NOTES: "doctorNotes",
   DAILY_CHECKLISTS: "dailyChecklists",
+  MEDICINE_REMINDERS: "medicineReminders",
+  MEDICINE_DOCUMENTS: "medicineDocuments",
 });
 
 /**
@@ -111,6 +113,35 @@ export const COLLECTIONS = Object.freeze({
  */
 
 /**
+ * @typedef {Object} MedicineDocumentRecord
+ * @property {string} patientId
+ * @property {string} uploadedBy
+ * @property {string} title
+ * @property {"prescription"|"test"|"report"|"other"} category
+ * @property {string} [note]
+ * @property {string} bucket
+ * @property {string} filePath
+ * @property {string} fileName
+ * @property {string} mimeType
+ * @property {number} size
+ * @property {string} status
+ * @property {import("firebase/firestore").Timestamp} createdAt
+ */
+
+/**
+ * @typedef {Object} MedicineReminderDocument
+ * @property {string} patientId
+ * @property {string} doctorId
+ * @property {string} medicineName
+ * @property {string} dosage
+ * @property {string} time
+ * @property {string} [instructions]
+ * @property {"active"|"inactive"} status
+ * @property {import("firebase/firestore").Timestamp} createdAt
+ * @property {import("firebase/firestore").Timestamp} updatedAt
+ */
+
+/**
  * @typedef {Object} DailyChecklistDocument
  * @property {string} patientId
  * @property {string} date - YYYY-MM-DD
@@ -176,4 +207,6 @@ export const FIRESTORE_ACCESS = Object.freeze({
   [COLLECTIONS.PATIENT_PHOTOS]: "Patient upload own; doctor read assigned",
   [COLLECTIONS.DOCTOR_NOTES]: "Doctor read/write own notes only",
   [COLLECTIONS.DAILY_CHECKLISTS]: "Patient write own; doctor read assigned patients",
+  [COLLECTIONS.MEDICINE_REMINDERS]: "Doctor write; patient read own active",
+  [COLLECTIONS.MEDICINE_DOCUMENTS]: "Patient and doctor upload; both read patient files",
 });

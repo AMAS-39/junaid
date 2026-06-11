@@ -14,13 +14,6 @@ bootstrap({
     const patientBanner = document.getElementById("patientBanner");
     const patientSelectWrap = document.getElementById("patientSelectWrap");
     const patientSelect = document.getElementById("patientSelect");
-    const backBtn = document.getElementById("backBtn");
-
-    backBtn?.addEventListener("click", () => {
-      window.location.href = patientId
-        ? `../../patients/details.html?id=${patientId}`
-        : "list.html";
-    });
 
     if (!patientId) {
       const patients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);

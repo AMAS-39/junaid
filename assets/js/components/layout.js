@@ -5,12 +5,20 @@ import { findRoute, getCurrentPath } from "../core/router.js";
 
 /**
  * Initialize the app shell layout around existing page content.
- * @param {object} profile - Firestore user profile
+ * @param {{ profile: object, user?: object } | object} sessionOrProfile
  */
-export function initLayout(profile) {
+export function initLayout(sessionOrProfile) {
   const pageContent = document.getElementById("page-content");
-  if (!pageContent) return;
+  if (!pageContent) {
+    console.warn("initLayout: #page-content not found");
+    return;
+  }
 
+  if (document.getElementById("ncms-app-shell")) {
+    return;
+  }
+
+  const profile = sessionOrProfile?.profile ?? sessionOrProfile ?? {};
   const route = findRoute(getCurrentPath());
   const pageTitle = route?.title || "";
 

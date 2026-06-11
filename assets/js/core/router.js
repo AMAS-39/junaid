@@ -82,6 +82,13 @@ export const routeRegistry = Object.freeze([
     title: "Patient Photos",
   },
   {
+    path: "/doctor/medicine/list.html",
+    name: "doctor-medicine",
+    public: false,
+    roles: [ROLES.DOCTOR],
+    title: "Medicine Reminders",
+  },
+  {
     path: "/doctor/messages/list.html",
     name: "doctor-messages",
     public: false,
@@ -171,6 +178,13 @@ export const routeRegistry = Object.freeze([
     public: false,
     roles: [ROLES.PATIENT],
     title: "Upload Photo",
+  },
+  {
+    path: "/patient/medicine/list.html",
+    name: "patient-medicine",
+    public: false,
+    roles: [ROLES.PATIENT],
+    title: "Medicine Schedule",
   },
   {
     path: ROUTES.UNAUTHORIZED,
