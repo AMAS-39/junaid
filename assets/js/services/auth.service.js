@@ -11,6 +11,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase
 import { db } from "../config/firebase.js";
 import { ROLES } from "../config/constants.js";
 import { FirestoreService } from "./firestore.service.js";
+import { signOutSupabase } from "./supabase-auth.service.js";
 
 export const AUTH_ERRORS = Object.freeze({
   PROFILE_NOT_FOUND: "auth/profile-not-found",
@@ -194,6 +195,7 @@ export async function resetPassword(email) {
 export async function logout() {
   cachedUser = null;
   cachedProfile = null;
+  await signOutSupabase();
   await signOut(auth);
 }
 

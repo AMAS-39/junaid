@@ -16,6 +16,33 @@ export function getBucketForPhotoType(photoType) {
 }
 
 /**
+ * Resolve bucket from Firestore metadata (supports legacy records).
+ * @param {object} photo
+ */
+export function resolvePhotoBucket(photo) {
+  if (photo?.bucket) return photo.bucket;
+  const type = getPhotoTypeLabel(photo);
+  return getBucketForPhotoType(type);
+}
+
+/**
+ * @param {object} photo
+ */
+export function resolvePhotoFilePath(photo) {
+  return photo?.filePath || photo?.photoUrl || null;
+}
+
+/**
+ * @param {object} photo
+ */
+export function canPreviewPhoto(photo) {
+  const bucket = resolvePhotoBucket(photo);
+  const path = resolvePhotoFilePath(photo);
+  if (!bucket || !path) return false;
+  return photo.status === "uploaded" || Boolean(path);
+}
+
+/**
  * @param {File} file
  * @returns {{ valid: boolean, error?: string }}
  */
@@ -25,7 +52,7 @@ export function validatePatientPhoto(file) {
 }
 
 /**
- * Upload a patient photo to Supabase and save metadata in Firestore.
+ * Upload a patient photo to the correct private Supabase bucket and save Firestore metadata.
  * @param {{ patientId: string, uploadedBy: string, photoType: string, file: File, note?: string }}
  */
 export async function uploadPatientPhoto({ patientId, uploadedBy, photoType, file, note = "" }) {
@@ -44,7 +71,10 @@ export async function uploadPatientPhoto({ patientId, uploadedBy, photoType, fil
   const filePath = buildPatientPhotoPath(patientId, photoType, file.name);
 
   try {
-    await StorageService.upload(bucket, filePath, file);
+    await StorageService.upload(bucket, filePath, file, {
+      contentType: file.type || "image/jpeg",
+      upsert: false,
+    });
 
     const id = await FirestoreService.create(COLLECTIONS.PATIENT_PHOTOS, {
       patientId,
@@ -71,19 +101,22 @@ export async function uploadPatientPhoto({ patientId, uploadedBy, photoType, fil
 }
 
 /**
- * Get a signed preview URL for a stored photo.
- * @param {{ bucket?: string, filePath?: string }} photo
- * @param {number} [expiresIn]
+ * Signed URL for private bucket preview (doctor and patient).
+ * @param {object} photo
+ * @param {number} [expiresIn=3600]
  */
 export async function getPhotoPreviewUrl(photo, expiresIn = 3600) {
-  if (!photo?.bucket || !photo?.filePath) {
+  const bucket = resolvePhotoBucket(photo);
+  const filePath = resolvePhotoFilePath(photo);
+
+  if (!bucket || !filePath) {
     throw new Error("Photo file not available.");
   }
-  return StorageService.getSignedUrl(photo.bucket, photo.filePath, expiresIn);
+
+  return StorageService.getSignedUrl(bucket, filePath, expiresIn);
 }
 
 /**
- * Normalize legacy and new photo document fields.
  * @param {object} photo
  */
 export function getPhotoTypeLabel(photo) {

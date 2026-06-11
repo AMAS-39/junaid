@@ -1,5 +1,6 @@
 import { supabase } from "../config/supabase.js";
 import { FILE_CONSTRAINTS } from "../architecture/storage-buckets.js";
+import { ensureSupabaseSession } from "./supabase-auth.service.js";
 
 /**
  * Supabase Storage service — infrastructure only, no business rules.
@@ -14,15 +15,18 @@ export const StorageService = {
    * @returns {Promise<{ path: string, publicUrl: string | null }>}
    */
   async upload(bucket, path, file, options = {}) {
+    await ensureSupabaseSession();
+
     const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
       upsert: options.upsert ?? false,
       contentType: options.contentType || file.type,
     });
 
-    if (error) throw error;
+    if (error) {
+      throw enrichStorageError(error);
+    }
 
-    const publicUrl = this.getPublicUrl(bucket, data.path);
-    return { path: data.path, publicUrl };
+    return { path: data.path, bucket };
   },
 
   /**
@@ -43,11 +47,13 @@ export const StorageService = {
    * @param {number} [expiresIn=3600]
    */
   async getSignedUrl(bucket, path, expiresIn = 3600) {
+    await ensureSupabaseSession();
+
     const { data, error } = await supabase.storage
       .from(bucket)
       .createSignedUrl(path, expiresIn);
 
-    if (error) throw error;
+    if (error) throw enrichStorageError(error);
     return data.signedUrl;
   },
 
@@ -57,6 +63,8 @@ export const StorageService = {
    * @param {string[]} paths
    */
   async remove(bucket, paths) {
+    await ensureSupabaseSession();
+
     const { error } = await supabase.storage.from(bucket).remove(paths);
     if (error) throw error;
   },
@@ -97,3 +105,21 @@ export const StorageService = {
     return { valid: true };
   },
 };
+
+/**
+ * @param {{ message?: string, statusCode?: string | number }} error
+ */
+function enrichStorageError(error) {
+  const msg = error?.message || "Storage operation failed.";
+  const code = String(error?.statusCode || "");
+
+  if (msg.includes("Bucket not found") || code === "404") {
+    return new Error(`Storage bucket not found. Create the bucket in Supabase Dashboard.`);
+  }
+  if (code === "403" || msg.toLowerCase().includes("policy")) {
+    return new Error(
+      "Storage permission denied. In Supabase Dashboard: enable Firebase auth provider, then run supabase/storage-policies.sql."
+    );
+  }
+  return new Error(msg);
+}

@@ -6,6 +6,7 @@ import {
   getPhotoPreviewUrl,
   getPhotoTypeLabel,
   getPhotoNote,
+  canPreviewPhoto,
 } from "../../services/photo-storage.service.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
@@ -109,7 +110,7 @@ async function loadPhotos(patientId, listEl, emptyState) {
 function photoRow(photo) {
   const type = escapeHtml(getPhotoTypeLabel(photo));
   const note = escapeHtml(getPhotoNote(photo));
-  const canPreview = photo.bucket && photo.filePath && photo.status === "uploaded";
+  const canPreview = canPreviewPhoto(photo);
 
   return `
     <div class="patient-list-card">
