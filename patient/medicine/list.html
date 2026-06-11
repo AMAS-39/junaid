@@ -11,10 +11,10 @@
 </head>
 <body class="bg-slate-50 min-h-screen patient-body">
   <div id="page-content" class="patient-app-page">
-    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <a href="../dashboard.html" class="patient-back-link" data-i18n="buttons.backHome">← Back to Home</a>
     <header class="patient-page-header">
-      <h1 class="patient-page-title">My Medicine</h1>
-      <p class="patient-page-sub">Reminders and your health papers</p>
+      <h1 class="patient-page-title" data-i18n="patient.medicinePage">My Medicine</h1>
+      <p class="patient-page-sub" data-i18n="patient.medicineSub">Reminders and your health papers</p>
     </header>
 
     <div class="medicine-tab-root patient-medicine-tabs">
@@ -22,61 +22,61 @@
       <input type="radio" name="medicineView" id="medicineViewPapers" class="medicine-tab-radio" />
 
       <div class="medicine-tabs" role="tablist">
-        <label for="medicineViewSchedule" class="medicine-tab" role="tab">Schedule</label>
-        <label for="medicineViewPapers" class="medicine-tab" role="tab">My Papers</label>
+        <label for="medicineViewSchedule" class="medicine-tab" role="tab" data-i18n="patient.schedule">Schedule</label>
+        <label for="medicineViewPapers" class="medicine-tab" role="tab" data-i18n="patient.myPapers">My Papers</label>
       </div>
 
       <div id="tabSchedule" class="medicine-tab-panel">
         <div id="medicineSchedule" class="patient-card-stack"></div>
         <div id="emptyState" class="patient-empty-state hidden">
           <span class="patient-empty-icon" aria-hidden="true">💊</span>
-          <h3>No medicine reminders</h3>
-          <p>Your doctor has not added reminders yet.</p>
-          <p class="patient-empty-hint">Check back after your next visit.</p>
+          <h3 data-i18n="empty.noReminders">No medicine reminders</h3>
+          <p data-i18n="empty.noRemindersHint">Your doctor has not added reminders yet.</p>
+          <p class="patient-empty-hint" data-i18n="empty.noRemindersVisit">Check back after your next visit.</p>
         </div>
       </div>
 
       <div id="tabPapers" class="medicine-tab-panel">
         <form id="paperUploadForm" class="patient-form-card">
-          <h2 class="patient-form-title">Upload a health paper</h2>
-          <p class="patient-field-hint mb-3">Prescription or test result (PDF, JPG, PNG — max 10MB)</p>
+          <h2 class="patient-form-title" data-i18n="forms.uploadPaper">Upload a health paper</h2>
+          <p class="patient-field-hint mb-3" data-i18n="patient.paperHint">Prescription or test result (PDF, JPG, PNG — max 10MB)</p>
           <div class="form-grid">
             <div class="form-group">
-              <label for="paperTitle">Title</label>
-              <input id="paperTitle" type="text" class="form-input patient-input" placeholder="e.g. Thyroid test" />
+              <label for="paperTitle" data-i18n="forms.title">Title</label>
+              <input id="paperTitle" type="text" class="form-input patient-input" data-i18n-placeholder="forms.paperTitlePlaceholder" placeholder="e.g. Thyroid test" />
             </div>
             <div class="form-group">
-              <label for="paperCategory">Type</label>
+              <label for="paperCategory" data-i18n="forms.type">Type</label>
               <select id="paperCategory" class="form-input patient-input">
-                <option value="prescription">Prescription</option>
-                <option value="test">Lab / test result</option>
-                <option value="report">Medical report</option>
-                <option value="other">Other</option>
+                <option value="prescription" data-i18n="forms.prescription">Prescription</option>
+                <option value="test" data-i18n="forms.labTest">Lab / test result</option>
+                <option value="report" data-i18n="forms.medicalReport">Medical report</option>
+                <option value="other" data-i18n="forms.other">Other</option>
               </select>
             </div>
             <div class="form-group full-width">
-              <label for="paperNote">Note (optional)</label>
-              <input id="paperNote" type="text" class="form-input patient-input" placeholder="Short description" />
+              <label for="paperNote" data-i18n="forms.extraNote">Note (optional)</label>
+              <input id="paperNote" type="text" class="form-input patient-input" data-i18n-placeholder="forms.shortDescription" placeholder="Short description" />
             </div>
             <div class="form-group full-width">
-              <label for="paperFile">Choose file</label>
+              <label for="paperFile" data-i18n="forms.chooseFile">Choose file</label>
               <input id="paperFile" type="file" required class="form-input patient-input" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
             </div>
           </div>
-          <button type="submit" id="paperUploadBtn" class="patient-btn-primary mt-3">Upload paper</button>
+          <button type="submit" id="paperUploadBtn" class="patient-btn-primary mt-3" data-i18n="forms.uploadPaperBtn">Upload paper</button>
         </form>
 
         <section class="medicine-papers-section">
           <div class="medicine-papers-section-head">
-            <h2 id="papersSectionTitle" class="patient-section-title">My uploaded reports</h2>
+            <h2 id="papersSectionTitle" class="patient-section-title" data-i18n="patient.uploadedReports">My uploaded reports</h2>
             <span id="papersCount" class="medicine-papers-count">0 files</span>
           </div>
           <p id="papersLoadError" class="medicine-papers-error hidden" role="alert"></p>
           <div id="papersList" class="medicine-papers-list"></div>
           <div id="papersEmpty" class="patient-empty-state">
             <span class="patient-empty-icon" aria-hidden="true">📄</span>
-            <h3>No papers yet</h3>
-            <p>Upload your prescriptions or test results above.</p>
+            <h3 data-i18n="empty.noPapers">No papers yet</h3>
+            <p data-i18n="empty.noPapersHint">Upload your prescriptions or test results above.</p>
           </div>
         </section>
       </div>

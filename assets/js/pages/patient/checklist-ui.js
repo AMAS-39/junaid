@@ -1,3 +1,4 @@
+import { t } from "../../core/i18n.js";
 import { escapeHtml } from "../../utils/format.js";
 import {
   CHECKLIST_ITEMS,
@@ -14,7 +15,7 @@ export function buildEntryPreview(details, done) {
   if (details.what) parts.push(details.what);
   if (details.amount) parts.push(details.amount);
   if (parts.length) return parts.join(" · ");
-  return done ? "Marked complete" : "Tap to add your log";
+  return done ? t("checklist.markedComplete") : t("checklist.tapToLog");
 }
 
 /**
@@ -36,11 +37,11 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
     const preview = buildEntryPreview(details, done);
     const isOpen = index === (firstOpenIndex >= 0 ? firstOpenIndex : 0);
     const amountLabel =
-      item.type === "water" ? "How much did you drink?" : "How much did you eat?";
+      item.type === "water" ? t("checklist.howMuchDrink") : t("checklist.howMuchEat");
     const amountPlaceholder =
-      item.type === "water" ? "e.g. 2 liters, 8 glasses" : "e.g. 1 bowl, 250g";
+      item.type === "water" ? t("checklist.drinkAmountPh") : t("checklist.eatAmountPh");
     const whatLabel =
-      item.type === "water" ? "What did you drink?" : "What did you eat?";
+      item.type === "water" ? t("checklist.whatDrink") : t("checklist.whatEat");
 
     return `
       <article
@@ -79,7 +80,7 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
           class="checklist-details"
           ${isOpen ? "" : "hidden"}
         >
-          <p class="checklist-steps-hint">Fill in 3 quick fields, then save.</p>
+          <p class="checklist-steps-hint">${t("checklist.stepsHint")}</p>
           <div class="checklist-details-grid">
             <div class="checklist-field">
               <label for="${escapeHtml(item.prefix)}-what">
@@ -90,20 +91,20 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
                 id="${escapeHtml(item.prefix)}-what"
                 class="form-textarea checklist-detail-input"
                 rows="2"
-                placeholder="${item.type === "water" ? "Water, herbal tea…" : "Oatmeal with berries…"}"
+                placeholder="${item.type === "water" ? t("checklist.whatPlaceholderWater") : t("checklist.whatPlaceholderMeal")}"
                 data-detail-field="what"
               >${escapeHtml(details.what)}</textarea>
             </div>
             <div class="checklist-field">
               <label for="${escapeHtml(item.prefix)}-how">
                 <span class="checklist-step">2</span>
-                How did you do it?
+                ${t("checklist.howDidYouDo")}
               </label>
               <textarea
                 id="${escapeHtml(item.prefix)}-how"
                 class="form-textarea checklist-detail-input"
                 rows="2"
-                placeholder="Followed plan, home cooked, grilled…"
+                placeholder="${t("checklist.howPlaceholder")}"
                 data-detail-field="how"
               >${escapeHtml(details.how)}</textarea>
             </div>
@@ -127,7 +128,7 @@ export function renderPatientChecklist(container, checklist, onToggle, onSaveDet
             class="ncms-btn-primary checklist-save-details"
             data-save-prefix="${escapeHtml(item.prefix)}"
           >
-            Save ${escapeHtml(item.shortLabel)}
+            ${t("checklist.saveMeal")} ${escapeHtml(item.shortLabel)}
           </button>
         </div>
       </article>
@@ -176,7 +177,7 @@ function bindChecklistInteractions(container, onToggle, onSaveDetails) {
 
       btn.disabled = true;
       const original = btn.textContent;
-      btn.textContent = "Saving…";
+      btn.textContent = t("checklist.saving");
 
       try {
         await onSaveDetails(prefix, { what, how, amount });
@@ -236,10 +237,10 @@ export function renderDoctorCompliance(container, checklist, dateLabel) {
     <div class="compliance-summary">
       <div class="compliance-percent-ring" data-percent="${stats.percent}">
         <strong>${stats.percent}%</strong>
-        <span>today</span>
+        <span>${t("checklist.percentToday")}</span>
       </div>
       <div class="compliance-summary-text">
-        <p class="compliance-summary-main">${stats.completed} of ${stats.total} tasks complete</p>
+        <p class="compliance-summary-main">${stats.completed} ${t("checklist.ofCompleted")} ${stats.total} ${t("checklist.tasksComplete")}</p>
         <p class="compliance-date">${escapeHtml(dateLabel)}</p>
       </div>
     </div>
@@ -248,7 +249,7 @@ export function renderDoctorCompliance(container, checklist, dateLabel) {
         const done = Boolean(checklist[item.key]);
         const details = getEntryDetails(checklist, item.prefix);
         const hasDetails = details.what || details.how || details.amount;
-        const amountLabel = item.type === "water" ? "Amount drunk" : "Amount eaten";
+        const amountLabel = item.type === "water" ? t("checklist.amountDrunk") : t("checklist.amountEaten");
 
         return `
           <div class="checklist-entry readonly ${done ? "is-done" : ""}">
@@ -257,18 +258,18 @@ export function renderDoctorCompliance(container, checklist, dateLabel) {
                 <span class="checklist-meal-icon" aria-hidden="true">${item.icon}</span>
                 <span class="checklist-header-text">
                   <strong class="checklist-meal-title">${escapeHtml(item.shortLabel)}</strong>
-                  <span class="checklist-status-pill ${done ? "done" : "pending"}">${done ? "Done" : "Not yet"}</span>
+                  <span class="checklist-status-pill ${done ? "done" : "pending"}">${done ? t("checklist.done") : t("checklist.notYet")}</span>
                 </span>
               </div>
             </div>
             ${hasDetails ? `
               <div class="checklist-details-readonly">
-                ${details.what ? `<div class="compliance-detail-row"><span>What</span><p>${escapeHtml(details.what)}</p></div>` : ""}
-                ${details.how ? `<div class="compliance-detail-row"><span>How</span><p>${escapeHtml(details.how)}</p></div>` : ""}
+                ${details.what ? `<div class="compliance-detail-row"><span>${t("checklist.what")}</span><p>${escapeHtml(details.what)}</p></div>` : ""}
+                ${details.how ? `<div class="compliance-detail-row"><span>${t("checklist.how")}</span><p>${escapeHtml(details.how)}</p></div>` : ""}
                 ${details.amount ? `<div class="compliance-detail-row"><span>${escapeHtml(amountLabel)}</span><p>${escapeHtml(details.amount)}</p></div>` : ""}
               </div>
             ` : `
-              <p class="checklist-no-details">No log for ${escapeHtml(item.shortLabel.toLowerCase())} yet.</p>
+              <p class="checklist-no-details">${t("checklist.noLogYet")}</p>
             `}
           </div>
         `;
@@ -290,6 +291,6 @@ export function updateChecklistProgress(stats) {
 
   wrap.classList.remove("hidden");
   bar.style.width = `${stats.percent}%`;
-  text.textContent = `${stats.completed} of ${stats.total} completed`;
+  text.textContent = `${stats.completed} ${t("checklist.ofCompleted")} ${stats.total}`;
   if (percentEl) percentEl.textContent = `${stats.percent}%`;
 }

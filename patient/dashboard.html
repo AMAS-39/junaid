@@ -13,14 +13,14 @@
 <body class="bg-slate-50 min-h-screen patient-body">
   <div id="page-content" class="patient-app-page">
     <header class="patient-hero">
-      <p class="patient-hero-greeting">Good day 👋</p>
+      <p class="patient-hero-greeting" data-i18n="common.goodDay">Good day 👋</p>
       <h1 id="welcomeText" class="patient-hero-title">Hello</h1>
-      <p id="dashboardSubtitle" class="patient-hero-sub">Everything for today is here</p>
+      <p id="dashboardSubtitle" class="patient-hero-sub" data-i18n="patient.dashboardSubtitle">Here is your plan for today</p>
     </header>
 
     <section class="patient-today-section">
       <div class="patient-section-head">
-        <h2 class="patient-section-title">Today</h2>
+        <h2 class="patient-section-title" data-i18n="patient.todaySection">Today</h2>
         <span id="todayDateBadge" class="patient-date-pill"></span>
       </div>
       <div id="todayCards" class="patient-today-cards"></div>
@@ -29,8 +29,8 @@
     <section id="todayChecklist" class="checklist-section-card patient-checklist-wrap">
       <div class="checklist-section-top">
         <div>
-          <h2 class="checklist-main-title">Today's food checklist</h2>
-          <p class="checklist-hint">Tap a meal to add details. Press ✓ when finished.</p>
+          <h2 class="checklist-main-title" data-i18n="patient.foodChecklist">Today's food checklist</h2>
+          <p class="checklist-hint" data-i18n="patient.checklistHint">Tap a meal to add details. Press ✓ when finished.</p>
         </div>
         <span id="checklistDate" class="checklist-date-badge"></span>
       </div>
@@ -49,7 +49,7 @@
     </section>
 
     <section class="patient-actions-section">
-      <h2 class="patient-section-title">What do you need?</h2>
+      <h2 class="patient-section-title" data-i18n="common.whatDoYouNeed">What do you need?</h2>
       <div id="dashboardGrid"></div>
     </section>
   </div>

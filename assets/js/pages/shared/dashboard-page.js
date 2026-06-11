@@ -1,6 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
 import { t } from "../../core/i18n.js";
-import { ROLE_LABELS } from "../../config/constants.js";
 
 /**
  * Generic dashboard page initializer — no business logic.
@@ -16,11 +15,11 @@ bootstrap({
     const gridEl = document.getElementById("dashboardGrid");
 
     if (welcomeEl) {
-      welcomeEl.textContent = `${t("welcome")}, ${profile.name || "User"}`;
+      welcomeEl.textContent = `${t("common.welcome")}, ${profile.name || t("common.user")}`;
     }
 
     if (roleEl) {
-      roleEl.textContent = ROLE_LABELS[profile.role] || profile.role;
+      roleEl.textContent = t(`roles.${profile.role}`) || profile.role;
     }
 
     if (gridEl) {
@@ -36,23 +35,23 @@ bootstrap({
 function renderPlaceholderCards(role) {
   const cards = {
     doctor: [
-      { title: "Patients", desc: "Manage patient records", icon: "👥" },
-      { title: "Diet Plans", desc: "Create nutrition plans", icon: "🥗" },
-      { title: "Appointments", desc: "Review requests", icon: "📅" },
-      { title: "Messages", desc: "Patient communication", icon: "💬" },
-      { title: "Reports", desc: "Progress summaries", icon: "📊" },
+      { title: t("nav.patients"), desc: t("doctor.patientsDesc"), icon: "👥" },
+      { title: t("nav.dietPlans"), desc: t("doctor.dietPlansDesc"), icon: "🥗" },
+      { title: t("nav.appointments"), desc: t("doctor.appointmentsDesc"), icon: "📅" },
+      { title: t("nav.messages"), desc: t("doctor.messagesDesc"), icon: "💬" },
+      { title: t("nav.reports"), desc: t("doctor.reportsDesc"), icon: "📊" },
     ],
     secretary: [
-      { title: "Add Patient", desc: "Register new patients", icon: "➕" },
-      { title: "Patients", desc: "Search and view list", icon: "👥" },
-      { title: "Appointments", desc: "Schedule visits", icon: "📅" },
-      { title: "Payments", desc: "Track billing status", icon: "💵" },
+      { title: t("nav.addPatient"), desc: t("secretary.registerPatient"), icon: "➕" },
+      { title: t("nav.patients"), desc: t("secretary.browsePatients"), icon: "👥" },
+      { title: t("nav.appointments"), desc: t("secretary.manageSchedule"), icon: "📅" },
+      { title: t("nav.payments"), desc: t("secretary.recordPayments"), icon: "💵" },
     ],
     patient: [
-      { title: "Diet Plan", desc: "View your meal plan", icon: "🥗" },
-      { title: "Progress", desc: "Track your journey", icon: "📈" },
-      { title: "Appointments", desc: "Book a visit", icon: "📅" },
-      { title: "Messages", desc: "Contact your doctor", icon: "💬" },
+      { title: t("nav.diet"), desc: t("patient.myDietPlan"), icon: "🥗" },
+      { title: t("nav.progress"), desc: t("patient.myProgress"), icon: "📈" },
+      { title: t("nav.appointments"), desc: t("patient.appointment"), icon: "📅" },
+      { title: t("nav.messages"), desc: t("patient.messageDoctor"), icon: "💬" },
     ],
   };
 
@@ -63,7 +62,7 @@ function renderPlaceholderCards(role) {
         <div class="text-3xl mb-3">${card.icon}</div>
         <h3 class="font-semibold text-slate-800">${card.title}</h3>
         <p class="text-sm text-slate-500 mt-1">${card.desc}</p>
-        <span class="inline-block mt-3 text-xs font-medium text-medical-600 bg-medical-50 px-2 py-1 rounded-full">Coming soon</span>
+        <span class="inline-block mt-3 text-xs font-medium text-medical-600 bg-medical-50 px-2 py-1 rounded-full">${t("common.comingSoon")}</span>
       </div>
     `
     )

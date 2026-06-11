@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -13,7 +14,7 @@ bootstrap({
     const form = document.getElementById("dietPlanForm");
 
     if (!planId) {
-      toast.error("Diet plan ID is required.");
+      toast.error(t("toast.planIdRequired"));
       return;
     }
 
@@ -25,14 +26,14 @@ bootstrap({
     });
 
     document.getElementById("archiveBtn")?.addEventListener("click", async () => {
-      showLoading("Archiving plan...");
+      showLoading(t("loading.archiving"));
       try {
         await FirestoreService.update(COLLECTIONS.DIET_PLANS, planId, { status: "archived" });
-        toast.success("Diet plan archived.");
+        toast.success(t("toast.planArchived"));
         window.location.href = "list.html";
       } catch (error) {
         console.error(error);
-        toast.error("Failed to archive plan.");
+        toast.error(t("toast.failedArchive"));
       } finally {
         hideLoading();
       }
@@ -41,12 +42,12 @@ bootstrap({
 });
 
 async function loadPlan(planId) {
-  showLoading("Loading diet plan...");
+  showLoading(t("loading.dietPlan"));
 
   try {
     const plan = await FirestoreService.getById(COLLECTIONS.DIET_PLANS, planId);
     if (!plan) {
-      toast.error("Diet plan not found.");
+      toast.error(t("toast.planNotFound"));
       return;
     }
 
@@ -63,13 +64,13 @@ async function loadPlan(planId) {
       const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, plan.patientId);
       banner.innerHTML = `
         <strong>${escapeHtml(patient?.fullName || "Patient")}</strong>
-        <span class="status-badge status-${plan.status === "active" ? "active" : "archived"}">${escapeHtml(plan.status || "active")}</span>
+        <span class="status-badge status-${plan.status === "active" ? "active" : "archived"}">${escapeHtml(tStatus(plan.status || "active"))}</span>
       `;
       banner.classList.remove("hidden");
     }
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load diet plan.");
+    toast.error(t("toast.failedLoadDietPlan"));
   } finally {
     hideLoading();
   }
@@ -88,19 +89,19 @@ async function updatePlan(planId) {
   };
 
   if (!data.title) {
-    toast.error("Plan title is required.");
+    toast.error(t("toast.planTitleRequired"));
     return;
   }
 
   saveBtn.disabled = true;
-  showLoading("Updating diet plan...");
+  showLoading(t("loading.updatingPlan"));
 
   try {
     await FirestoreService.update(COLLECTIONS.DIET_PLANS, planId, data);
-    toast.success("Diet plan updated.");
+    toast.success(t("toast.planUpdated"));
   } catch (error) {
     console.error(error);
-    toast.error("Failed to update diet plan.");
+    toast.error(t("toast.failedUpdatePlan"));
   } finally {
     saveBtn.disabled = false;
     hideLoading();

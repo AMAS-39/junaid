@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { buildUrl } from "../../core/router.js";
@@ -45,12 +46,12 @@ bootstrap({
     const todayBadge = document.getElementById("todayDateBadge");
     const dateEl = document.getElementById("checklistDate");
 
-    if (welcomeEl) welcomeEl.textContent = `Hello, ${name}`;
-    if (subtitleEl) subtitleEl.textContent = "Here is your plan for today";
+    if (welcomeEl) welcomeEl.textContent = `${t("common.hi")}, ${name}`;
+    if (subtitleEl) subtitleEl.textContent = t("patient.dashboardSubtitle");
     if (todayBadge) todayBadge.textContent = getTodayDateString();
     if (dateEl) dateEl.textContent = getTodayDateString();
 
-    showLoading("Loading your page...");
+    showLoading(t("loading.page"));
 
     try {
       todayChecklist = await getTodayChecklist(patientId);
@@ -91,37 +92,37 @@ bootstrap({
 
       renderPatientActionGrid(gridEl, [
         {
-          title: "My Diet Plan",
+          title: t("patient.myDietPlan"),
           icon: "🥗",
           href: buildUrl("/patient/diet-plan/view.html"),
           tone: "teal",
         },
         {
-          title: "Upload Photo",
+          title: t("patient.uploadPhoto"),
           icon: "📷",
           href: buildUrl("/patient/photos/upload.html"),
           tone: "sky",
         },
         {
-          title: "My Progress",
+          title: t("patient.myProgress"),
           icon: "📈",
           href: buildUrl("/patient/progress/list.html"),
           tone: "blue",
         },
         {
-          title: "Appointment",
+          title: t("patient.appointment"),
           icon: "📅",
           href: buildUrl("/patient/appointments/list.html"),
           tone: "violet",
         },
         {
-          title: "Message Doctor",
+          title: t("patient.messageDoctor"),
           icon: "💬",
           href: buildUrl("/patient/messages/list.html"),
           tone: "green",
         },
         {
-          title: "Medicine",
+          title: t("patient.medicine"),
           icon: "💊",
           href: buildUrl("/patient/medicine/list.html"),
           tone: "amber",
@@ -152,7 +153,7 @@ async function handleChecklistToggle(field, done, toggleBtn) {
 
   try {
     await setChecklistItem(currentPatientId, field, done);
-    toast.success("Saved!");
+    toast.success(t("toast.saved"));
   } catch (error) {
     console.error(error);
     todayChecklist = { ...todayChecklist, [field]: previousDone };
@@ -161,7 +162,7 @@ async function handleChecklistToggle(field, done, toggleBtn) {
     }
     updateChecklistProgress(getComplianceStats(todayChecklist));
     refreshTodayChecklistCard();
-    toast.error("Could not save. Please try again.");
+    toast.error(t("toast.couldNotSave"));
   } finally {
     checklistSaving = false;
   }
@@ -177,8 +178,8 @@ function refreshTodayChecklistCard() {
 
   const valueEl = checklistLink.querySelector(".patient-info-card-value");
   const metaEl = checklistLink.querySelector(".patient-info-card-meta");
-  if (valueEl) valueEl.textContent = `${stats.percent}% done`;
-  if (metaEl) metaEl.textContent = `${stats.completed} of ${stats.total} tasks completed`;
+  if (valueEl) valueEl.textContent = `${stats.percent}% ${t("patient.checklistDone")}`;
+  if (metaEl) metaEl.textContent = `${stats.completed} ${t("checklist.ofCompleted")} ${stats.total} ${t("patient.tasksCompleted")}`;
 }
 
 async function handleSaveChecklistDetails(prefix, details) {
@@ -189,7 +190,7 @@ async function handleSaveChecklistDetails(prefix, details) {
   const markDone = hasContent ? true : undefined;
 
   checklistSaving = true;
-  showLoading("Saving...");
+  showLoading(t("loading.saving"));
 
   try {
     await saveChecklistEntryDetails(currentPatientId, prefix, {
@@ -223,10 +224,10 @@ async function handleSaveChecklistDetails(prefix, details) {
     }
 
     refreshTodayChecklistCard();
-    toast.success("Saved! Great job.");
+    toast.success(t("toast.savedGreat"));
   } catch (error) {
     console.error(error);
-    toast.error("Could not save. Please try again.");
+    toast.error(t("toast.couldNotSave"));
   } finally {
     checklistSaving = false;
     hideLoading();

@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -28,7 +29,7 @@ bootstrap({
     patientId = getQueryParam("patientId");
 
     if (!patientId) {
-      toast.error("Patient ID is required.");
+      toast.error(t("toast.patientIdRequired"));
       return;
     }
 
@@ -47,7 +48,7 @@ bootstrap({
 });
 
 async function loadReminders() {
-  showLoading("Loading reminders...");
+  showLoading(t("loading.reminders"));
 
   try {
     reminders = await FirestoreService.query(COLLECTIONS.MEDICINE_REMINDERS, [
@@ -107,7 +108,7 @@ function reminderCard(reminder) {
     <article class="medicine-reminder-card">
       <div class="medicine-reminder-top">
         <h4 class="medicine-reminder-name">${escapeHtml(reminder.medicineName || "Medicine")}</h4>
-        <span class="status-badge status-${statusClass}">${escapeHtml(status)}</span>
+        <span class="status-badge status-${statusClass}">${escapeHtml(tStatus(status))}</span>
       </div>
       <p class="medicine-reminder-dosage"><strong>Dosage:</strong> ${escapeHtml(reminder.dosage || "—")}</p>
       <p class="medicine-reminder-time-inline">
@@ -133,12 +134,12 @@ async function handleAddReminder(e) {
   const saveBtn = document.getElementById("saveBtn");
 
   if (!medicineName || !dosage || !time) {
-    toast.error("Medicine name, dosage, and time are required.");
+    toast.error(t("toast.medicineFieldsRequired"));
     return;
   }
 
   saveBtn.disabled = true;
-  showLoading("Adding reminder...");
+  showLoading(t("loading.addingReminder"));
 
   try {
     await FirestoreService.create(COLLECTIONS.MEDICINE_REMINDERS, {
@@ -151,7 +152,7 @@ async function handleAddReminder(e) {
       status,
       updatedAt: FirestoreService.serverTimestamp(),
     });
-    toast.success("Reminder added.");
+    toast.success(t("toast.reminderAdded"));
     e.target.reset();
     await loadReminders();
   } catch (error) {
@@ -166,7 +167,7 @@ async function handleAddReminder(e) {
 function openEditModal(reminderId) {
   const reminder = reminders.find((r) => r.id === reminderId);
   if (!reminder) {
-    toast.error("Reminder not found.");
+    toast.error(t("toast.reminderNotFound"));
     return;
   }
 
@@ -188,8 +189,8 @@ function openEditModal(reminderId) {
       <div class="form-group mb-3">
         <label for="editStatus">Status</label>
         <select id="editStatus" class="form-input">
-          <option value="active" ${reminder.status === "active" ? "selected" : ""}>Active</option>
-          <option value="inactive" ${reminder.status === "inactive" ? "selected" : ""}>Inactive</option>
+          <option value="active" ${reminder.status === "active" ? "selected" : ""}>${t("status.active")}</option>
+          <option value="inactive" ${reminder.status === "inactive" ? "selected" : ""}>${t("status.inactive")}</option>
         </select>
       </div>
       <div class="form-group">
@@ -206,11 +207,11 @@ function openEditModal(reminderId) {
       const status = document.getElementById("editStatus").value;
 
       if (!medicineName || !dosage || !time) {
-        toast.error("Medicine name, dosage, and time are required.");
+        toast.error(t("toast.medicineFieldsRequired"));
         return;
       }
 
-      showLoading("Updating reminder...");
+      showLoading(t("loading.updatingReminder"));
       try {
         await FirestoreService.update(COLLECTIONS.MEDICINE_REMINDERS, reminderId, {
           medicineName,
@@ -219,7 +220,7 @@ function openEditModal(reminderId) {
           instructions,
           status,
         });
-        toast.success("Reminder updated.");
+        toast.success(t("toast.reminderUpdated"));
         await loadReminders();
       } catch (error) {
         console.error(error);
@@ -242,10 +243,10 @@ async function deleteReminder(reminderId) {
   );
   if (!confirmed) return;
 
-  showLoading("Deleting...");
+  showLoading(t("loading.deleting"));
   try {
     await FirestoreService.remove(COLLECTIONS.MEDICINE_REMINDERS, reminderId);
-    toast.success("Reminder deleted.");
+    toast.success(t("toast.reminderDeleted"));
     await loadReminders();
   } catch (error) {
     console.error(error);
@@ -257,7 +258,7 @@ async function deleteReminder(reminderId) {
 
 async function loadPapers() {
   const countEl = document.getElementById("papersCount");
-  if (countEl) countEl.textContent = "Loading…";
+  if (countEl) countEl.textContent = t("common.loading");
 
   try {
     clearPapersError();
@@ -298,7 +299,10 @@ function renderPapers() {
   if (!listEl) return;
 
   const count = papers.length;
-  if (countEl) countEl.textContent = count === 1 ? "1 file" : `${count} files`;
+  if (countEl) {
+    countEl.textContent =
+      count === 1 ? t("doctor.oneFile") : `${count} ${t("medicine.filesCount")}`;
+  }
 
   if (count === 0) {
     listEl.innerHTML = "";
@@ -343,12 +347,12 @@ async function handlePaperUpload(e) {
   const btn = document.getElementById("paperUploadBtn");
 
   if (!file) {
-    toast.error("Please select a file.");
+    toast.error(t("toast.selectFile"));
     return;
   }
 
   btn.disabled = true;
-  showLoading("Uploading paper...");
+  showLoading(t("loading.uploadingPaper"));
 
   try {
     await uploadMedicineDocument({
@@ -359,7 +363,7 @@ async function handlePaperUpload(e) {
       category,
       note,
     });
-    toast.success("Paper uploaded and saved.");
+    toast.success(t("toast.paperUploaded"));
     e.target.reset();
     showPapersTab();
     await loadPapers();
@@ -379,7 +383,7 @@ async function previewPaper(docId) {
   const doc = papers.find((d) => d.id === docId);
   if (!doc) return;
 
-  showLoading("Opening document...");
+  showLoading(t("loading.openingDocument"));
   try {
     const url = await getMedicineDocumentUrl(doc);
     const isPdf = String(doc.mimeType || "").includes("pdf") || doc.fileName?.toLowerCase().endsWith(".pdf");
@@ -390,12 +394,12 @@ async function previewPaper(docId) {
         ? `<p class="mb-3"><a href="${url}" target="_blank" rel="noopener" class="text-medical-600 font-semibold">Open PDF in new tab</a></p>`
         : `<img src="${url}" alt="Document" class="photo-preview-img" />`,
       showCancel: false,
-      confirmText: "Close",
+      confirmText: t("common.close"),
       onConfirm: () => {},
     });
   } catch (error) {
     console.error(error);
-    toast.error(error?.message || "Could not open document.");
+    toast.error(error?.message || t("toast.couldNotOpenDocument"));
   } finally {
     hideLoading();
   }
@@ -406,7 +410,7 @@ async function deletePaper(docId) {
   const confirmed = await confirmModal("Delete Paper", `Delete "${doc?.title || "this file"}"?`);
   if (!confirmed) return;
 
-  showLoading("Deleting...");
+  showLoading(t("loading.deleting"));
   try {
     await FirestoreService.remove(COLLECTIONS.MEDICINE_DOCUMENTS, docId);
     if (doc?.bucket && doc?.filePath) {
@@ -416,7 +420,7 @@ async function deletePaper(docId) {
         /* metadata removed */
       }
     }
-    toast.success("Paper deleted.");
+    toast.success(t("toast.paperDeleted"));
     await loadPapers();
   } catch (error) {
     console.error(error);

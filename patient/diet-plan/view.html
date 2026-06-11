@@ -11,17 +11,17 @@
 </head>
 <body class="bg-slate-50 min-h-screen patient-body">
   <div id="page-content" class="patient-app-page">
-    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <a href="../dashboard.html" class="patient-back-link" data-i18n="buttons.backHome">← Back to Home</a>
     <header class="patient-page-header">
-      <h1 class="patient-page-title">My Diet Plan</h1>
-      <p class="patient-page-sub">What to eat today — simple and clear</p>
+      <h1 class="patient-page-title" data-i18n="patient.dietPlanPage">My Diet Plan</h1>
+      <p class="patient-page-sub" data-i18n="patient.dietPlanSub">What to eat today — simple and clear</p>
     </header>
     <div id="dietPlanContent" class="patient-card-stack"></div>
     <div id="emptyState" class="patient-empty-state hidden">
       <span class="patient-empty-icon" aria-hidden="true">🥗</span>
-      <h3>No diet plan yet</h3>
-      <p>Your doctor has not shared a plan with you.</p>
-      <p class="patient-empty-hint">Ask your doctor at your next visit.</p>
+      <h3 data-i18n="empty.noDietPlan">No diet plan yet</h3>
+      <p data-i18n="empty.noDietPlanHint">Your doctor has not shared a plan with you.</p>
+      <p class="patient-empty-hint" data-i18n="empty.noDietPlanVisit">Ask your doctor at your next visit.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/diet-plan-view.js"></script>

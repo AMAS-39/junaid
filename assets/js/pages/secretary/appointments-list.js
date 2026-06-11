@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -49,14 +50,14 @@ bootstrap({
 });
 
 async function loadAppointments() {
-  showLoading("Loading appointments...");
+  showLoading(t("loading.appointments"));
   try {
     appointments = await FirestoreService.query(COLLECTIONS.APPOINTMENTS, []);
     appointments.sort((a, b) => tsMillis(b.scheduledAt) - tsMillis(a.scheduledAt));
     renderAppointments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load appointments.");
+    toast.error(t("toast.failedLoadAppointments"));
   } finally {
     hideLoading();
   }
@@ -93,7 +94,7 @@ function renderAppointments() {
         <div class="patient-list-card">
           <div class="flex justify-between items-start gap-2">
             <strong>${escapeHtml(patient?.fullName || "Unknown")}</strong>
-            <span class="status-badge status-${escapeHtml(a.status || "pending")}">${escapeHtml(a.status || "pending")}</span>
+            <span class="status-badge status-${escapeHtml(a.status || "pending")}">${escapeHtml(tStatus(a.status || "pending"))}</span>
           </div>
           <p class="text-sm text-slate-600 mt-2">${escapeHtml(formatDateTime(a.scheduledAt))}</p>
           ${a.reason ? `<p class="text-sm text-slate-500">${escapeHtml(a.reason)}</p>` : ""}
@@ -127,7 +128,7 @@ async function createAppointment() {
   }
 
   saveBtn.disabled = true;
-  showLoading("Creating appointment...");
+  showLoading(t("loading.creatingAppointment"));
 
   try {
     await FirestoreService.create(COLLECTIONS.APPOINTMENTS, {
@@ -144,7 +145,7 @@ async function createAppointment() {
     await loadAppointments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to create appointment.");
+    toast.error(t("toast.failedCreateAppointment"));
   } finally {
     saveBtn.disabled = false;
     hideLoading();
@@ -176,14 +177,14 @@ function openEditAppointment(appointmentId) {
       <div class="form-group">
         <label>Status</label>
         <select id="editApptStatus" class="form-input">
-          <option value="pending" ${appt.status === "pending" ? "selected" : ""}>Pending</option>
-          <option value="approved" ${appt.status === "approved" ? "selected" : ""}>Approved</option>
+          <option value="pending" ${appt.status === "pending" ? "selected" : ""}>${t("status.pending")}</option>
+          <option value="approved" ${appt.status === "approved" ? "selected" : ""}>${t("status.approved")}</option>
         </select>
       </div>
     `,
     confirmText: "Save",
     onConfirm: async () => {
-      showLoading("Updating...");
+      showLoading(t("loading.updatingAppointment"));
       try {
         await FirestoreService.update(COLLECTIONS.APPOINTMENTS, appointmentId, {
           scheduledAt: new Date(document.getElementById("editApptDateTime").value),
@@ -194,7 +195,7 @@ function openEditAppointment(appointmentId) {
         await loadAppointments();
       } catch (error) {
         console.error(error);
-        toast.error("Failed to update appointment.");
+        toast.error(t("toast.failedUpdateAppointment"));
       } finally {
         hideLoading();
       }
@@ -206,14 +207,14 @@ async function cancelAppointment(appointmentId) {
   const confirmed = await confirmModal("Cancel appointment", "Mark this appointment as cancelled?");
   if (!confirmed) return;
 
-  showLoading("Cancelling...");
+  showLoading(t("loading.cancelling"));
   try {
     await FirestoreService.update(COLLECTIONS.APPOINTMENTS, appointmentId, { status: "cancelled" });
     toast.success("Appointment cancelled.");
     await loadAppointments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to cancel appointment.");
+    toast.error(t("toast.failedCancelAppointment"));
   } finally {
     hideLoading();
   }

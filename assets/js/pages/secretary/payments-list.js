@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -38,7 +39,7 @@ bootstrap({
 });
 
 async function loadPayments() {
-  showLoading("Loading payments...");
+  showLoading(t("loading.payments"));
   try {
     payments = await FirestoreService.query(COLLECTIONS.PAYMENTS, []);
     payments.sort((a, b) => tsMillis(b.createdAt) - tsMillis(a.createdAt));
@@ -46,7 +47,7 @@ async function loadPayments() {
     renderPayments("");
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load payments.");
+    toast.error(t("toast.failedLoadPayments"));
   } finally {
     hideLoading();
   }
@@ -65,8 +66,8 @@ function updateSummary() {
 
   summaryEl.innerHTML = `
     <div class="stats-grid">
-      <div class="stat-card"><span>Total Paid</span><strong>${paidTotal.toFixed(2)}</strong></div>
-      <div class="stat-card"><span>Total Unpaid</span><strong>${unpaidTotal.toFixed(2)}</strong></div>
+      <div class="stat-card"><span>${t("payments.totalPaid")}</span><strong>${paidTotal.toFixed(2)}</strong></div>
+      <div class="stat-card"><span>${t("payments.totalUnpaid")}</span><strong>${unpaidTotal.toFixed(2)}</strong></div>
     </div>
   `;
 }
@@ -101,7 +102,7 @@ function renderPayments(searchValue) {
         <div class="patient-list-card">
           <div class="flex justify-between items-start gap-2">
             <strong>${escapeHtml(patient?.fullName || "Unknown")}</strong>
-            <span class="status-badge status-${statusClass}">${escapeHtml(p.status || "unpaid")}</span>
+            <span class="status-badge status-${statusClass}">${escapeHtml(tStatus(p.status || "unpaid"))}</span>
           </div>
           <p class="text-sm text-slate-600 mt-2"><strong>${escapeHtml(String(p.amount))}</strong> — ${escapeHtml(p.serviceType || "Service")}</p>
           ${p.note || p.description ? `<p class="text-sm text-slate-500">${escapeHtml(p.note || p.description)}</p>` : ""}
@@ -133,7 +134,7 @@ async function createPayment() {
   }
 
   saveBtn.disabled = true;
-  showLoading("Saving payment...");
+  showLoading(t("loading.savingPayment"));
 
   try {
     await FirestoreService.create(COLLECTIONS.PAYMENTS, {
@@ -146,12 +147,12 @@ async function createPayment() {
       recordedBy: secretaryId,
     });
 
-    toast.success("Payment record created.");
+    toast.success(t("toast.paymentSaved"));
     document.getElementById("paymentForm").reset();
     await loadPayments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to create payment.");
+    toast.error(t("toast.failedSavePayment"));
   } finally {
     saveBtn.disabled = false;
     hideLoading();
@@ -159,14 +160,14 @@ async function createPayment() {
 }
 
 async function markAsPaid(paymentId) {
-  showLoading("Updating...");
+  showLoading(t("loading.updating"));
   try {
     await FirestoreService.update(COLLECTIONS.PAYMENTS, paymentId, { status: "paid" });
     toast.success("Marked as paid.");
     await loadPayments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to update payment.");
+    toast.error(t("toast.failedSavePayment"));
   } finally {
     hideLoading();
   }

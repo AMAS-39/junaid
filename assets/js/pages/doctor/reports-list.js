@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -14,7 +15,7 @@ bootstrap({
 
 async function loadReports(doctorId) {
   const container = document.getElementById("reportsContainer");
-  showLoading("Loading reports...");
+  showLoading(t("loading.reports"));
 
   try {
     const patients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);
@@ -64,7 +65,7 @@ async function loadReports(doctorId) {
               <tbody>
                 ${appointments.slice(0, 5).map((a) => `
                   <tr>
-                    <td><span class="status-badge status-${a.status || "pending"}">${escapeHtml(a.status || "pending")}</span></td>
+                    <td><span class="status-badge status-${a.status || "pending"}">${escapeHtml(tStatus(a.status || "pending"))}</span></td>
                     <td>${escapeHtml(a.patientId)}</td>
                   </tr>
                 `).join("")}
@@ -76,7 +77,7 @@ async function loadReports(doctorId) {
     `;
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load reports.");
+    toast.error(t("toast.failedLoadReports"));
     container.innerHTML = `<div class="empty-state"><h3>Error</h3><p>Could not load report data.</p></div>`;
   } finally {
     hideLoading();

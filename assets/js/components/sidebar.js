@@ -1,6 +1,5 @@
 import { getNavItems, NAV_ICONS } from "../core/navigation-config.js";
 import { getCurrentPath, buildUrl } from "../core/router.js";
-import { APP_NAME, ROLE_LABELS } from "../config/constants.js";
 import { t } from "../core/i18n.js";
 
 /**
@@ -11,7 +10,7 @@ import { t } from "../core/i18n.js";
 export function renderSidebar(profile) {
   const navItems = getNavItems(profile.role);
   const currentPath = getCurrentPath();
-  const roleLabel = ROLE_LABELS[profile.role] || profile.role;
+  const roleLabel = t(`roles.${profile.role}`) || profile.role;
 
   const links = navItems
     .map((item) => {
@@ -38,7 +37,7 @@ export function renderSidebar(profile) {
           NC
         </div>
         <div class="min-w-0">
-          <p class="font-bold text-slate-800 truncate">${APP_NAME}</p>
+          <p class="font-bold text-slate-800 truncate">${t("app.name")}</p>
           <p class="text-xs text-slate-500 truncate">${roleLabel}</p>
         </div>
       </div>
@@ -131,7 +130,7 @@ export function renderSidebarDrawer(profile) {
     <aside id="ncms-sidebar-drawer"
            class="fixed inset-y-0 start-0 z-50 w-72 bg-white shadow-xl transform -translate-x-full transition-transform duration-200 lg:hidden flex flex-col">
       <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-        <p class="font-bold text-slate-800">${t("dashboard")}</p>
+        <p class="font-bold text-slate-800">${t("app.name")}</p>
         <button type="button" data-close-sidebar class="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close menu">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>

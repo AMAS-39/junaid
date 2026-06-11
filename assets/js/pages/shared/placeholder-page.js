@@ -1,5 +1,6 @@
 import { bootstrap } from "../../core/bootstrap.js";
 import { findRoute, getCurrentPath } from "../../core/router.js";
+import { t } from "../../core/i18n.js";
 
 /**
  * Generic placeholder for feature pages not yet implemented.
@@ -15,7 +16,7 @@ bootstrap({
     }
 
     if (descEl) {
-      descEl.textContent = "This module will be implemented in a future phase.";
+      descEl.textContent = t("placeholder.moduleFuture");
     }
   },
 });

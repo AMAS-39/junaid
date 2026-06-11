@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -29,7 +30,7 @@ bootstrap({
 });
 
 async function loadAppointments(doctorId) {
-  showLoading("Loading appointments...");
+  showLoading(t("loading.appointments"));
 
   try {
     const allPatients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);
@@ -47,7 +48,7 @@ async function loadAppointments(doctorId) {
     renderAppointments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load appointments.");
+    toast.error(t("toast.failedLoadAppointments"));
   } finally {
     hideLoading();
   }
@@ -96,7 +97,7 @@ function appointmentRow(appointment) {
     <tr>
       <td>${escapeHtml(patient?.fullName || "Unknown")}</td>
       <td>${escapeHtml(formatDateTime(appointment.scheduledAt))}</td>
-      <td><span class="status-badge status-${statusClass}">${escapeHtml(status)}</span></td>
+      <td><span class="status-badge status-${statusClass}">${escapeHtml(tStatus(status))}</span></td>
       <td>${escapeHtml(appointment.notes || "—")}</td>
       <td>
         <div class="btn-row">
@@ -128,7 +129,7 @@ document.addEventListener("click", async (e) => {
 });
 
 async function updateStatus(appointmentId, status) {
-  showLoading("Updating appointment...");
+  showLoading(t("loading.updatingAppointment"));
   try {
     await FirestoreService.update(COLLECTIONS.APPOINTMENTS, appointmentId, { status });
     toast.success(`Appointment ${status}.`);
@@ -137,7 +138,7 @@ async function updateStatus(appointmentId, status) {
     renderAppointments();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to update appointment.");
+    toast.error(t("toast.failedUpdateAppointment"));
   } finally {
     hideLoading();
   }
@@ -164,11 +165,11 @@ function openRescheduleModal(appointmentId) {
     onConfirm: async () => {
       const dateVal = document.getElementById("rescheduleDate").value;
       if (!dateVal) {
-        toast.error("Please select a date and time.");
+        toast.error(t("toast.selectDateTime"));
         return;
       }
       const notes = document.getElementById("rescheduleNotes").value.trim();
-      showLoading("Rescheduling...");
+      showLoading(t("loading.rescheduling"));
       try {
         await FirestoreService.update(COLLECTIONS.APPOINTMENTS, appointmentId, {
           scheduledAt: new Date(dateVal),

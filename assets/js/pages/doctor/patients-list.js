@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -27,7 +28,7 @@ async function loadPatients() {
   const patientsContainer = document.getElementById("patientsContainer");
   const emptyState = document.getElementById("emptyState");
 
-  showLoading("Loading patients...");
+  showLoading(t("loading.patients"));
 
   try {
     patients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);
@@ -35,7 +36,7 @@ async function loadPatients() {
     renderPatients("", patientsContainer, emptyState);
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load patients.");
+    toast.error(t("toast.failedLoadPatients"));
   } finally {
     hideLoading();
   }

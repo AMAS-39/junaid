@@ -3,6 +3,7 @@ import { login, formatAuthError, resetPassword } from "../../services/auth.servi
 import { getHomeForRole, navigateTo } from "../../core/router.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { toast } from "../../components/toast.js";
+import { t, getLocale, setLocale, renderLanguageOptions } from "../../core/i18n.js";
 
 bootstrap({
   publicPage: true,
@@ -12,6 +13,16 @@ bootstrap({
     const errorMsg = document.getElementById("errorMsg");
     const loginBtn = document.getElementById("loginBtn");
     const forgotBtn = document.getElementById("forgotPasswordBtn");
+    const langSelect = document.getElementById("ncms-language-select");
+
+    if (langSelect) {
+      langSelect.innerHTML = renderLanguageOptions();
+      langSelect.value = getLocale();
+      langSelect.addEventListener("change", () => {
+        setLocale(langSelect.value);
+        window.location.reload();
+      });
+    }
 
     if (!form) return;
 
@@ -19,12 +30,12 @@ bootstrap({
       e.preventDefault();
       errorMsg.textContent = "";
       loginBtn.disabled = true;
-      loginBtn.textContent = "Logging in...";
+      loginBtn.textContent = t("buttons.loggingIn");
 
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
-      showLoading("Signing in...");
+      showLoading(t("login.signingIn"));
 
       try {
         const { profile } = await login(email, password);
@@ -34,7 +45,7 @@ bootstrap({
         const message = formatAuthError(error);
         errorMsg.textContent = message;
         toast.error(message);
-        loginBtn.textContent = "Login";
+        loginBtn.textContent = t("buttons.login");
         loginBtn.disabled = false;
       } finally {
         hideLoading();
@@ -45,14 +56,14 @@ bootstrap({
       forgotBtn.addEventListener("click", async () => {
         const email = document.getElementById("email").value.trim();
         if (!email) {
-          toast.warning("Enter your email address first.");
+          toast.warning(t("login.enterEmailFirst"));
           return;
         }
 
-        showLoading("Sending reset email...");
+        showLoading(t("common.loading"));
         try {
           await resetPassword(email);
-          toast.success("Password reset email sent. Check your inbox.");
+          toast.success(t("login.resetSent"));
         } catch (error) {
           toast.error(formatAuthError(error));
         } finally {

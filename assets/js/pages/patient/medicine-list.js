@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -33,7 +34,7 @@ async function loadSchedule(patientId) {
   const container = document.getElementById("medicineSchedule");
   const emptyState = document.getElementById("emptyState");
 
-  showLoading("Loading schedule...");
+  showLoading(t("loading.schedule"));
 
   try {
     let reminders = await FirestoreService.query(COLLECTIONS.MEDICINE_REMINDERS, [
@@ -93,7 +94,7 @@ function patientReminderCard(reminder) {
 
 async function loadPapers() {
   const countEl = document.getElementById("papersCount");
-  if (countEl) countEl.textContent = "Loading…";
+  if (countEl) countEl.textContent = t("common.loading");
 
   try {
     clearPapersError();
@@ -134,7 +135,10 @@ function renderPapers() {
   if (!listEl) return;
 
   const count = papers.length;
-  if (countEl) countEl.textContent = count === 1 ? "1 file" : `${count} files`;
+  if (countEl) {
+    countEl.textContent =
+      count === 1 ? t("doctor.oneFile") : `${count} ${t("medicine.filesCount")}`;
+  }
 
   if (count === 0) {
     listEl.innerHTML = "";
@@ -180,12 +184,12 @@ async function handlePaperUpload(e) {
   const btn = document.getElementById("paperUploadBtn");
 
   if (!file) {
-    toast.error("Please select a file.");
+    toast.error(t("toast.selectFile"));
     return;
   }
 
   btn.disabled = true;
-  showLoading("Uploading...");
+  showLoading(t("loading.uploading"));
 
   try {
     await uploadMedicineDocument({
@@ -196,7 +200,7 @@ async function handlePaperUpload(e) {
       category,
       note,
     });
-    toast.success("Paper uploaded and saved.");
+    toast.success(t("toast.paperUploaded"));
     e.target.reset();
     showPapersTab();
     await loadPapers();
@@ -216,7 +220,7 @@ async function previewPaper(docId) {
   const doc = papers.find((d) => d.id === docId);
   if (!doc) return;
 
-  showLoading("Opening...");
+  showLoading(t("loading.opening"));
   try {
     const url = await getMedicineDocumentUrl(doc);
     const isPdf = String(doc.mimeType || "").includes("pdf") || doc.fileName?.toLowerCase().endsWith(".pdf");
@@ -227,12 +231,12 @@ async function previewPaper(docId) {
         ? `<p><a href="${url}" target="_blank" rel="noopener" class="ncms-btn-primary inline-block px-4 py-2 rounded-xl no-underline">Open PDF</a></p>`
         : `<img src="${url}" alt="Document" class="photo-preview-img" />`,
       showCancel: false,
-      confirmText: "Close",
+      confirmText: t("common.close"),
       onConfirm: () => {},
     });
   } catch (error) {
     console.error(error);
-    toast.error(error?.message || "Could not open file.");
+    toast.error(error?.message || t("toast.couldNotOpenFile"));
   } finally {
     hideLoading();
   }
@@ -243,7 +247,7 @@ async function deletePaper(docId) {
   if (!confirmed) return;
 
   const doc = papers.find((d) => d.id === docId);
-  showLoading("Deleting...");
+  showLoading(t("loading.deleting"));
   try {
     await FirestoreService.remove(COLLECTIONS.MEDICINE_DOCUMENTS, docId);
     if (doc?.bucket && doc?.filePath) {
@@ -253,7 +257,7 @@ async function deletePaper(docId) {
         /* ignore */
       }
     }
-    toast.success("Deleted.");
+    toast.success(t("toast.deleteSuccess"));
     await loadPapers();
   } catch (error) {
     console.error(error);

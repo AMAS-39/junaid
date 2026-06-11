@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -26,12 +27,12 @@ bootstrap({
       const saveBtn = document.getElementById("saveBtn");
 
       if (!preferredDateTime) {
-        toast.error("Please select a preferred date and time.");
+        toast.error(t("toast.selectDateTime"));
         return;
       }
 
       saveBtn.disabled = true;
-      showLoading("Submitting request...");
+      showLoading(t("loading.submitting"));
 
       try {
         const doctorId = await getAssignedDoctorId(patientId);
@@ -45,12 +46,12 @@ bootstrap({
           status: "pending",
         });
 
-        toast.success("Request sent! We will confirm soon.");
+        toast.success(t("toast.requestSent"));
         form.reset();
         await loadAppointments(patientId, listEl, emptyState);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to book appointment.");
+        toast.error(t("toast.failedBookAppointment"));
       } finally {
         saveBtn.disabled = false;
         hideLoading();
@@ -60,7 +61,7 @@ bootstrap({
 });
 
 async function loadAppointments(patientId, listEl, emptyState) {
-  showLoading("Loading appointments...");
+  showLoading(t("loading.appointments"));
 
   try {
     let appointments = await FirestoreService.query(COLLECTIONS.APPOINTMENTS, [
@@ -81,7 +82,7 @@ async function loadAppointments(patientId, listEl, emptyState) {
         <div class="patient-list-card">
           <div class="flex justify-between items-start gap-2">
             <strong>${escapeHtml(formatDateTime(a.scheduledAt))}</strong>
-            <span class="status-badge status-${escapeHtml(a.status || "pending")}">${escapeHtml(a.status || "pending")}</span>
+            <span class="status-badge status-${escapeHtml(a.status || "pending")}">${escapeHtml(tStatus(a.status || "pending"))}</span>
           </div>
           ${a.reason ? `<p class="text-sm text-slate-600 mt-2">${escapeHtml(a.reason)}</p>` : ""}
           ${a.notes ? `<p class="text-sm text-slate-500 mt-1">${escapeHtml(a.notes)}</p>` : ""}
@@ -91,7 +92,7 @@ async function loadAppointments(patientId, listEl, emptyState) {
       .join("");
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load appointments.");
+    toast.error(t("toast.failedLoadAppointments"));
   } finally {
     hideLoading();
   }

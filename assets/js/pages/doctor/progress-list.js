@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -13,7 +14,7 @@ bootstrap({
     const patientBanner = document.getElementById("patientBanner");
 
     if (!patientId) {
-      toast.error("Patient ID is required.");
+      toast.error(t("toast.patientIdRequired"));
       return;
     }
 
@@ -25,7 +26,7 @@ bootstrap({
       `;
     }
 
-    showLoading("Loading progress...");
+    showLoading(t("loading.progress"));
 
     try {
       let entries = await FirestoreService.query(COLLECTIONS.PROGRESS_ENTRIES, [
@@ -57,7 +58,7 @@ bootstrap({
       `;
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load progress entries.");
+      toast.error(t("toast.failedLoadProgress"));
     } finally {
       hideLoading();
     }

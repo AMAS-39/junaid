@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -21,9 +22,9 @@ bootstrap({
     if (!doctorId) {
       document.getElementById("messagesPanel").innerHTML = patientEmptyStateHtml({
         icon: "💬",
-        title: "No doctor assigned",
-        message: "Please contact the clinic for help.",
-        hint: "They will connect you with your doctor.",
+        title: t("empty.noDoctor"),
+        message: t("empty.noDoctorHint"),
+        hint: t("patient.clinicHours"),
       });
       return;
     }
@@ -35,7 +36,7 @@ bootstrap({
 
 async function loadMessages() {
   const panel = document.getElementById("messagesPanel");
-  showLoading("Loading messages...");
+  showLoading(t("loading.messages"));
 
   try {
     const sent = await FirestoreService.query(COLLECTIONS.MESSAGES, [
@@ -57,7 +58,7 @@ async function loadMessages() {
     markRead();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load messages.");
+    toast.error(t("toast.failedLoadMessages"));
   } finally {
     hideLoading();
   }
@@ -68,15 +69,15 @@ function renderThread(panel) {
     <div class="messages-thread" id="messagesThread">
       ${allMessages.length === 0 ? patientEmptyStateHtml({
         icon: "💬",
-        title: "No messages yet",
-        message: "Write a message below to talk to your doctor.",
-        hint: "We usually reply during clinic hours.",
+        title: t("empty.noMessages"),
+        message: t("empty.noMessagesHint"),
+        hint: t("patient.clinicHours"),
       }) : ""}
       ${allMessages.map((m) => messageBubble(m)).join("")}
     </div>
     <div class="message-compose">
-      <input id="messageInput" type="text" class="form-input" placeholder="Type your message..." />
-      <button type="button" id="sendBtn" class="patient-btn-primary patient-btn-compact">Send</button>
+      <input id="messageInput" type="text" class="form-input" placeholder="${t("forms.messagePlaceholder")}" />
+      <button type="button" id="sendBtn" class="patient-btn-primary patient-btn-compact">${t("buttons.send")}</button>
     </div>
   `;
 
@@ -120,7 +121,7 @@ async function sendMessage() {
   const body = input?.value.trim();
   if (!body || !doctorId) return;
 
-  showLoading("Sending...");
+  showLoading(t("loading.sending"));
   try {
     await FirestoreService.create(COLLECTIONS.MESSAGES, {
       senderId: patientId,
@@ -139,10 +140,10 @@ async function sendMessage() {
 
     input.value = "";
     renderThread(document.getElementById("messagesPanel"));
-    toast.success("Message sent.");
+    toast.success(t("toast.messageSent"));
   } catch (error) {
     console.error(error);
-    toast.error("Failed to send message.");
+    toast.error(t("toast.failedSendMessage"));
   } finally {
     hideLoading();
   }

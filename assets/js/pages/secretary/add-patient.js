@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { toast } from "../../components/toast.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { createSecondaryAccount } from "../../services/auth.service.js";
@@ -92,9 +93,9 @@ bootstrap({
 
       saveBtn.disabled = true;
       const originalLabel = saveBtn.textContent;
-      saveBtn.textContent = "Creating...";
+      saveBtn.textContent = t("loading.creating");
 
-      showLoading("Creating patient account...");
+      showLoading(t("loading.creatingPatient"));
 
       try {
         const credential = await createSecondaryAccount(values.email, values.password);
@@ -132,7 +133,7 @@ bootstrap({
           patientUID
         );
 
-        toast.success("Patient account created successfully.");
+        toast.success(t("toast.patientCreated"));
         form.reset();
       } catch (error) {
         console.error(error);

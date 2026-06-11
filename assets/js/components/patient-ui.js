@@ -1,22 +1,12 @@
 import { buildUrl } from "../core/router.js";
 import { escapeHtml } from "../utils/format.js";
+import { t, tStatus } from "../core/i18n.js";
 
 export const PATIENT_HOME = buildUrl("/patient/dashboard.html");
 
 /**
- * @param {string} [label]
- */
-export function patientHomeHref(label = "Back to Home") {
-  return `<a href="${PATIENT_HOME}" class="patient-back-link">${escapeHtml(label)}</a>`;
-}
-
-/**
- * @typedef {{ title: string, icon: string, href: string, tone?: string }} PatientAction
- */
-
-/**
  * @param {HTMLElement | null} container
- * @param {PatientAction[]} actions
+ * @param {Array<{ title: string, icon: string, href: string, tone?: string }>} actions
  */
 export function renderPatientActionGrid(container, actions) {
   if (!container) return;
@@ -46,7 +36,6 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
   if (!container) return;
 
   const { nextAppointment, dietPlan, checklistPercent = 0, checklistDone = 0, checklistTotal = 5 } = data;
-  const formatDate = formatters.formatDate || ((v) => String(v ?? "—"));
   const formatDateTime = formatters.formatDateTime || ((v) => String(v ?? "—"));
 
   const appointmentCard = nextAppointment
@@ -54,9 +43,9 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
       <a href="${buildUrl("/patient/appointments/list.html")}" class="patient-info-card patient-info-card--blue">
         <div class="patient-info-card-icon" aria-hidden="true">📅</div>
         <div class="patient-info-card-body">
-          <span class="patient-info-card-label">Next visit</span>
+          <span class="patient-info-card-label">${escapeHtml(t("patient.nextVisit"))}</span>
           <strong class="patient-info-card-value">${escapeHtml(formatDateTime(nextAppointment.scheduledAt))}</strong>
-          <span class="patient-info-card-meta">Status: ${escapeHtml(nextAppointment.status || "pending")}</span>
+          <span class="patient-info-card-meta">${escapeHtml(tStatus(nextAppointment.status || "pending"))}</span>
         </div>
       </a>
     `
@@ -64,9 +53,9 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
       <div class="patient-info-card patient-info-card--muted">
         <div class="patient-info-card-icon" aria-hidden="true">📅</div>
         <div class="patient-info-card-body">
-          <span class="patient-info-card-label">Next visit</span>
-          <strong class="patient-info-card-value">No visit booked</strong>
-          <span class="patient-info-card-meta">Tap Appointment below to request one</span>
+          <span class="patient-info-card-label">${escapeHtml(t("patient.nextVisit"))}</span>
+          <strong class="patient-info-card-value">${escapeHtml(t("patient.noVisitBooked"))}</strong>
+          <span class="patient-info-card-meta">${escapeHtml(t("patient.tapAppointment"))}</span>
         </div>
       </div>
     `;
@@ -76,9 +65,9 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
       <a href="${buildUrl("/patient/diet-plan/view.html")}" class="patient-info-card patient-info-card--teal">
         <div class="patient-info-card-icon" aria-hidden="true">🥗</div>
         <div class="patient-info-card-body">
-          <span class="patient-info-card-label">Your diet plan</span>
-          <strong class="patient-info-card-value">${escapeHtml(dietPlan.title || "Active plan")}</strong>
-          <span class="patient-info-card-meta">Tap to see meals</span>
+          <span class="patient-info-card-label">${escapeHtml(t("patient.yourDietPlan"))}</span>
+          <strong class="patient-info-card-value">${escapeHtml(dietPlan.title || t("patient.activePlan"))}</strong>
+          <span class="patient-info-card-meta">${escapeHtml(t("patient.tapMeals"))}</span>
         </div>
       </a>
     `
@@ -86,9 +75,9 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
       <div class="patient-info-card patient-info-card--muted">
         <div class="patient-info-card-icon" aria-hidden="true">🥗</div>
         <div class="patient-info-card-body">
-          <span class="patient-info-card-label">Your diet plan</span>
-          <strong class="patient-info-card-value">Not assigned yet</strong>
-          <span class="patient-info-card-meta">Your doctor will add a plan for you</span>
+          <span class="patient-info-card-label">${escapeHtml(t("patient.yourDietPlan"))}</span>
+          <strong class="patient-info-card-value">${escapeHtml(t("patient.notAssignedYet"))}</strong>
+          <span class="patient-info-card-meta">${escapeHtml(t("patient.doctorWillAssign"))}</span>
         </div>
       </div>
     `;
@@ -97,9 +86,9 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
     <a href="#todayChecklist" class="patient-info-card patient-info-card--green">
       <div class="patient-info-card-icon" aria-hidden="true">✅</div>
       <div class="patient-info-card-body">
-        <span class="patient-info-card-label">Today's checklist</span>
-        <strong class="patient-info-card-value">${checklistPercent}% done</strong>
-        <span class="patient-info-card-meta">${checklistDone} of ${checklistTotal} tasks completed</span>
+        <span class="patient-info-card-label">${escapeHtml(t("patient.todayChecklist"))}</span>
+        <strong class="patient-info-card-value">${checklistPercent}% ${escapeHtml(t("patient.checklistDone"))}</strong>
+        <span class="patient-info-card-meta">${checklistDone} ${escapeHtml(t("patient.tasksCompleted"))}</span>
       </div>
     </a>
   `;
@@ -108,7 +97,18 @@ export function renderPatientTodayCards(container, data, formatters = {}) {
 }
 
 /**
- * Friendly empty state HTML.
+ * @param {{ icon?: string, titleKey: string, messageKey: string, hintKey?: string }} options
+ */
+export function patientEmptyStateFromKeys({ icon = "📋", titleKey, messageKey, hintKey }) {
+  return patientEmptyStateHtml({
+    icon,
+    title: t(titleKey),
+    message: t(messageKey),
+    hint: hintKey ? t(hintKey) : undefined,
+  });
+}
+
+/**
  * @param {{ icon?: string, title: string, message: string, hint?: string }} options
  */
 export function patientEmptyStateHtml({ icon = "📋", title, message, hint }) {

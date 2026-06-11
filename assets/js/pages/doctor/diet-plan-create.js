@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -40,7 +41,7 @@ bootstrap({
         ? patientId
         : patientSelect?.value;
       if (!selectedId) {
-        toast.error("Please select a patient.");
+        toast.error(t("toast.selectPatient"));
         return;
       }
       await savePlan(session, selectedId);
@@ -81,17 +82,17 @@ async function savePlan(session, patientId) {
   const notes = document.getElementById("notes").value.trim();
 
   if (!title) {
-    toast.error("Plan title is required.");
+    toast.error(t("toast.planTitleRequired"));
     return;
   }
 
   if (!breakfast && !lunch && !dinner && !snacks) {
-    toast.error("Add at least one meal entry.");
+    toast.error(t("toast.mealRequired"));
     return;
   }
 
   saveBtn.disabled = true;
-  showLoading("Saving diet plan...");
+  showLoading(t("loading.savingPlan"));
 
   try {
     await archiveActivePlans(patientId);
@@ -110,11 +111,11 @@ async function savePlan(session, patientId) {
       startDate: FirestoreService.serverTimestamp(),
     });
 
-    toast.success("Diet plan created successfully.");
+    toast.success(t("toast.planCreated"));
     window.location.href = `edit.html?id=${planId}`;
   } catch (error) {
     console.error(error);
-    toast.error("Failed to save diet plan.");
+    toast.error(t("toast.failedSavePlan"));
     saveBtn.disabled = false;
   } finally {
     hideLoading();

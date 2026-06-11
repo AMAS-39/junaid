@@ -1,6 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
 import { t } from "../../core/i18n.js";
-import { ROLE_LABELS } from "../../config/constants.js";
 import { buildUrl } from "../../core/router.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
@@ -22,92 +21,92 @@ bootstrap({
     const statsEl = document.getElementById("statsCards");
     const gridEl = document.getElementById("dashboardGrid");
 
-    if (welcomeEl) welcomeEl.textContent = `${t("welcome")}, ${profile.name || "Doctor"}`;
-    if (subtitleEl) subtitleEl.textContent = "Clinic overview and quick actions";
-    if (roleEl) roleEl.textContent = ROLE_LABELS[profile.role] || profile.role;
+    if (welcomeEl) welcomeEl.textContent = `${t("common.welcome")}, ${profile.name || t("roles.doctor")}`;
+    if (subtitleEl) subtitleEl.textContent = t("doctor.dashboardSubtitle");
+    if (roleEl) roleEl.textContent = t(`roles.${profile.role}`) || profile.role;
 
-    showLoading("Loading dashboard...");
+    showLoading(t("loading.dashboard"));
 
     try {
       const stats = await loadDoctorStats(doctorId);
 
       renderDashStats(statsEl, [
         {
-          label: "Total Patients",
+          label: t("doctor.totalPatients"),
           value: stats.totalPatients,
-          meta: "Registered in clinic",
+          meta: t("doctor.registeredPatients"),
           icon: "👥",
           tone: "green",
           href: buildUrl("/doctor/patients/list.html"),
         },
         {
-          label: "Active Diet Plans",
+          label: t("doctor.activeDietPlans"),
           value: stats.activePlans,
-          meta: "Currently assigned",
+          meta: t("doctor.currentlyAssigned"),
           icon: "🥗",
           tone: "teal",
           href: buildUrl("/doctor/diet-plans/list.html"),
-          badge: stats.activePlans > 0 ? "Active" : "None",
+          badge: stats.activePlans > 0 ? t("status.active") : t("status.none"),
           badgeTone: stats.activePlans > 0 ? "success" : "muted",
         },
         {
-          label: "Pending Appointments",
+          label: t("doctor.pendingAppointments"),
           value: stats.pendingAppointments,
-          meta: "Awaiting approval",
+          meta: t("doctor.awaitingApproval"),
           icon: "📅",
           tone: "amber",
           href: buildUrl("/doctor/appointments/list.html"),
-          badge: stats.pendingAppointments > 0 ? "Review" : "Clear",
+          badge: stats.pendingAppointments > 0 ? t("status.review") : t("status.clear"),
           badgeTone: stats.pendingAppointments > 0 ? "warning" : "muted",
         },
         {
-          label: "New Patient Photos",
+          label: t("doctor.newPhotos"),
           value: stats.newPhotos,
-          meta: "Uploaded last 7 days",
+          meta: t("doctor.last7Days"),
           icon: "📷",
           tone: "sky",
           href: buildUrl("/doctor/photos/list.html"),
         },
         {
-          label: "Unread Messages",
+          label: t("doctor.unreadMessages"),
           value: stats.unreadMessages,
-          meta: "From patients",
+          meta: t("doctor.fromPatients"),
           icon: "💬",
           tone: "violet",
           href: buildUrl("/doctor/messages/list.html"),
-          badge: stats.unreadMessages > 0 ? "New" : "Read",
+          badge: stats.unreadMessages > 0 ? t("status.new") : t("status.read"),
           badgeTone: stats.unreadMessages > 0 ? "warning" : "muted",
         },
       ]);
 
       renderDashActions(gridEl, [
         {
-          title: "Patients",
-          desc: "View profiles and care plans",
+          title: t("nav.patients"),
+          desc: t("doctor.patientsDesc"),
           icon: "👥",
           href: buildUrl("/doctor/patients/list.html"),
         },
         {
-          title: "Diet Plans",
-          desc: "Create and manage nutrition plans",
+          title: t("nav.dietPlans"),
+          desc: t("doctor.dietPlansDesc"),
           icon: "🥗",
           href: buildUrl("/doctor/diet-plans/list.html"),
         },
         {
-          title: "Appointments",
-          desc: "Approve or reschedule visits",
+          title: t("nav.appointments"),
+          desc: t("doctor.appointmentsDesc"),
           icon: "📅",
           href: buildUrl("/doctor/appointments/list.html"),
         },
         {
-          title: "Messages",
-          desc: "Chat with your patients",
+          title: t("nav.messages"),
+          desc: t("doctor.messagesDesc"),
           icon: "💬",
           href: buildUrl("/doctor/messages/list.html"),
         },
         {
-          title: "Reports",
-          desc: "Clinic analytics and summaries",
+          title: t("nav.reports"),
+          desc: t("doctor.reportsDesc"),
           icon: "📊",
           href: buildUrl("/doctor/reports/list.html"),
         },
@@ -132,7 +131,6 @@ async function loadDoctorStats(doctorId) {
 
   const activePlans = dietPlans.filter((p) => p.status === "active").length;
   const pendingAppointments = appointments.filter((a) => a.status === "pending").length;
-
   const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const newPhotos = photos.filter((p) => tsMillis(p.createdAt) >= weekAgo).length;
   const unreadMessages = messagesReceived.filter((m) => !m.read).length;

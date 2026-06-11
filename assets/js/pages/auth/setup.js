@@ -3,6 +3,7 @@ import { registerStaffAccount, formatAuthError } from "../../services/auth.servi
 import { getHomeForRole, navigateTo } from "../../core/router.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { toast } from "../../components/toast.js";
+import { t } from "../../core/i18n.js";
 
 bootstrap({
   publicPage: true,
@@ -32,9 +33,9 @@ bootstrap({
 
       saveBtn.disabled = true;
       const originalLabel = saveBtn.textContent;
-      saveBtn.textContent = "Creating account...";
+      saveBtn.textContent = t("loading.creating");
 
-      showLoading("Creating staff account...");
+      showLoading(t("loading.creatingAccount"));
 
       try {
         const { profile } = await registerStaffAccount({
@@ -45,7 +46,7 @@ bootstrap({
           role,
         });
 
-        toast.success("Staff account created successfully.");
+        toast.success(t("toast.accountCreated"));
         navigateTo(getHomeForRole(profile.role));
       } catch (error) {
         console.error(error);

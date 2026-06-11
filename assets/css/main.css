@@ -2529,3 +2529,92 @@ a.patient-info-card:active {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* Language switcher */
+.ncms-lang-select {
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: #fff;
+  color: #334155;
+  max-width: 7.5rem;
+  cursor: pointer;
+}
+
+.ncms-lang-select:focus {
+  outline: 2px solid #10b981;
+  outline-offset: 1px;
+}
+
+.ncms-lang-switch {
+  margin-inline-end: 0.25rem;
+}
+
+/* RTL layout */
+html[dir="rtl"],
+body.ncms-rtl {
+  text-align: start;
+}
+
+[dir="rtl"] #ncms-sidebar {
+  border-right: none;
+  border-left: 1px solid #e2e8f0;
+}
+
+[dir="rtl"] .form-input,
+[dir="rtl"] .form-textarea,
+[dir="rtl"] .ncms-input,
+[dir="rtl"] .patient-input,
+[dir="rtl"] .checklist-detail-input {
+  text-align: right;
+}
+
+[dir="rtl"] .patient-back-link,
+[dir="rtl"] .back-btn {
+  text-align: start;
+}
+
+[dir="rtl"] .checklist-chevron {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .ncms-nav-link {
+  text-align: start;
+}
+
+[dir="rtl"] #ncms-bottom-nav .ncms-bottom-nav-item {
+  text-align: center;
+}
+
+[dir="rtl"] .dash-page-header,
+[dir="rtl"] .patient-page-header,
+[dir="rtl"] .patient-section-head {
+  text-align: start;
+}
+
+[dir="rtl"] .compliance-detail-row span {
+  text-align: start;
+}
+
+[dir="rtl"] .modal-actions,
+[dir="rtl"] .ncms-modal-actions {
+  justify-content: flex-start;
+}
+
+[dir="rtl"] [data-modal-close] {
+  margin-inline-start: auto;
+  margin-inline-end: 0;
+}
+
+/* Logical spacing helpers where margin-left/right were used inline */
+[dir="rtl"] .ml-auto {
+  margin-left: unset;
+  margin-inline-start: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: unset;
+  margin-inline-end: auto;
+}

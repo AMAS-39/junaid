@@ -9,30 +9,34 @@ import { t } from "./i18n.js";
 export function getNavItems(role) {
   const items = {
     [ROLES.DOCTOR]: [
-      { id: "dashboard", label: t("dashboard"), href: "/doctor/dashboard.html", icon: "grid" },
-      { id: "patients", label: t("patients"), href: "/doctor/patients/list.html", icon: "users" },
-      { id: "diet-plans", label: t("dietPlans"), href: "/doctor/diet-plans/list.html", icon: "leaf" },
-      { id: "appointments", label: t("appointments"), href: "/doctor/appointments/list.html", icon: "calendar" },
-      { id: "messages", label: t("messages"), href: "/doctor/messages/list.html", icon: "message" },
-      { id: "reports", label: t("reports"), href: "/doctor/reports/list.html", icon: "chart" },
+      { id: "dashboard", labelKey: "nav.dashboard", href: "/doctor/dashboard.html", icon: "grid" },
+      { id: "patients", labelKey: "nav.patients", href: "/doctor/patients/list.html", icon: "users" },
+      { id: "diet-plans", labelKey: "nav.dietPlans", href: "/doctor/diet-plans/list.html", icon: "leaf" },
+      { id: "appointments", labelKey: "nav.appointments", href: "/doctor/appointments/list.html", icon: "calendar" },
+      { id: "messages", labelKey: "nav.messages", href: "/doctor/messages/list.html", icon: "message" },
+      { id: "reports", labelKey: "nav.reports", href: "/doctor/reports/list.html", icon: "chart" },
     ],
     [ROLES.SECRETARY]: [
-      { id: "dashboard", label: t("dashboard"), href: "/secretary/dashboard.html", icon: "grid" },
-      { id: "add-patient", label: "Add Patient", href: "/secretary/add-patient.html", icon: "user-plus" },
-      { id: "patients", label: t("patients"), href: "/secretary/patients/list.html", icon: "users" },
-      { id: "appointments", label: t("appointments"), href: "/secretary/appointments/list.html", icon: "calendar" },
-      { id: "payments", label: t("payments"), href: "/secretary/payments/list.html", icon: "wallet" },
+      { id: "dashboard", labelKey: "nav.dashboard", href: "/secretary/dashboard.html", icon: "grid" },
+      { id: "add-patient", labelKey: "nav.addPatient", href: "/secretary/add-patient.html", icon: "user-plus" },
+      { id: "patients", labelKey: "nav.patients", href: "/secretary/patients/list.html", icon: "users" },
+      { id: "appointments", labelKey: "nav.appointments", href: "/secretary/appointments/list.html", icon: "calendar" },
+      { id: "payments", labelKey: "nav.payments", href: "/secretary/payments/list.html", icon: "wallet" },
     ],
     [ROLES.PATIENT]: [
-      { id: "dashboard", label: "Home", href: "/patient/dashboard.html", icon: "grid" },
-      { id: "diet-plan", label: "Diet", href: "/patient/diet-plan/view.html", icon: "leaf" },
-      { id: "medicine", label: "Medicine", href: "/patient/medicine/list.html", icon: "pill" },
-      { id: "appointments", label: "Visits", href: "/patient/appointments/list.html", icon: "calendar" },
-      { id: "messages", label: "Chat", href: "/patient/messages/list.html", icon: "message" },
+      { id: "dashboard", labelKey: "nav.home", href: "/patient/dashboard.html", icon: "grid" },
+      { id: "diet-plan", labelKey: "nav.diet", href: "/patient/diet-plan/view.html", icon: "leaf" },
+      { id: "medicine", labelKey: "nav.medicine", href: "/patient/medicine/list.html", icon: "pill" },
+      { id: "appointments", labelKey: "nav.visits", href: "/patient/appointments/list.html", icon: "calendar" },
+      { id: "messages", labelKey: "nav.chat", href: "/patient/messages/list.html", icon: "message" },
     ],
   };
 
-  return items[role] || [];
+  const roleItems = items[role] || [];
+  return roleItems.map((item) => ({
+    ...item,
+    label: t(item.labelKey),
+  }));
 }
 
 /** SVG icon map for navigation. */

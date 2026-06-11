@@ -1,4 +1,4 @@
-import { initI18n, t } from "./i18n.js";
+import { initI18n, t, applyPageTranslations } from "./i18n.js";
 import { guardPage, redirectIfAuthenticated } from "./auth-guard.js";
 import { initLayout } from "../components/layout.js";
 import { initToast } from "../components/toast.js";
@@ -20,6 +20,7 @@ export async function bootstrap(options = {}) {
   const { publicPage = false, redirectIfAuth = false, onReady } = options;
 
   initI18n();
+  applyPageTranslations();
   initToast();
   initModal();
   initLoading();
@@ -48,9 +49,10 @@ export async function bootstrap(options = {}) {
   if (useLayout && session) {
     try {
       initLayout(session);
+      applyPageTranslations(document.getElementById("ncms-main-content") || document);
     } catch (layoutError) {
       console.error("Layout initialization failed:", layoutError);
-      toast.error("Navigation shell failed to load. Refresh the page.");
+      toast.error(t("toast.navShellFailed"));
     }
   }
 
@@ -62,7 +64,7 @@ export async function bootstrap(options = {}) {
       await onReady(session);
     } catch (pageError) {
       console.error("Page initialization failed:", pageError);
-      toast.error("Failed to load page content.");
+      toast.error(t("toast.failedLoadContent"));
     }
   }
 

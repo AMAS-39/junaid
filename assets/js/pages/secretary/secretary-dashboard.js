@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { buildUrl } from "../../core/router.js";
@@ -6,6 +7,8 @@ import { showLoading, hideLoading } from "../../components/loading.js";
 import { toast } from "../../components/toast.js";
 import { renderDashStats, renderDashActions } from "../../components/dashboard-stats.js";
 import { formatFirestoreError } from "../../utils/firestore-error.js";
+import { formatNumber } from "../../utils/format.js";
+import { getIntlLocale } from "../../core/i18n.js";
 import { isToday, tsMillis } from "./secretary-helpers.js";
 
 bootstrap({
@@ -18,13 +21,13 @@ bootstrap({
     const gridEl = document.getElementById("dashboardGrid");
 
     if (welcomeEl) {
-      welcomeEl.textContent = `Welcome, ${session.profile.name || "Secretary"}`;
+      welcomeEl.textContent = `${t("common.welcome")}, ${session.profile.name || t("roles.secretary")}`;
     }
     if (subtitleEl) {
-      subtitleEl.textContent = "Front desk overview for today";
+      subtitleEl.textContent = t("secretary.dashboardSubtitle");
     }
 
-    showLoading("Loading dashboard...");
+    showLoading(t("loading.dashboard"));
 
     try {
       const patients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);
@@ -46,81 +49,81 @@ bootstrap({
         .filter((p) => p.status === "paid" && tsMillis(p.createdAt) >= monthStart)
         .reduce((sum, p) => sum + Number(p.amount || 0), 0);
 
-      const monthLabel = startOfMonth.toLocaleString(undefined, { month: "short", year: "numeric" });
+      const monthLabel = startOfMonth.toLocaleString(getIntlLocale(), { month: "short", year: "numeric" });
 
       renderDashStats(statsEl, [
         {
-          label: "Total Patients",
+          label: t("doctor.totalPatients"),
           value: patients.length,
-          meta: "Registered patients",
+          meta: t("doctor.registeredPatients"),
           icon: "👥",
           tone: "green",
           href: buildUrl("/secretary/patients/list.html"),
         },
         {
-          label: "Today's Appointments",
+          label: t("secretary.todayAppointments"),
           value: todayCount,
-          meta: "Scheduled for today",
+          meta: t("secretary.scheduledToday"),
           icon: "📅",
           tone: "sky",
           href: buildUrl("/secretary/appointments/list.html"),
-          badge: todayCount > 0 ? "Today" : "None",
+          badge: todayCount > 0 ? t("status.today") : t("status.none"),
           badgeTone: todayCount > 0 ? "success" : "muted",
         },
         {
-          label: "Pending Appointments",
+          label: t("doctor.pendingAppointments"),
           value: pendingCount,
-          meta: "Need confirmation",
+          meta: t("secretary.needConfirmation"),
           icon: "⏳",
           tone: "amber",
           href: buildUrl("/secretary/appointments/list.html"),
-          badge: pendingCount > 0 ? "Pending" : "Clear",
+          badge: pendingCount > 0 ? t("status.pending") : t("status.clear"),
           badgeTone: pendingCount > 0 ? "warning" : "muted",
         },
         {
-          label: "Unpaid Payments",
+          label: t("secretary.unpaidPayments"),
           value: unpaidCount,
-          meta: "Outstanding invoices",
+          meta: t("secretary.outstanding"),
           icon: "💳",
           tone: "violet",
           href: buildUrl("/secretary/payments/list.html"),
-          badge: unpaidCount > 0 ? "Due" : "Clear",
+          badge: unpaidCount > 0 ? t("status.due") : t("status.clear"),
           badgeTone: unpaidCount > 0 ? "warning" : "muted",
         },
         {
-          label: "Paid This Month",
+          label: t("secretary.paidThisMonth"),
           value: formatMoney(paidThisMonth),
           meta: monthLabel,
           icon: "💵",
           tone: "teal",
           href: buildUrl("/secretary/payments/list.html"),
-          badge: "Revenue",
+          badge: t("status.revenue"),
           badgeTone: "success",
         },
       ]);
 
       renderDashActions(gridEl, [
         {
-          title: "Add Patient",
-          desc: "Register a new patient",
+          title: t("nav.addPatient"),
+          desc: t("secretary.registerPatient"),
           icon: "➕",
           href: buildUrl("/secretary/add-patient.html"),
         },
         {
-          title: "Patient List",
-          desc: "Browse all patients",
+          title: t("nav.patients"),
+          desc: t("secretary.browsePatients"),
           icon: "👥",
           href: buildUrl("/secretary/patients/list.html"),
         },
         {
-          title: "Appointments",
-          desc: "Manage visit schedule",
+          title: t("nav.appointments"),
+          desc: t("secretary.manageSchedule"),
           icon: "📅",
           href: buildUrl("/secretary/appointments/list.html"),
         },
         {
-          title: "Payments",
-          desc: "Record and track payments",
+          title: t("nav.payments"),
+          desc: t("secretary.recordPayments"),
           icon: "💵",
           href: buildUrl("/secretary/payments/list.html"),
         },
@@ -135,6 +138,5 @@ bootstrap({
 });
 
 function formatMoney(amount) {
-  const n = Number(amount) || 0;
-  return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return formatNumber(amount, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }

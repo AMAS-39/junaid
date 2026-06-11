@@ -11,32 +11,32 @@
 </head>
 <body class="bg-slate-50 min-h-screen patient-body">
   <div id="page-content" class="patient-app-page">
-    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <a href="../dashboard.html" class="patient-back-link" data-i18n="buttons.backHome">← Back to Home</a>
     <header class="patient-page-header">
-      <h1 class="patient-page-title">My Progress</h1>
-      <p class="patient-page-sub">Track your weight — one step at a time</p>
+      <h1 class="patient-page-title" data-i18n="patient.progressPage">My Progress</h1>
+      <p class="patient-page-sub" data-i18n="patient.progressSub">Track your weight — one step at a time</p>
     </header>
 
     <form id="progressForm" class="patient-form-card">
-      <h2 class="patient-form-title">Add your weight</h2>
+      <h2 class="patient-form-title" data-i18n="forms.addWeight">Add your weight</h2>
       <div class="form-group mb-3">
-        <label for="weight">Weight (kg)</label>
-        <input id="weight" type="number" required min="1" step="0.1" class="form-input patient-input" placeholder="e.g. 75" />
+        <label for="weight" data-i18n="forms.weight">Weight (kg)</label>
+        <input id="weight" type="number" required min="1" step="0.1" class="form-input patient-input" data-i18n-placeholder="forms.weightPlaceholder" placeholder="e.g. 75" />
       </div>
       <div class="form-group mb-4">
-        <label for="note">How do you feel? (optional)</label>
-        <textarea id="note" class="form-textarea patient-input" rows="2" placeholder="e.g. Feeling good today"></textarea>
+        <label for="note" data-i18n="forms.howFeel">How do you feel? (optional)</label>
+        <textarea id="note" class="form-textarea patient-input" rows="2" data-i18n-placeholder="forms.feelingPlaceholder" placeholder="e.g. Feeling good today"></textarea>
       </div>
-      <button id="saveBtn" type="submit" class="patient-btn-primary">Save my weight</button>
+      <button id="saveBtn" type="submit" class="patient-btn-primary" data-i18n="forms.saveWeight">Save my weight</button>
     </form>
 
-    <h2 class="patient-section-title">Your history</h2>
+    <h2 class="patient-section-title" data-i18n="common.history">Your history</h2>
     <div id="progressList" class="patient-card-stack"></div>
     <div id="emptyState" class="patient-empty-state hidden">
       <span class="patient-empty-icon" aria-hidden="true">📈</span>
-      <h3>No weight entries yet</h3>
-      <p>Add your weight above to start tracking.</p>
-      <p class="patient-empty-hint">Small steps lead to big results.</p>
+      <h3 data-i18n="empty.noProgress">No weight entries yet</h3>
+      <p data-i18n="empty.noProgressHint">Add your weight above to start tracking.</p>
+      <p class="patient-empty-hint" data-i18n="empty.noProgressMotivation">Small steps lead to big results.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/progress-list.js"></script>

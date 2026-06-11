@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import {
@@ -43,14 +44,14 @@ bootstrap({
       const saveBtn = document.getElementById("saveBtn");
 
       if (!file) {
-        toast.error("Please select an image file.");
+        toast.error(t("toast.selectImage"));
         return;
       }
 
       saveBtn.disabled = true;
       const originalLabel = saveBtn.textContent;
-      saveBtn.textContent = "Uploading...";
-      showLoading("Uploading photo...");
+      saveBtn.textContent = t("loading.uploading");
+      showLoading(t("loading.uploadingPhoto"));
 
       try {
         await uploadPatientPhoto({
@@ -61,14 +62,14 @@ bootstrap({
           note: note.trim(),
         });
 
-        toast.success("Photo uploaded successfully.");
+        toast.success(t("toast.photoUploaded"));
         form.reset();
         const hint = document.getElementById("fileHint");
-        if (hint) hint.textContent = "JPG, PNG, WEBP — max 5MB";
+        if (hint) hint.textContent = t("patient.fileHint");
         await loadPhotos(patientId, listEl, emptyState);
       } catch (error) {
         console.error(error);
-        toast.error(error?.message || "Failed to upload photo.");
+        toast.error(error?.message || t("toast.failedUploadPhoto"));
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = originalLabel;
@@ -79,7 +80,7 @@ bootstrap({
 });
 
 async function loadPhotos(patientId, listEl, emptyState) {
-  showLoading("Loading photos...");
+  showLoading(t("loading.photos"));
 
   try {
     let photos = await FirestoreService.query(COLLECTIONS.PATIENT_PHOTOS, [
@@ -101,7 +102,7 @@ async function loadPhotos(patientId, listEl, emptyState) {
     });
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load photo records.");
+    toast.error(t("toast.failedLoadPhotos"));
   } finally {
     hideLoading();
   }
@@ -121,17 +122,17 @@ function photoRow(photo) {
       ${note ? `<p class="text-sm text-slate-600 mt-2">${note}</p>` : ""}
       ${canPreview ? `
         <button type="button" class="btn-sm btn-sm-primary mt-3" data-preview="${escapeHtml(photo.id)}">Preview</button>
-      ` : `<p class="text-xs text-slate-400 mt-2">${escapeHtml(photo.status || "pending")}</p>`}
+      ` : `<p class="text-xs text-slate-400 mt-2">${escapeHtml(tStatus(photo.status || "pending"))}</p>`}
     </div>
   `;
 }
 
 async function previewPhoto(photoId) {
-  showLoading("Loading preview...");
+  showLoading(t("loading.preview"));
   try {
     const photo = await FirestoreService.getById(COLLECTIONS.PATIENT_PHOTOS, photoId);
     if (!photo) {
-      toast.error("Photo not found.");
+      toast.error(t("toast.photoNotFound"));
       return;
     }
 
@@ -140,12 +141,12 @@ async function previewPhoto(photoId) {
       title: getPhotoTypeLabel(photo),
       body: `<img src="${url}" alt="Photo preview" class="photo-preview-img" />`,
       showCancel: false,
-      confirmText: "Close",
+      confirmText: t("common.close"),
       onConfirm: () => {},
     });
   } catch (error) {
     console.error(error);
-    toast.error(error?.message || "Could not load preview.");
+    toast.error(error?.message || t("toast.failedLoadPreview"));
   } finally {
     hideLoading();
   }

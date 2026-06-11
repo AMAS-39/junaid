@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -18,9 +19,9 @@ bootstrap({
     const patientId = getQueryParam("id");
 
     if (!patientId) {
-      toast.error("Patient ID is missing.");
+      toast.error(t("toast.patientIdMissing"));
       if (patientDetails) {
-        patientDetails.innerHTML = emptyBlock("Missing patient ID", "No patient was specified.");
+        patientDetails.innerHTML = emptyBlock(t("doctor.missingId"), t("doctor.noPatientSpecified"));
       }
       return;
     }
@@ -38,13 +39,13 @@ bootstrap({
 });
 
 async function loadPatient(patientId, container) {
-  showLoading("Loading patient...");
+  showLoading(t("loading.patient"));
 
   try {
     const patient = await FirestoreService.getById(COLLECTIONS.PATIENTS, patientId);
 
     if (!patient) {
-      container.innerHTML = emptyBlock("Patient not found", "This patient record does not exist.");
+      container.innerHTML = emptyBlock(t("doctor.patientNotFound"), t("doctor.patientNotFoundHint"));
       return;
     }
 
@@ -52,24 +53,25 @@ async function loadPatient(patientId, container) {
     document.getElementById("doctorNotesSection")?.classList.remove("hidden");
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load patient details.");
-    container.innerHTML = emptyBlock("Error", "Could not load patient details.");
+    toast.error(t("toast.failedLoadPatient"));
+    container.innerHTML = emptyBlock(t("toast.failed"), t("doctor.errorLoading"));
   } finally {
     hideLoading();
   }
 }
 
 function renderPatient(patient, container) {
-  const fullName = escapeHtml(patient.fullName || "Unnamed Patient");
-  const phone = escapeHtml(patient.phone || "No phone");
-  const email = escapeHtml(patient.email || "No email");
-  const gender = escapeHtml(patient.gender || "N/A");
-  const age = patient.age ?? "N/A";
-  const height = patient.height ?? "N/A";
-  const currentWeight = patient.currentWeight ?? "N/A";
-  const targetWeight = patient.targetWeight ?? "N/A";
+  const fullName = escapeHtml(patient.fullName || t("doctor.unnamedPatient"));
+  const phone = escapeHtml(patient.phone || t("doctor.noPhone"));
+  const email = escapeHtml(patient.email || t("doctor.noEmail"));
+  const gender = escapeHtml(patient.gender || t("common.notFound"));
+  const na = t("common.notFound");
+  const age = patient.age ?? na;
+  const height = patient.height ?? na;
+  const currentWeight = patient.currentWeight ?? na;
+  const targetWeight = patient.targetWeight ?? na;
   const bmi = calculateBMI(patient.height, patient.currentWeight);
-  const bmiDisplay = bmi ? bmi : "N/A";
+  const bmiDisplay = bmi ? bmi : na;
   const pid = escapeHtml(patient.id);
 
   container.innerHTML = `
@@ -83,21 +85,21 @@ function renderPatient(patient, container) {
     </section>
 
     <section class="details-grid">
-      ${infoCard("Age", age)}
-      ${infoCard("Gender", gender)}
-      ${infoCard("Height", `${height} cm`)}
-      ${infoCard("Current Weight", `${currentWeight} kg`)}
-      ${infoCard("Target Weight", `${targetWeight} kg`)}
-      ${infoCard("BMI", bmiDisplay)}
+      ${infoCard(t("doctor.age"), age)}
+      ${infoCard(t("doctor.gender"), gender)}
+      ${infoCard(t("doctor.heightLabel"), `${height} cm`)}
+      ${infoCard(t("doctor.currentWeight"), `${currentWeight} kg`)}
+      ${infoCard(t("doctor.targetWeight"), `${targetWeight} kg`)}
+      ${infoCard(t("doctor.bmi"), bmiDisplay)}
     </section>
 
     <section class="action-grid">
-      ${actionCard("Create Diet Plan", "Add nutrition plan for this patient", "🥗", `../diet-plans/create.html?patientId=${pid}`)}
-      ${actionCard("Progress", "View weight and body changes", "📈", `../progress/list.html?patientId=${pid}`)}
-      ${actionCard("Photos", "Medicine, meal, lab and progress photos", "📷", `../photos/list.html?patientId=${pid}`)}
-      ${actionCard("Appointments", "View patient appointments", "📅", `../appointments/list.html?patientId=${pid}`)}
-      ${actionCard("Messages", "Open patient conversation", "💬", `../messages/list.html?patientId=${pid}`)}
-      ${actionCard("Medicine", "Reminders, prescriptions and test papers", "💊", `../medicine/list.html?patientId=${pid}`)}
+      ${actionCard(t("doctor.createDietPlanAction"), t("doctor.createDietPlanDesc"), "🥗", `../diet-plans/create.html?patientId=${pid}`)}
+      ${actionCard(t("doctor.progressAction"), t("doctor.progressActionDesc"), "📈", `../progress/list.html?patientId=${pid}`)}
+      ${actionCard(t("doctor.photosAction"), t("doctor.photosActionDesc"), "📷", `../photos/list.html?patientId=${pid}`)}
+      ${actionCard(t("doctor.appointmentsAction"), t("doctor.appointmentsActionDesc"), "📅", `../appointments/list.html?patientId=${pid}`)}
+      ${actionCard(t("doctor.messagesAction"), t("doctor.messagesActionDesc"), "💬", `../messages/list.html?patientId=${pid}`)}
+      ${actionCard(t("doctor.medicineAction"), t("doctor.medicineActionDesc"), "💊", `../medicine/list.html?patientId=${pid}`)}
     </section>
   `;
 }
@@ -114,7 +116,7 @@ async function loadDailyCompliance(patientId) {
     section.classList.remove("hidden");
   } catch (error) {
     console.error(error);
-    container.innerHTML = `<p class="daily-compliance-error">Could not load today's compliance.</p>`;
+    container.innerHTML = `<p class="daily-compliance-error">${escapeHtml(t("doctor.complianceLoadError"))}</p>`;
     section.classList.remove("hidden");
   }
 }
@@ -127,7 +129,7 @@ function bindDoctorNotes() {
 async function loadDoctorNotes() {
   if (!currentPatientId || !currentDoctorId) return;
 
-  showLoading("Loading notes...");
+  showLoading(t("loading.notes"));
 
   try {
     doctorNotes = await FirestoreService.query(COLLECTIONS.DOCTOR_NOTES, [
@@ -142,7 +144,7 @@ async function loadDoctorNotes() {
     renderDoctorNotes();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load private notes.");
+    toast.error(t("toast.failedLoadNotes"));
   } finally {
     hideLoading();
   }
@@ -196,7 +198,7 @@ async function saveNewNote() {
   const text = input?.value?.trim() || "";
 
   if (!text) {
-    toast.error("Please enter a note before saving.");
+    toast.error(t("toast.enterNote"));
     return;
   }
 
@@ -204,8 +206,8 @@ async function saveNewNote() {
 
   saveBtn.disabled = true;
   const originalLabel = saveBtn.textContent;
-  saveBtn.textContent = "Saving...";
-  showLoading("Saving note...");
+  saveBtn.textContent = t("loading.saving");
+  showLoading(t("loading.savingNote"));
 
   try {
     await FirestoreService.create(COLLECTIONS.DOCTOR_NOTES, {
@@ -215,12 +217,12 @@ async function saveNewNote() {
       updatedAt: FirestoreService.serverTimestamp(),
     });
 
-    toast.success("Private note saved.");
+    toast.success(t("toast.noteSaved"));
     if (input) input.value = "";
     await loadDoctorNotes();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to save note.");
+    toast.error(t("toast.failedSaveNote"));
   } finally {
     saveBtn.disabled = false;
     saveBtn.textContent = originalLabel;
@@ -231,35 +233,35 @@ async function saveNewNote() {
 function editNote(noteId) {
   const note = doctorNotes.find((n) => n.id === noteId);
   if (!note) {
-    toast.error("Note not found.");
+    toast.error(t("toast.noteNotFound"));
     return;
   }
 
   openModal({
-    title: "Edit Private Note",
+    title: t("doctor.editPrivateNote"),
     body: `
-      <label for="editNoteInput" class="form-label">Note</label>
+      <label for="editNoteInput" class="form-label">${escapeHtml(t("forms.note"))}</label>
       <textarea id="editNoteInput" class="form-textarea" rows="5"></textarea>
     `,
-    confirmText: "Update Note",
+    confirmText: t("doctor.updateNote"),
     onConfirm: async () => {
       const input = document.getElementById("editNoteInput");
       const text = input?.value?.trim() || "";
 
       if (!text) {
-        toast.error("Note cannot be empty.");
+        toast.error(t("toast.noteEmpty"));
         return;
       }
 
-      showLoading("Updating note...");
+      showLoading(t("loading.updating"));
 
       try {
         await FirestoreService.update(COLLECTIONS.DOCTOR_NOTES, noteId, { note: text });
-        toast.success("Note updated.");
+        toast.success(t("toast.noteUpdated"));
         await loadDoctorNotes();
       } catch (error) {
         console.error(error);
-        toast.error("Failed to update note.");
+        toast.error(t("toast.failedUpdateNote"));
       } finally {
         hideLoading();
       }
@@ -273,26 +275,26 @@ function editNote(noteId) {
 async function deleteNote(noteId) {
   const note = doctorNotes.find((n) => n.id === noteId);
   if (!note) {
-    toast.error("Note not found.");
+    toast.error(t("toast.noteNotFound"));
     return;
   }
 
   const confirmed = await confirmModal(
-    "Delete Private Note",
-    "Are you sure you want to delete this note? This cannot be undone."
+    t("doctor.deletePrivateNote"),
+    t("doctor.deleteNoteConfirm")
   );
 
   if (!confirmed) return;
 
-  showLoading("Deleting note...");
+  showLoading(t("loading.deleting"));
 
   try {
     await FirestoreService.remove(COLLECTIONS.DOCTOR_NOTES, noteId);
-    toast.success("Note deleted.");
+    toast.success(t("toast.noteDeleted"));
     await loadDoctorNotes();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to delete note.");
+    toast.error(t("toast.failedDeleteNote"));
   } finally {
     hideLoading();
   }

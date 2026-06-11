@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { showLoading, hideLoading } from "../../components/loading.js";
 import { toast } from "../../components/toast.js";
 import { escapeHtml } from "../../utils/format.js";
@@ -12,7 +13,7 @@ bootstrap({
     const emptyState = document.getElementById("emptyState");
     const patientId = session.user.uid;
 
-    showLoading("Loading diet plan...");
+    showLoading(t("loading.dietPlan"));
 
     try {
       const plan = await getActiveDietPlan(patientId);
@@ -26,28 +27,28 @@ bootstrap({
       emptyState?.classList.add("hidden");
       container.innerHTML = `
         <div class="patient-summary-card mb-4">
-          <h2 class="text-xl font-bold text-slate-800">${escapeHtml(plan.title || "My Diet Plan")}</h2>
+          <h2 class="text-xl font-bold text-slate-800">${escapeHtml(plan.title || t("patient.myDietPlan"))}</h2>
         </div>
-        ${mealBlock("Breakfast", plan.breakfast)}
-        ${mealBlock("Lunch", plan.lunch)}
-        ${mealBlock("Dinner", plan.dinner)}
-        ${mealBlock("Snacks", plan.snacks)}
+        ${mealBlock(t("patient.breakfast"), plan.breakfast)}
+        ${mealBlock(t("patient.lunch"), plan.lunch)}
+        ${mealBlock(t("patient.dinner"), plan.dinner)}
+        ${mealBlock(t("patient.snacks"), plan.snacks)}
         ${plan.waterGoal ? `
           <div class="patient-meal-card">
-            <h3>Water Goal</h3>
+            <h3>${t("patient.waterGoal")}</h3>
             <p>${escapeHtml(String(plan.waterGoal))} L / day</p>
           </div>
         ` : ""}
         ${plan.notes ? `
           <div class="patient-meal-card">
-            <h3>Notes</h3>
+            <h3>${t("patient.notes")}</h3>
             <p>${escapeHtml(plan.notes)}</p>
           </div>
         ` : ""}
       `;
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load diet plan.");
+      toast.error(t("toast.failedLoadDietPlan"));
     } finally {
       hideLoading();
     }

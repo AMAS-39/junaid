@@ -1,3 +1,5 @@
+import { t } from "../core/i18n.js";
+
 let overlayEl = null;
 let requestCount = 0;
 
@@ -26,7 +28,7 @@ export function initLoading() {
  * Show the global loading overlay.
  * @param {string} [message]
  */
-export function showLoading(message = "Loading...") {
+export function showLoading(message = t("common.loading")) {
   if (!overlayEl) initLoading();
 
   requestCount += 1;

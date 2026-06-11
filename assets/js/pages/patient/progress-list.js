@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -24,12 +25,12 @@ bootstrap({
       const saveBtn = document.getElementById("saveBtn");
 
       if (!weight || weight <= 0) {
-        toast.error("Enter a valid weight.");
+        toast.error(t("toast.enterValidWeight"));
         return;
       }
 
       saveBtn.disabled = true;
-      showLoading("Saving...");
+      showLoading(t("loading.saving"));
 
       try {
         await FirestoreService.create(COLLECTIONS.PROGRESS_ENTRIES, {
@@ -39,12 +40,12 @@ bootstrap({
           recordedAt: FirestoreService.serverTimestamp(),
         });
 
-        toast.success("Weight saved! Great job.");
+        toast.success(t("toast.weightSaved"));
         form.reset();
         await loadEntries(patientId, listEl, emptyState);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to save progress.");
+        toast.error(t("toast.failedSaveProgress"));
       } finally {
         saveBtn.disabled = false;
         hideLoading();
@@ -54,7 +55,7 @@ bootstrap({
 });
 
 async function loadEntries(patientId, listEl, emptyState) {
-  showLoading("Loading progress...");
+  showLoading(t("loading.progress"));
 
   try {
     let entries = await FirestoreService.query(COLLECTIONS.PROGRESS_ENTRIES, [
@@ -84,7 +85,7 @@ async function loadEntries(patientId, listEl, emptyState) {
       .join("");
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load progress.");
+    toast.error(t("toast.failedLoadProgress"));
   } finally {
     hideLoading();
   }

@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import {
@@ -23,7 +24,7 @@ bootstrap({
     patientId = getQueryParam("patientId");
 
     if (!patientId) {
-      toast.error("Patient ID is required.");
+      toast.error(t("toast.patientIdRequired"));
       return;
     }
 
@@ -53,7 +54,7 @@ async function loadPhotos() {
     `;
   }
 
-  showLoading("Loading photos...");
+  showLoading(t("loading.photos"));
 
   try {
     allPhotos = await FirestoreService.query(COLLECTIONS.PATIENT_PHOTOS, [
@@ -63,7 +64,7 @@ async function loadPhotos() {
     renderPhotos();
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load photos.");
+    toast.error(t("toast.failedLoadPhotos"));
     container.innerHTML = "";
     emptyState?.classList.remove("hidden");
   } finally {
@@ -120,11 +121,11 @@ function photoCard(photo) {
 }
 
 async function previewPhoto(photoId) {
-  showLoading("Loading preview...");
+  showLoading(t("loading.preview"));
   try {
     const photo = await FirestoreService.getById(COLLECTIONS.PATIENT_PHOTOS, photoId);
     if (!photo) {
-      toast.error("Photo not found.");
+      toast.error(t("toast.photoNotFound"));
       return;
     }
 
@@ -133,12 +134,12 @@ async function previewPhoto(photoId) {
       title: getPhotoTypeLabel(photo),
       body: `<img src="${url}" alt="Photo preview" class="photo-preview-img" />`,
       showCancel: false,
-      confirmText: "Close",
+      confirmText: t("common.close"),
       onConfirm: () => {},
     });
   } catch (error) {
     console.error(error);
-    toast.error(error?.message || "Could not load preview.");
+    toast.error(error?.message || t("toast.failedLoadPreview"));
   } finally {
     hideLoading();
   }

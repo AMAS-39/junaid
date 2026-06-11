@@ -1,3 +1,5 @@
+import { t } from "../core/i18n.js";
+
 let containerEl = null;
 let activeModal = null;
 
@@ -32,8 +34,8 @@ export function openModal(options) {
   const {
     title,
     body,
-    confirmText = "Confirm",
-    cancelText = "Cancel",
+    confirmText = t("modal.confirm"),
+    cancelText = t("modal.cancel"),
     showCancel = true,
     onConfirm,
     onCancel,
@@ -49,7 +51,7 @@ export function openModal(options) {
     <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl animate-slide-up sm:animate-scale-in">
       <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
         <h2 class="text-lg font-semibold text-slate-800">${title}</h2>
-        <button type="button" data-modal-close class="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600" aria-label="Close">&times;</button>
+        <button type="button" data-modal-close class="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600" aria-label="${t("common.close")}">&times;</button>
       </div>
       <div class="px-5 py-4 text-slate-600 text-sm leading-relaxed">${body}</div>
       <div class="flex gap-3 border-t border-slate-100 px-5 py-4 justify-end">
@@ -119,8 +121,8 @@ export function confirmModal(title, message) {
     openModal({
       title,
       body: message,
-      confirmText: "Confirm",
-      cancelText: "Cancel",
+      confirmText: t("modal.confirm"),
+      cancelText: t("modal.cancel"),
       onConfirm: () => resolve(true),
       onCancel: () => resolve(false),
     });

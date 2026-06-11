@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -26,7 +27,7 @@ async function loadPatients() {
   const container = document.getElementById("patientsContainer");
   const emptyState = document.getElementById("emptyState");
 
-  showLoading("Loading patients...");
+  showLoading(t("loading.patients"));
 
   try {
     patients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);
@@ -34,7 +35,7 @@ async function loadPatients() {
     renderPatients("", container, emptyState);
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load patients.");
+    toast.error(t("toast.failedLoadPatients"));
   } finally {
     hideLoading();
   }
@@ -179,7 +180,7 @@ function openEditModal(patientId) {
         return;
       }
 
-      showLoading("Saving...");
+      showLoading(t("loading.saving"));
       try {
         await FirestoreService.update(COLLECTIONS.PATIENTS, patientId, data);
         await FirestoreService.update(COLLECTIONS.USERS, patientId, {
@@ -195,7 +196,7 @@ function openEditModal(patientId) {
         const searchInput = document.getElementById("searchInput");
         renderPatients(searchInput?.value || "", container, document.getElementById("emptyState"));
 
-        toast.success("Patient updated.");
+        toast.success(t("toast.saved"));
       } catch (error) {
         console.error(error);
         toast.error("Failed to update patient.");

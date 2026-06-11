@@ -1,4 +1,5 @@
 import { bootstrap } from "../../core/bootstrap.js";
+import { t, tStatus } from "../../core/i18n.js";
 import { FirestoreService } from "../../services/firestore.service.js";
 import { COLLECTIONS } from "../../architecture/firestore-collections.js";
 import { toast } from "../../components/toast.js";
@@ -28,7 +29,7 @@ bootstrap({
 });
 
 async function loadData(doctorId) {
-  showLoading("Loading diet plans...");
+  showLoading(t("loading.dietPlans"));
 
   try {
     const allPatients = await FirestoreService.query(COLLECTIONS.PATIENTS, []);
@@ -42,7 +43,7 @@ async function loadData(doctorId) {
     renderPlans("");
   } catch (error) {
     console.error(error);
-    toast.error("Failed to load diet plans.");
+    toast.error(t("toast.failedLoadDietPlans"));
   } finally {
     hideLoading();
   }
@@ -94,7 +95,7 @@ function planRow(plan) {
   const patient = patientsMap[plan.patientId];
   const patientName = escapeHtml(patient?.fullName || "Unknown");
   const status = plan.status === "active" ? "active" : "old";
-  const statusLabel = plan.status === "active" ? "Active" : "Old";
+  const statusLabel = tStatus(plan.status === "active" ? "active" : plan.status || "inactive");
 
   return `
     <tr>

@@ -11,36 +11,36 @@
 </head>
 <body class="bg-slate-50 min-h-screen patient-body">
   <div id="page-content" class="patient-app-page">
-    <a href="../dashboard.html" class="patient-back-link">← Back to Home</a>
+    <a href="../dashboard.html" class="patient-back-link" data-i18n="buttons.backHome">← Back to Home</a>
     <header class="patient-page-header">
-      <h1 class="patient-page-title">Appointments</h1>
-      <p class="patient-page-sub">Book a visit with your doctor</p>
+      <h1 class="patient-page-title" data-i18n="patient.appointmentsPage">Appointments</h1>
+      <p class="patient-page-sub" data-i18n="patient.appointmentsSub">Book a visit with your doctor</p>
     </header>
 
     <form id="appointmentForm" class="patient-form-card">
-      <h2 class="patient-form-title">Request a visit</h2>
+      <h2 class="patient-form-title" data-i18n="forms.requestVisit">Request a visit</h2>
       <div class="form-group mb-3">
-        <label for="preferredDateTime">When do you want to come?</label>
+        <label for="preferredDateTime" data-i18n="forms.preferredDateTime">When do you want to come?</label>
         <input id="preferredDateTime" type="datetime-local" required class="form-input patient-input" />
       </div>
       <div class="form-group mb-3">
-        <label for="reason">Reason for visit</label>
-        <input id="reason" type="text" required class="form-input patient-input" placeholder="e.g. Follow-up check" />
+        <label for="reason" data-i18n="forms.reason">Reason for visit</label>
+        <input id="reason" type="text" required class="form-input patient-input" data-i18n-placeholder="forms.reasonPlaceholder" placeholder="e.g. Follow-up check" />
       </div>
       <div class="form-group mb-4">
-        <label for="note">Extra note (optional)</label>
-        <textarea id="note" class="form-textarea patient-input" rows="2" placeholder="Anything else we should know?"></textarea>
+        <label for="note" data-i18n="forms.extraNote">Extra note (optional)</label>
+        <textarea id="note" class="form-textarea patient-input" rows="2" data-i18n-placeholder="forms.extraNotePlaceholder" placeholder="Anything else we should know?"></textarea>
       </div>
-      <button id="saveBtn" type="submit" class="patient-btn-primary">Send request</button>
+      <button id="saveBtn" type="submit" class="patient-btn-primary" data-i18n="buttons.request">Send request</button>
     </form>
 
-    <h2 class="patient-section-title">Your visits</h2>
+    <h2 class="patient-section-title" data-i18n="common.yourVisits">Your visits</h2>
     <div id="appointmentsList" class="patient-card-stack"></div>
     <div id="emptyState" class="patient-empty-state hidden">
       <span class="patient-empty-icon" aria-hidden="true">📅</span>
-      <h3>No visits yet</h3>
-      <p>Use the form above to request your first appointment.</p>
-      <p class="patient-empty-hint">We will confirm your visit soon.</p>
+      <h3 data-i18n="empty.noAppointments">No visits yet</h3>
+      <p data-i18n="empty.noAppointmentsHint">Use the form above to request your first appointment.</p>
+      <p class="patient-empty-hint" data-i18n="empty.noAppointmentsConfirm">We will confirm your visit soon.</p>
     </div>
   </div>
   <script type="module" src="../../assets/js/pages/patient/appointments-list.js"></script>
